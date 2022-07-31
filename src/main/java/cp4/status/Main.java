@@ -15,7 +15,6 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
