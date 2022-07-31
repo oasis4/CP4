@@ -1,0 +1,15 @@
+name: CP4
+version: '${project.version}'
+main: cp4.status.Main
+api-version: 1.19
+authors: [ Oasis ]
+commands:
+  Onlinezeit:
+    usage: /Onlinezeit
+    description: Schau dir deine Onlinezeit an
+  AFK:
+    usage: /Afk
+    description: Du Bekommst die Rolle AFK
+  Test:
+    usage: /test
+
