@@ -1,5 +1,8 @@
 package cp4.status;
 
+import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,7 +23,11 @@ public class listeners implements Listener {
     @EventHandler
     public void onLogin(PlayerJoinEvent e) {
 
+
         Player p = e.getPlayer();
+        World world = p.getWorld();
+        Location locationfire = p.getLocation();
+        world.spawnParticle(Particle.FLAME, locationfire, 1, 0, 0, 0);
 
 
          // if (p.isOp()) {
