@@ -27,7 +27,9 @@ public class listeners implements Listener {
         Player p = e.getPlayer();
         World world = p.getWorld();
         Location locationfire = p.getLocation();
-        world.spawnParticle(Particle.FLAME, locationfire, 1, 0, 0, 0);
+        for (int f = 1; f > 5; f++) {
+            world.spawnParticle(Particle.FLAME, locationfire, 1, 0, 0, 0, 0);
+        }
 
 
          // if (p.isOp()) {
