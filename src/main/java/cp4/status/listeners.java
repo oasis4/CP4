@@ -38,7 +38,7 @@ public class listeners implements Listener {
 
         double seconds = 3.0;
         double segments = 16;
-        double radius = 2;
+        double radius = 1;
 
         new BukkitRunnable() {
             final long created = System.currentTimeMillis();

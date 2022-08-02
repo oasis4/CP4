@@ -79,6 +79,12 @@ public final class Main extends JavaPlugin implements Listener {
 
 
 
+        flame flame = new flame(this);
+        getCommand("flame").setExecutor(flame);
+
+
+
+
 
 
         Bukkit.getPluginManager().registerEvents(this, this);

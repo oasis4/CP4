@@ -12,4 +12,7 @@ commands:
     description: Du Bekommst die Rolle AFK
   Test:
     usage: /test
+  Flame:
+    usage: /flame
+    aliases: [f]
 
