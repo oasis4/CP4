@@ -77,19 +77,16 @@ public final class Main extends JavaPlugin implements Listener {
         Rang_upgreat Rang_upgreat = new Rang_upgreat((this));
         getCommand("Test").setExecutor(Rang_upgreat);
 
-
-
         flame flame = new flame(this);
         getCommand("flame").setExecutor(flame);
 
-
-
-
-
+        Rang_Zuordnung Rang_Zuordnung = new Rang_Zuordnung(this);
+        getServer().getPluginManager().registerEvents(Rang_Zuordnung, this);
 
         Bukkit.getPluginManager().registerEvents(this, this);
+        Bukkit.getPluginManager().registerEvents(this, this);
         Bukkit.getPluginManager().registerEvents(new listeners(this), this);
-      
+        Bukkit.getPluginManager().registerEvents(new Rang_Zuordnung(this), this);
 
     }
 

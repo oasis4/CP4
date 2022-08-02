@@ -1,6 +1,7 @@
 package cp4.status;
 
 import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -19,10 +20,17 @@ public class Rang_upgreat implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         Player player = (Player) sender;
-       Sound AMBIENT_BASALT_DELTAS_ADDITIONS;
        player.sendMessage("TEST");
 
+       player.playSound(player.getLocation(),Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
+
+
         return true;
+
+
+
+
+
     }
 
 }
