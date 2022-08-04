@@ -29,7 +29,7 @@ public final Main main;
 
         double seconds = 3.0;
         double segments = 16;
-        final String[] ar = {String.valueOf(args)};
+
 
         new BukkitRunnable() {
             final long created = System.currentTimeMillis();
@@ -42,7 +42,12 @@ public final Main main;
                     return;
                 }
 
-                if (ar[1] == String.valueOf(2)) {
+
+
+
+
+
+                if (args[0] == "on") {
                     for (double pa = 0; pa < 8; pa ++) {
                         location.setX(location.getX()   + 1);
 
