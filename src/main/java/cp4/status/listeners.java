@@ -54,12 +54,12 @@ public class listeners implements Listener {
                     Location l = locationfire.clone()
                             .add(
                                     Math.cos(pa) * radius, // X
-                                    0, // Y
+                                    0.3, // Y
                                     Math.sin(pa) * radius // Z
                             );
                     world.spawnParticle(Particle.FLAME, l, 1, 0, 0, 0, 0);
 
-                    Location l2 = l.clone().add(0, 1, 0);
+                    Location l2 = l.clone().add(0, 0.6, 0);
 
                     world.spawnParticle(Particle.FLAME, l2, 1, 0, 0, 0, 0);
                 }

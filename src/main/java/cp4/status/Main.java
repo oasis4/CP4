@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public final class Main extends JavaPlugin implements Listener {
 
@@ -58,9 +59,12 @@ public final class Main extends JavaPlugin implements Listener {
         team.setPrefix("§5Sup §7| §5");
         team.setColor(ChatColor.DARK_PURPLE);
 
-        team = sb.registerNewTeam("000004Spieler");
+        team = sb.registerNewTeam("000005Spieler");
         team.setPrefix("§8Spieler §7| §7");
         team.setColor(ChatColor.GRAY);
+
+        team = sb.registerNewTeam("000004");
+        team.setPrefix("§9Live §7| §7");
 
 
 
@@ -82,6 +86,9 @@ public final class Main extends JavaPlugin implements Listener {
 
         Rang_Zuordnung Rang_Zuordnung = new Rang_Zuordnung(this);
         getServer().getPluginManager().registerEvents(Rang_Zuordnung, this);
+
+        Streamer_commands Streamer_commands = new Streamer_commands(this);
+        getCommand("live").setExecutor(Streamer_commands);
 
         Bukkit.getPluginManager().registerEvents(this, this);
         Bukkit.getPluginManager().registerEvents(this, this);
@@ -110,7 +117,7 @@ public final class Main extends JavaPlugin implements Listener {
 
     }
 
-    private Team getTeamOfPlayer(Player player) {
+    public Team getTeamOfPlayer(Player player) {
         String team;
 
         if (player.hasPermission("group.admin")) {

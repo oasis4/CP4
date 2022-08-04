@@ -15,4 +15,8 @@ commands:
   Flame:
     usage: /flame
     aliases: [f]
+  Live:
+    usage: /Live
+    aliases:
+      - l
 
