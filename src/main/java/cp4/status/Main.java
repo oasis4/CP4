@@ -90,10 +90,12 @@ public final class Main extends JavaPlugin implements Listener {
         Streamer_commands Streamer_commands = new Streamer_commands(this);
         getCommand("live").setExecutor(Streamer_commands);
 
+
         Bukkit.getPluginManager().registerEvents(this, this);
         Bukkit.getPluginManager().registerEvents(this, this);
         Bukkit.getPluginManager().registerEvents(new listeners(this), this);
         Bukkit.getPluginManager().registerEvents(new Rang_Zuordnung(this), this);
+
 
     }
 
@@ -124,8 +126,8 @@ public final class Main extends JavaPlugin implements Listener {
             team = "000001Admin";
         } else if (player.hasPermission("server.mod")) {
             team = "000002Mod";
-        } else if (player.hasPermission("server.sup")) {
-            team = "000003Sup";
+        } else if (player.hasPermission("server.sub")) {
+            team = "000003Sub";
         } else {
             team = "000004Spieler";
         }
