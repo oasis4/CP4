@@ -122,11 +122,11 @@ public final class Main extends JavaPlugin implements Listener {
     public Team getTeamOfPlayer(Player player) {
         String team;
 
-        if (player.hasPermission("group.admin")) {
+        if (player.isOp()) {
             team = "000001Admin";
-        } else if (player.hasPermission("server.mod")) {
+        } else if (player.hasPermission("bukkit.broadcast")) {
             team = "000002Mod";
-        } else if (player.hasPermission("server.sub")) {
+        } else if (player.hasPermission("server.mod")) {
             team = "000003Sub";
         } else {
             team = "000004Spieler";
