@@ -1,5 +1,6 @@
 package cp4.status;
 
+import dev.sergiferry.playernpc.api.NPCLib;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
@@ -10,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -18,6 +20,7 @@ import org.bukkit.scoreboard.Team;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -31,10 +34,13 @@ public final class Main extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
 
+
+
         File dataFolder = getDataFolder();
         userDataFolder = new File(dataFolder, "userdata");
         userDataFolder.mkdirs();
         File file = new File(getDataFolder(), "config.yml");
+
 
         sb = Bukkit.getScoreboardManager().getNewScoreboard();
 
@@ -89,6 +95,7 @@ public final class Main extends JavaPlugin implements Listener {
 
         Streamer_commands Streamer_commands = new Streamer_commands(this);
         getCommand("live").setExecutor(Streamer_commands);
+
 
 
         Bukkit.getPluginManager().registerEvents(this, this);

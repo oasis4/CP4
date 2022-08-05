@@ -1,15 +1,21 @@
 package cp4.status;
 
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.io.File;
+import java.util.List;
 
 public class listeners implements Listener {
 
@@ -26,6 +32,8 @@ public class listeners implements Listener {
     public void onJoin(PlayerJoinEvent e) {
 
 
+
+
         Player p = e.getPlayer();
         World world = p.getWorld();
         Location locationfire = p.getLocation().clone();
@@ -35,6 +43,16 @@ public class listeners implements Listener {
 
         // x = 1
         // z = 0
+        File userDataFolder = pl.getUserDataFolder();
+        File userData = getFile(p.getUniqueId() + ".yml");
+        List<MetadataValue> list = p.getMetadata("last-joined");
+        YamlConfiguration configuration = YamlConfiguration.loadConfiguration(userData);
+        long onlineTime = configuration.getLong("online-time", 0L);
+
+
+        if(DurationFormatUtils.formatDurationHMS())
+
+
 
         double seconds = 3.0;
         double segments = 16;
