@@ -20,7 +20,7 @@ public class Rang_upgreat implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         Player player = (Player) sender;
-       player.sendMessage("TEST");
+       player.sendMessage("HI");
 
        player.playSound(player.getLocation(),Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
 
