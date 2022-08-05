@@ -1,10 +1,7 @@
 package cp4.status;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -47,10 +44,23 @@ public class listeners implements Listener {
         YamlConfiguration configuration = YamlConfiguration.loadConfiguration(userData);
         long onlineTime = configuration.getLong("online-time", 0L);
 
-        if(onlineTime > 60000){
+        if(onlineTime >= 18000000){
 
+            p.setPlayerListName("§7Neu " + p.getDisplayName());
+            p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
 
-            
+        }
+        else if (onlineTime >= 86400000){
+
+            p.setPlayerListName("§eAktiv " + p.getDisplayName());
+            p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
+
+        }
+        else if(onlineTime >= 604800000){
+
+            p.setPlayerListName("§6Sehr Aktiv  " + p.getDisplayName());
+            p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
+
         }
 
 
