@@ -1,6 +1,4 @@
 package cp4.status;
-
-import dev.sergiferry.playernpc.api.NPCLib;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;

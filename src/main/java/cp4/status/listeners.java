@@ -32,8 +32,6 @@ public class listeners implements Listener {
     public void onJoin(PlayerJoinEvent e) {
 
 
-
-
         Player p = e.getPlayer();
         World world = p.getWorld();
         Location locationfire = p.getLocation().clone();
@@ -43,6 +41,7 @@ public class listeners implements Listener {
 
         // x = 1
         // z = 0
+
         File userDataFolder = pl.getUserDataFolder();
         File userData = new File(userDataFolder, p.getUniqueId() + ".yml");
         YamlConfiguration configuration = YamlConfiguration.loadConfiguration(userData);
@@ -50,7 +49,8 @@ public class listeners implements Listener {
 
         if(onlineTime > 60000){
 
-            p.sendMessage("Hat funktioniert");
+
+            
         }
 
 
