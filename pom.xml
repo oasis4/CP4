@@ -65,9 +65,18 @@
             <id>ranull-repo-external</id>
             <url>https://repo.ranull.com/maven/external/</url>
         </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
+        <dependency>
+            <groupId>com.github.hakan-krgn.hCore</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>0.5.8</version>
+        </dependency>
         <dependency>
             <groupId>dev.sergiferry</groupId>
             <artifactId>playernpc</artifactId>

@@ -52,7 +52,6 @@ public final class Main extends JavaPlugin implements Listener {
         team.setPrefix("§4Admin §7| §4");
         team.setColor(ChatColor.RED);
 
-
         team = sb.registerNewTeam("000000AFK");
         team.setPrefix("§cAFK §7| §c");
         team.setColor(ChatColor.RED);
@@ -69,7 +68,7 @@ public final class Main extends JavaPlugin implements Listener {
         team.setPrefix("§8Spieler §7| §7");
         team.setColor(ChatColor.GRAY);
 
-        team = sb.registerNewTeam("000004");
+        team = sb.registerNewTeam("000004Live");
         team.setPrefix("§9Live §7| §7");
 
 

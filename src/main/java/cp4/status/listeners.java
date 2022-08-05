@@ -44,13 +44,14 @@ public class listeners implements Listener {
         // x = 1
         // z = 0
         File userDataFolder = pl.getUserDataFolder();
-        File userData = getFile(p.getUniqueId() + ".yml");
-        List<MetadataValue> list = p.getMetadata("last-joined");
+        File userData = new File(userDataFolder, p.getUniqueId() + ".yml");
         YamlConfiguration configuration = YamlConfiguration.loadConfiguration(userData);
         long onlineTime = configuration.getLong("online-time", 0L);
 
+        if(onlineTime > 60000){
 
-        if(DurationFormatUtils.formatDurationHMS())
+            p.sendMessage("Hat funktioniert");
+        }
 
 
 

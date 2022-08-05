@@ -41,36 +41,21 @@ public class AFk_Rang implements CommandExecutor, Listener {
 
     }
 
-    @EventHandler
-    public void onMove(PlayerMoveEvent event) {
-        Player player = event.getPlayer();
+     //@EventHandler
+    //public void onMove(PlayerMoveEvent event) {
+        //Player player = event.getPlayer();
 
-        Location to = event.getTo();
-        Location from = event.getFrom();
+        //Location to = event.getTo();
+       // Location from = event.getFrom();
 
-        if (to.getBlockX() != from.getBlockX() || to.getBlockY() != from.getBlockY() || to.getBlockZ() != from.getBlockZ()) {
-            if (player.getPlayerListName().equalsIgnoreCase(player.getDisplayName()))
-                return;
-            player.setPlayerListName(player.getDisplayName());
-        }
+     //   if (to.getBlockX() != from.getBlockX() || to.getBlockY() != from.getBlockY() || to.getBlockZ() != from.getBlockZ()) {
+        //    if (player.getPlayerListName().equalsIgnoreCase(player.getDisplayName()))
+       //         return;
+      //      player.setPlayerListName(player.getDisplayName());
+    //    }
 
-    }
+    //}
 
-    @EventHandler
-    public void onMobTarget(EntityTargetLivingEntityEvent event) {
-
-        if(!(event.getTarget() instanceof Player))
-            return;
-
-        Player player = (Player) event.getTarget();
-        World world = player.getWorld();
-
-            event.setCancelled(true);
-
-            return;
-
-
-    }
 
 }
 
