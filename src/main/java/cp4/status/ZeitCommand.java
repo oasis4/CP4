@@ -60,7 +60,7 @@ public class ZeitCommand implements CommandExecutor, Listener {
         }
         onlineTime += (System.currentTimeMillis() - lastJoined);
 
-        sender.sendMessage(prefixPlugin + "§3Deine Spielzeit beträgt: §6 " + DurationFormatUtils.formatDuration(onlineTime, "DD:HH:mm:ss"));
+        sender.sendMessage(prefixPlugin + "§3Deine Spielzeit beträgt: §6 " + DurationFormatUtils.formatDuration(onlineTime, "dd:HH:mm:ss"));
 
         return true;
 
