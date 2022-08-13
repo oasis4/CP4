@@ -47,11 +47,11 @@ public final class Main extends JavaPlugin implements Listener {
         team.setColor(ChatColor.RED);
 
         team = sb.registerNewTeam("000002Mod");
-        team.setPrefix("§4Mod §7| §4");
+        team.setPrefix("§6Mod §7| §6");
         team.setColor(ChatColor.GOLD);
 
-        team = sb.registerNewTeam("000003Sup");
-        team.setPrefix("§5Sup §7| §5");
+        team = sb.registerNewTeam("000003Sub");
+        team.setPrefix("§5Sub §7| §5");
         team.setColor(ChatColor.DARK_PURPLE);
 
         team = sb.registerNewTeam("000005Spieler");
@@ -118,11 +118,11 @@ public final class Main extends JavaPlugin implements Listener {
     public Team getTeamOfPlayer(Player player) {
         String team;
 
-        if (player.isOp()) {
+        if (player.hasPermission("cp4.admin")) {
             team = "000001Admin";
-        } else if (player.hasPermission("bukkit.broadcast")) {
+        } else if (player.hasPermission("cp4.mod")) {
             team = "000002Mod";
-        } else if (player.hasPermission("server.mod")) {
+        } else if (player.hasPermission("cp4.sub")) {
             team = "000003Sub";
         } else {
             team = "000004Spieler";
