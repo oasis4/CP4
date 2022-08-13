@@ -14,6 +14,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.io.File;
 import java.util.List;
 
+import static org.bukkit.Bukkit.getServer;
+
 public class listeners implements Listener {
 
     public static String prefixPlugin = "§b[CP4 Plugin§b] ";
@@ -48,6 +50,7 @@ public class listeners implements Listener {
 
             p.setPlayerListName("§7Neu " + p.getDisplayName());
             p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
+            Bukkit.broadcastMessage("TEST");
 
         }
         else if (onlineTime >= 86400000){

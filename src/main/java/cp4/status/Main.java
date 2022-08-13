@@ -73,8 +73,8 @@ public final class Main extends JavaPlugin implements Listener {
         getCommand("Afk").setExecutor(AFk_Rang);
         getServer().getPluginManager().registerEvents(AFk_Rang, this);
 
-        Rang_upgreat Rang_upgreat = new Rang_upgreat((this));
-        getCommand("Test").setExecutor(Rang_upgreat);
+        Sub Sub = new Sub((this));
+        getCommand("Test").setExecutor(Sub);
 
         reset reset = new reset((this));
         getCommand("reset").setExecutor(reset);

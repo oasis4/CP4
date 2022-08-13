@@ -17,6 +17,7 @@ public class reset implements CommandExecutor {
 
         Player player = (Player) commandSender;
         player.setPlayerListName(player.getDisplayName());
+        player.setGlowing(false);
 
         return false;
     }
