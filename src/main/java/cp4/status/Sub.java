@@ -23,8 +23,8 @@ public class Sub implements CommandExecutor {
         Player player = (Player) sender;
        player.sendMessage("Du leuchtest jetzt");
        player.setGlowing(true);
-
        player.playSound(player.getLocation(),Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
+       Bukkit.broadcastMessage("TEST");
 
 
         return true;
