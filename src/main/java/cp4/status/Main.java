@@ -76,6 +76,9 @@ public final class Main extends JavaPlugin implements Listener {
         Rang_upgreat Rang_upgreat = new Rang_upgreat((this));
         getCommand("Test").setExecutor(Rang_upgreat);
 
+        reset reset = new reset((this));
+        getCommand("reset").setExecutor(reset);
+
         flame flame = new flame(this);
         getCommand("flame").setExecutor(flame);
 

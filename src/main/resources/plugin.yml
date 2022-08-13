@@ -19,4 +19,8 @@ commands:
     usage: /Live
     aliases:
       - l
+  Reset:
+    usage: /reset
+    aliases:
+      - r
 
