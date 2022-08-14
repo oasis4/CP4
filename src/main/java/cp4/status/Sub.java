@@ -21,10 +21,11 @@ public class Sub implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         Player player = (Player) sender;
-       player.sendMessage("Du leuchtest jetzt");
-       player.setGlowing(true);
-       player.playSound(player.getLocation(),Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
-       Bukkit.broadcastMessage("TEST");
+        if (player.hasPermission("cp4.sub")) {
+            player.sendMessage("Du leuchtest jetzt");
+            player.setGlowing(true);
+            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
+        }
 
 
         return true;
