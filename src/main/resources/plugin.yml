@@ -10,8 +10,8 @@ commands:
   AFK:
     usage: /Afk
     description: Du Bekommst die Rolle AFK
-  Test:
-    usage: /test
+  Sub:
+    usage: /sub
   Flame:
     usage: /flame
     aliases: [f]

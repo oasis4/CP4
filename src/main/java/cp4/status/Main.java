@@ -74,7 +74,7 @@ public final class Main extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(AFk_Rang, this);
 
         Sub Sub = new Sub((this));
-        getCommand("Test").setExecutor(Sub);
+        getCommand("Sub").setExecutor(Sub);
 
         reset reset = new reset((this));
         getCommand("reset").setExecutor(reset);

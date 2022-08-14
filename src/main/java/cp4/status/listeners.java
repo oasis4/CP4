@@ -34,6 +34,7 @@ public class listeners implements Listener {
         Player p = e.getPlayer();
         World world = p.getWorld();
         Location locationfire = p.getLocation().clone();
+        p.setGlowing(false);
 
         // Math.cos(0) = 1
         // Math.sin(0) = 0
@@ -50,7 +51,7 @@ public class listeners implements Listener {
 
             p.setPlayerListName("§7Neu " + p.getDisplayName());
             p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
-            Bukkit.broadcastMessage("TEST");
+
 
         }
         else if (onlineTime >= 86400000){
