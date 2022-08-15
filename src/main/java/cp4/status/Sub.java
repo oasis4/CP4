@@ -31,7 +31,14 @@ public class Sub implements CommandExecutor {
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
             player.sendMessage(prefixPlugin + "§3Du leuchtest jetzt");
 
-
+            fireWork = location.world!!.spawnEntity(location, EntityType.FIREWORK) as Firework
+            fireWork.editMeta {
+                this.power = 2
+                this.addEffect {
+                    withTrail()
+                    withColor(Color.AQUA)
+                    flicker(true)
+                    fireWork.detonate()
 
         }
         else player.sendMessage(prefixPlugin + "§3Du musst Sub bei Oasis4_0 oder Oreocast sein");
