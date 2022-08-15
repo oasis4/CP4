@@ -23,4 +23,9 @@ commands:
     usage: /reset
     aliases:
       - r
+  Oasislive:
+    usage: /oasislive
+    aliases:
+      - ol
+
 
