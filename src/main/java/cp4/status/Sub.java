@@ -1,6 +1,5 @@
 package cp4.status;
 
-import com.connorlinfoot.titleapi.TitleAPI;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.command.Command;
@@ -32,9 +31,6 @@ public class Sub implements CommandExecutor {
 
 
         return true;
-
-
-
 
 
     }
