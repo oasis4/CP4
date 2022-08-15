@@ -33,17 +33,17 @@ public class Sub implements CommandExecutor {
             player.sendMessage(prefixPlugin + "§3Du leuchtest jetzt");
 
             Entity fireWork = location.getWorld().spawnEntity(location, EntityType.FIREWORK);
-            fireWork.Meta {
-                this.power = 2;
-                this.addEffect {
-                    withTrail();
-                    withColor(Color.AQUA);
-                    flicker(true);
-                    fireWork.detonate();
+       //     fireWork.editMeta {
+           //     this.power = 2;
+           //     this.addEffect {
+              //      withTrail();
+               //     withColor(Color.AQUA);
+               //     flicker(true);
+                //    fireWork.detonate();
 
 
-                }
-            }
+             //   }
+           // }
         }
         else player.sendMessage(prefixPlugin + "§3Du musst Sub bei Oasis4_0 oder Oreocast sein");
 
