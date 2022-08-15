@@ -27,54 +27,24 @@ public final Main main;
         World world = player.getWorld();
         Location location = player.getLocation();
 
-        double seconds = 3.0;
-        double segments = 16;
-
-
-        new BukkitRunnable() {
-            final long created = System.currentTimeMillis();
-
-
-            @Override
-            public void run() {
-                if ((created + seconds * 1000) < System.currentTimeMillis()) {
-                    cancel();
-                    return;
-                }
-
-
-
-
-
 
                 if (args[0] == "on") {
-                    for (double pa = 0; pa < 8; pa ++) {
-                        location.setX(location.getX()   + 1);
-
-                        Location l = location
-
-
-                                .add(
-
-                                        2, // X
-                                        0, // Y
-                                        0 // Z
-                                );
+                        Location l = location;
                         world.spawnParticle(Particle.FLAME, l, 1, 0, 0, 0, 0);
 
                     }
+                  return true;
                 }
             }
-        }.runTaskTimerAsynchronously(main, 10, 10);
-
-
-        return true;
-    }
 
 
 
 
-}
+
+
+
+
+
 
 
 
