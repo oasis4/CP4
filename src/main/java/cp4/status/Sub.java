@@ -11,6 +11,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
 
 
+import java.util.List;
+
 import static cp4.status.listeners.prefixPlugin;
 
 
@@ -32,14 +34,11 @@ public class Sub implements CommandExecutor {
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
             player.sendMessage(prefixPlugin + "§3Du leuchtest jetzt");
 
-            Entity fireWork = location.getWorld().spawnEntity(location, EntityType.FIREWORK);
-       //     fireWork.editMeta {
-           //     this.power = 2;
-           //     this.addEffect {
-              //      withTrail();
-               //     withColor(Color.AQUA);
-               //     flicker(true);
-                //    fireWork.detonate();
+            Firework fireWork = location.getWorld().spawn(location, Firework.class);
+            FireworkMeta fireworkMeta = fireWork.getFireworkMeta();
+            List<FireworkEffect> effects = fireworkMeta.getEffects();
+            effects.add(FireworkEffect.builder().flicker(true).withColor(Color.AQUA),);
+
 
 
              //   }
