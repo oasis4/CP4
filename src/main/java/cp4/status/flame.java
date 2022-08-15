@@ -27,15 +27,14 @@ public final Main main;
         World world = player.getWorld();
         Location location = player.getLocation();
 
-
-                if (args[0] == "on") {
                         Location l = location;
                         world.spawnParticle(Particle.FLAME, l, 1, 0, 0, 0, 0);
 
-                    }
-                  return true;
+        return true;
+    }
+
                 }
-            }
+
 
 
 
