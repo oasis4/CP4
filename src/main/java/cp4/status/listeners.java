@@ -12,9 +12,11 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
+import java.lang.reflect.Array;
+import java.util.Collection;
 import java.util.List;
 
-import static org.bukkit.Bukkit.getServer;
+import static org.bukkit.Bukkit.*;
 
 public class listeners implements Listener {
 
@@ -47,24 +49,27 @@ public class listeners implements Listener {
         YamlConfiguration configuration = YamlConfiguration.loadConfiguration(userData);
         long onlineTime = configuration.getLong("online-time", 0L);
 
+        e.setJoinMessage(prefixPlugin + p.getDisplayName() + " §e hat das Spiel betreten");
         if(onlineTime >= 18000000){
 
             p.setPlayerListName("§7Neu " + p.getDisplayName());
             p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
 
+            e.setJoinMessage(prefixPlugin + p.getDisplayName() + " hat nun den Prefix §7Neu");
 
         }
         else if (onlineTime >= 86400000){
 
             p.setPlayerListName("§eAktiv " + p.getDisplayName());
             p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
+            e.setJoinMessage(prefixPlugin + p.getDisplayName() + " hat nun den Prefix §eAktiv");
 
         }
         else if(onlineTime >= 604800000){
 
             p.setPlayerListName("§6Sehr Aktiv  " + p.getDisplayName());
             p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
-
+            e.setJoinMessage(prefixPlugin + p.getDisplayName() + " hat nun den Prefix §6 Sehr Aktiv");
         }
 
 

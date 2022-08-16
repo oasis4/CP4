@@ -38,7 +38,7 @@ public class Sub implements CommandExecutor {
             FireworkMeta fireworkMeta = fireWork.getFireworkMeta();
             List<FireworkEffect> effects = fireworkMeta.getEffects();
             effects.add(FireworkEffect.builder().flicker(true).withColor(Color.AQUA).build());
-           ;
+
             fireWork.setFireworkMeta(fireworkMeta);
             fireWork.detonate();
 
