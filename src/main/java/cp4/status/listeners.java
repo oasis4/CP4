@@ -49,7 +49,7 @@ public class listeners implements Listener {
         YamlConfiguration configuration = YamlConfiguration.loadConfiguration(userData);
         long onlineTime = configuration.getLong("online-time", 0L);
 
-        e.setJoinMessage(prefixPlugin + p.getDisplayName() + " §e hat das Spiel betreten");
+        p.sendMessage(prefixPlugin + p.getDisplayName() + " §e hat das Spiel betreten");
         if(onlineTime >= 18000000){
 
             p.setPlayerListName("§7Neu " + p.getDisplayName());

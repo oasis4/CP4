@@ -81,17 +81,12 @@
             <artifactId>VaultAPI</artifactId>
             <version>1.7</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.hakan-krgn.hCore</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>0.5.8</version>
-        </dependency>
-        <dependency>
-            <groupId>dev.sergiferry</groupId>
-            <artifactId>playernpc</artifactId>
-            <version>2022.6</version>
-            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.bukkit</groupId>
+                    <artifactId>bukkit</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>

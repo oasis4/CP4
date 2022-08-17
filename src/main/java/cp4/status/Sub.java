@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static cp4.status.listeners.prefixPlugin;
@@ -36,11 +37,13 @@ public class Sub implements CommandExecutor {
 
             Firework fireWork = location.getWorld().spawn(location, Firework.class);
             FireworkMeta fireworkMeta = fireWork.getFireworkMeta();
-            List<FireworkEffect> effects = fireworkMeta.getEffects();
+            List<FireworkEffect> effects = new ArrayList<>();
+            fireworkMeta.getEffects();
             effects.add(FireworkEffect.builder().flicker(true).withColor(Color.AQUA).build());
 
             fireWork.setFireworkMeta(fireworkMeta);
             fireWork.detonate();
+
 
 
 

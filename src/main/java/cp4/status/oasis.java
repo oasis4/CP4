@@ -29,7 +29,7 @@ public class oasis implements CommandExecutor {
             clickme.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT , TextComponent.fromLegacyText("§3Oasis Twitch!")));
 
             c.addExtra(clickme);
-            // player.spigot().sendMessage(c);
+            player.spigot().sendMessage(c);
 
 
             return true;
