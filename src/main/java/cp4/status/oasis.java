@@ -21,8 +21,8 @@ public class oasis implements CommandExecutor {
 
         if (player.hasPermission("cp4.admin")) {
 
-            TextComponent c = new TextComponent("§3Oasis ist nun Live auf Twitch schaut rein ");
-            TextComponent clickme = new TextComponent("§5OasisTwitch");
+            TextComponent c = new TextComponent(prefixPlugin + "§3Oasis ist nun Live auf Twitch schaut rein: ");
+            TextComponent clickme = new TextComponent("§5Twitch");
 
             clickme.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.twitch.tv/oasis4_0"));
 

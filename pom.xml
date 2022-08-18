@@ -53,6 +53,10 @@
     </build>
     <repositories>
         <repository>
+            <id>wolfyscript-public</id>
+            <url>https://maven.wolfyscript.com/repository/public/</url>
+        </repository>
+        <repository>
             <id>spigotmc-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
@@ -71,9 +75,9 @@
     </repositories>
     <dependencies>
         <dependency>
-            <groupId>net.luckperms</groupId>
-            <artifactId>api</artifactId>
-            <version>5.4</version>
+            <groupId>com.wolfyscript.wolfyutilities</groupId>
+            <artifactId>wolfyutilities</artifactId>
+            <version>3.16.1.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
