@@ -1,6 +1,4 @@
 package cp4.status;
-import me.wolfyscript.lib.net.kyori.adventure.text.format.NamedTextColor;
-import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -13,10 +11,7 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
-import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.chat.Chat;
-import me.wolfyscript.utilities.api.WolfyUtilCore;
-import me.wolfyscript.lib.net.kyori.adventure.text.Component;
+
 
 
 import java.io.File;
@@ -27,6 +22,9 @@ public final class Main extends JavaPlugin implements Listener {
     private File userDataFolder;
 
     Scoreboard sb;
+
+
+
 
 
 

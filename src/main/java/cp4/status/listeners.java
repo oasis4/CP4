@@ -55,7 +55,7 @@ public class listeners implements Listener {
             p.setPlayerListName("§7Neu " + p.getDisplayName());
             p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
 
-            e.setJoinMessage(prefixPlugin + p.getDisplayName() + " hat nun den Prefix §7Neu");
+           Bukkit.broadcastMessage(prefixPlugin + p.getDisplayName() + " hat nun den Prefix §7Neu");
 
         }
         else if (onlineTime >= 86400000){
