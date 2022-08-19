@@ -1,6 +1,5 @@
 package cp4.status;
 
-import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.bukkit.*;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -8,13 +7,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
-import java.lang.reflect.Array;
-import java.util.Collection;
-import java.util.List;
 
 import static org.bukkit.Bukkit.*;
 
@@ -31,6 +26,9 @@ public class listeners implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
+
+
+
 
 
         Player p = e.getPlayer();
@@ -55,21 +53,22 @@ public class listeners implements Listener {
             p.setPlayerListName("§7Neu " + p.getDisplayName());
             p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
 
-           Bukkit.broadcastMessage(prefixPlugin + p.getDisplayName() + " hat nun den Prefix §7Neu");
+           broadcastMessage(prefixPlugin + p.getDisplayName() + "§7 hat nun den Prefix §7Neu");
 
         }
         else if (onlineTime >= 86400000){
 
             p.setPlayerListName("§eAktiv " + p.getDisplayName());
             p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
-            e.setJoinMessage(prefixPlugin + p.getDisplayName() + " hat nun den Prefix §eAktiv");
+
+            broadcastMessage(prefixPlugin + p.getDisplayName() + "§e hat nun den Prefix §eAktiv");
 
         }
         else if(onlineTime >= 604800000){
 
             p.setPlayerListName("§6Sehr Aktiv  " + p.getDisplayName());
             p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
-            e.setJoinMessage(prefixPlugin + p.getDisplayName() + " hat nun den Prefix §6 Sehr Aktiv");
+            broadcastMessage(prefixPlugin + p.getDisplayName() + "§6 hat nun den Prefix §6Sehr Aktiv");
         }
 
 

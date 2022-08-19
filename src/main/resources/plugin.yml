@@ -27,5 +27,7 @@ commands:
     usage: /oasislive
     aliases:
       - ol
+  rw:
+    usage: /rw
 
 

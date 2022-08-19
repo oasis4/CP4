@@ -84,6 +84,7 @@ public final class Main extends JavaPlugin implements Listener {
         Sub Sub = new Sub((this));
         getCommand("Sub").setExecutor(Sub);
 
+
         reset reset = new reset((this));
         getCommand("reset").setExecutor(reset);
 
@@ -98,6 +99,9 @@ public final class Main extends JavaPlugin implements Listener {
 
         oasis oasis = new oasis(this);
         getCommand("Oasislive").setExecutor(oasis);
+
+        rw rw = new rw(this);
+        getCommand("rw").setExecutor(rw);
 
 
 
