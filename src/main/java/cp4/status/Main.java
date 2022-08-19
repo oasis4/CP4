@@ -105,6 +105,7 @@ public final class Main extends JavaPlugin implements Listener {
 
 
 
+
         Bukkit.getPluginManager().registerEvents(this, this);
         Bukkit.getPluginManager().registerEvents(this, this);
         Bukkit.getPluginManager().registerEvents(new listeners(this), this);
