@@ -2,11 +2,13 @@ package cp4.status;
 
 import org.bukkit.*;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
@@ -31,10 +33,16 @@ public class listeners implements Listener {
 
 
 
+
+
         Player p = e.getPlayer();
         World world = p.getWorld();
+        Location location = p.getLocation();
         Location locationfire = p.getLocation().clone();
         p.setGlowing(false);
+
+
+        e.setJoinMessage(prefixPlugin + p.getDisplayName() + " +");
 
         // Math.cos(0) = 1
         // Math.sin(0) = 0
@@ -42,18 +50,41 @@ public class listeners implements Listener {
         // x = 1
         // z = 0
 
+        //Rakete
+        if (p.hasPermission("cp4.sub")) {
+            Firework fireWork = location.getWorld().spawn(location, Firework.class);
+            FireworkMeta fireworkMeta = fireWork.getFireworkMeta();
+            fireworkMeta.addEffect(FireworkEffect.builder().flicker(true).withTrail().withColor(Color.PURPLE).build());
+            fireworkMeta.setPower(1);
+            fireWork.setFireworkMeta(fireworkMeta);
+        }
+        if (p.hasPermission("cp4.admin")) {
+            Firework fireWork = location.getWorld().spawn(location, Firework.class);
+            FireworkMeta fireworkMeta = fireWork.getFireworkMeta();
+            fireworkMeta.addEffect(FireworkEffect.builder().flicker(true).withTrail().withColor(Color.RED).build());
+            fireworkMeta.setPower(1);
+            fireWork.setFireworkMeta(fireworkMeta);
+        }
+        if (p.hasPermission("cp4.mod")) {
+            Firework fireWork = location.getWorld().spawn(location, Firework.class);
+            FireworkMeta fireworkMeta = fireWork.getFireworkMeta();
+            fireworkMeta.addEffect(FireworkEffect.builder().flicker(true).withTrail().withColor(Color.ORANGE).build());
+            fireworkMeta.setPower(1);
+            fireWork.setFireworkMeta(fireworkMeta);
+        }
+
+
         File userDataFolder = pl.getUserDataFolder();
         File userData = new File(userDataFolder, p.getUniqueId() + ".yml");
         YamlConfiguration configuration = YamlConfiguration.loadConfiguration(userData);
         long onlineTime = configuration.getLong("online-time", 0L);
 
-        p.sendMessage(prefixPlugin + p.getDisplayName() + " §e hat das Spiel betreten");
+
         if(onlineTime >= 18000000){
 
             p.setPlayerListName("§7Neu " + p.getDisplayName());
             p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
 
-           broadcastMessage(prefixPlugin + p.getDisplayName() + "§7 hat nun den Prefix §7Neu");
 
         }
         else if (onlineTime >= 86400000){
@@ -61,14 +92,12 @@ public class listeners implements Listener {
             p.setPlayerListName("§eAktiv " + p.getDisplayName());
             p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
 
-            broadcastMessage(prefixPlugin + p.getDisplayName() + "§e hat nun den Prefix §eAktiv");
 
         }
         else if(onlineTime >= 604800000){
 
             p.setPlayerListName("§6Sehr Aktiv  " + p.getDisplayName());
             p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
-            broadcastMessage(prefixPlugin + p.getDisplayName() + "§6 hat nun den Prefix §6Sehr Aktiv");
         }
 
 
@@ -106,7 +135,7 @@ public class listeners implements Listener {
         // if (p.isOp()) {
         //p.sendMessage("§7Willkommen Admin");
 
-        e.setJoinMessage(prefixPlugin + p.getDisplayName() + " §e hat das Spiel betreten");
+
 
     }
 
@@ -114,7 +143,7 @@ public class listeners implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
 
-        e.setQuitMessage(prefixPlugin + e.getPlayer().getDisplayName() + " §ehat das Spiel verlassen");
+        e.setQuitMessage(e.getPlayer().getDisplayName() + " -");
     }
 
 
