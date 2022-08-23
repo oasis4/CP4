@@ -24,11 +24,11 @@ public class rw implements CommandExecutor {
 
         Firework fireWork = location.getWorld().spawn(location, Firework.class);
         FireworkMeta fireworkMeta = fireWork.getFireworkMeta();
-        fireworkMeta.addEffect(FireworkEffect.builder().flicker(true).withColor(Color.GREEN).build());
+        fireworkMeta.addEffect(FireworkEffect.builder().flicker(true).withColor(Color.PURPLE).build());
         fireworkMeta.setPower(1);
         fireWork.setFireworkMeta(fireworkMeta);
 
 
-        return false;
+        return true;
     }
 }

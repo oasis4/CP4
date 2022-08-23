@@ -41,7 +41,6 @@ public class listeners implements Listener {
         Location locationfire = p.getLocation().clone();
         p.setGlowing(false);
 
-
         e.setJoinMessage(prefixPlugin + p.getDisplayName() + " +");
 
         // Math.cos(0) = 1
@@ -73,6 +72,12 @@ public class listeners implements Listener {
             fireWork.setFireworkMeta(fireworkMeta);
         }
 
+        Firework fireWork = location.getWorld().spawn(location, Firework.class);
+        FireworkMeta fireworkMeta = fireWork.getFireworkMeta();
+        fireworkMeta.addEffect(FireworkEffect.builder().flicker(true).withTrail().withColor(Color.GRAY).build());
+        fireworkMeta.setPower(1);
+        fireWork.setFireworkMeta(fireworkMeta);
+
 
         File userDataFolder = pl.getUserDataFolder();
         File userData = new File(userDataFolder, p.getUniqueId() + ".yml");
@@ -80,12 +85,12 @@ public class listeners implements Listener {
         long onlineTime = configuration.getLong("online-time", 0L);
 
 
-        if(onlineTime >= 18000000){
 
-            p.setPlayerListName("§7Neu " + p.getDisplayName());
+
+        if(onlineTime >= 604800000){
+
+            p.setPlayerListName("§6Sehr Aktiv  " + p.getDisplayName());
             p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
-
-
         }
         else if (onlineTime >= 86400000){
 
@@ -94,10 +99,12 @@ public class listeners implements Listener {
 
 
         }
-        else if(onlineTime >= 604800000){
+        else if(onlineTime >= 18000000){
 
-            p.setPlayerListName("§6Sehr Aktiv  " + p.getDisplayName());
+            p.setPlayerListName("§7Neu " + p.getDisplayName());
             p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
+
+
         }
 
 
