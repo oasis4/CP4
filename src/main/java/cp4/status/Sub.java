@@ -41,7 +41,7 @@ public class Sub implements CommandExecutor {
 
             HTitle myTitle = new HTitle("Title", "Subtitle", 5, 3, 2); // created a title with title "Title" and subtitle "Subtitle" which appears in 3 ticks, disappears in 2 ticks so totally exists for 5 ticks
             HCore.sendTitle(player, myTitle); // sent title to player
-            
+
         }
         else player.sendMessage(prefixPlugin + "§3Du musst Sub bei Oasis4_0 oder Oreocast sein");
                 return true;
