@@ -25,9 +25,12 @@ public class Streamer_commands implements CommandExecutor {
         if (commandSender instanceof Player) {
             Player spieler = (Player) commandSender;
 
-            spieler.setPlayerListName("§1Live " + spieler.getDisplayName());
+            if (spieler.hasPermission("cp4.streamer")) {
 
-            return true;
+                spieler.setPlayerListName("§1Live " + spieler.getDisplayName());
+
+                return true;
+            }
         }
 
         return false;
