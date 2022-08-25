@@ -25,7 +25,8 @@ public class rw implements CommandExecutor {
         Firework fireWork = location.getWorld().spawn(location, Firework.class);
         FireworkMeta fireworkMeta = fireWork.getFireworkMeta();
         fireworkMeta.addEffect(FireworkEffect.builder().flicker(true).withColor(Color.PURPLE).build());
-        fireworkMeta.setPower(1);
+        fireworkMeta.setPower(3);
+
         fireWork.setFireworkMeta(fireworkMeta);
 
 
