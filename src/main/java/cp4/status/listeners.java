@@ -74,7 +74,7 @@ public class listeners implements Listener {
         if (p.hasPermission("cp4.streamer")) {
             Firework fireWork = location.getWorld().spawn(location, Firework.class);
             FireworkMeta fireworkMeta = fireWork.getFireworkMeta();
-            fireworkMeta.addEffect(FireworkEffect.builder().flicker(true).withTrail().withColor(Color.RED).build());
+            fireworkMeta.addEffect(FireworkEffect.builder().flicker(true).withTrail().withColor(Color.BLUE).build());
             fireworkMeta.setPower(1);
             fireWork.setFireworkMeta(fireworkMeta);
         }
