@@ -9,7 +9,10 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 public class flame implements CommandExecutor {
+
 
 public final Main main;
     ;
@@ -24,11 +27,13 @@ public final Main main;
         Player player = (Player) sender;
         World world = player.getWorld();
         Location location = player.getLocation();
+        UUID uuid = player.getUniqueId();
+
 
                         Location l = location;
                         world.spawnParticle(Particle.FLAME, l, 1, 0, 0, 0, 0);
 
-        return true;
+        return false;
     }
 
                 }
