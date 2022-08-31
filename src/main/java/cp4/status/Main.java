@@ -24,11 +24,6 @@ public final class Main extends JavaPlugin implements Listener {
     Scoreboard sb;
 
 
-
-
-
-
-
     @Override
     public void onEnable() {
 
@@ -70,7 +65,6 @@ public final class Main extends JavaPlugin implements Listener {
         team.setPrefix("§9Live §7| §7");
 
 
-
         this.getLogger().info("Start");
 
         ZeitCommand zeitCommand = new ZeitCommand(this);
@@ -104,13 +98,10 @@ public final class Main extends JavaPlugin implements Listener {
         getCommand("rw").setExecutor(rw);
 
 
-
-
         Bukkit.getPluginManager().registerEvents(this, this);
         Bukkit.getPluginManager().registerEvents(this, this);
         Bukkit.getPluginManager().registerEvents(new listeners(this), this);
         Bukkit.getPluginManager().registerEvents(new Rang_Zuordnung(this), this);
-
 
     }
 
@@ -151,7 +142,9 @@ public final class Main extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
+
         Player player = event.getPlayer();
+        player.sendTitle("§3Willkommen", "", 1, 20, 1);
         player.setScoreboard(sb); // Set the scoreboard to the player when the player joins the server
         setPrefix(player); // Selects the team of the permission group and adds the player to the group
     }

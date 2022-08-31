@@ -24,8 +24,13 @@ public class Sub implements CommandExecutor {
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
+
+
         Player player = (Player) sender;
         Location location = player.getLocation();
+
+
+        player.sendTitle("Hello!", "This is a test.", 1, 20, 1);
 
         if (player.hasPermission("cp4.sub")) {
             player.setGlowing(true);

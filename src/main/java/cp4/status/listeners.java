@@ -31,17 +31,13 @@ public class listeners implements Listener {
 
 
 
-
-
-
-
         Player p = e.getPlayer();
         World world = p.getWorld();
         Location location = p.getLocation();
         Location locationfire = p.getLocation().clone();
         p.setGlowing(false);
 
-        e.setJoinMessage(prefixPlugin + p.getDisplayName() + " +");
+        e.setJoinMessage( p.getDisplayName() + " §8[§b+§8] ");
 
         // Math.cos(0) = 1
         // Math.sin(0) = 0
@@ -96,7 +92,7 @@ public class listeners implements Listener {
 
         if(onlineTime >= 604800000){
 
-            p.setPlayerListName("§6Sehr Aktiv  " + p.getDisplayName());
+            p.setPlayerListName("§6GOLD  " + p.getDisplayName());
             p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
         }
         else if (onlineTime >= 86400000){
@@ -139,7 +135,7 @@ public class listeners implements Listener {
                             );
                     world.spawnParticle(Particle.FLAME, l, 1, 0, 0, 0, 0);
 
-                    Location l2 = l.clone().add(0, 0.6, 0);
+                    Location l2 = l.clone().add(0, 0.4, 0);
 
                     world.spawnParticle(Particle.FLAME, l2, 1, 0, 0, 0, 0);
                 }
