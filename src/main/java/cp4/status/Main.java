@@ -27,8 +27,6 @@ public final class Main extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
 
-
-
         File dataFolder = getDataFolder();
         userDataFolder = new File(dataFolder, "userdata");
         userDataFolder.mkdirs();
@@ -40,6 +38,11 @@ public final class Main extends JavaPlugin implements Listener {
         Objective obj = sb.registerNewObjective("deathCount", "deathCount");
         obj.setDisplaySlot(DisplaySlot.PLAYER_LIST);
 
+        for(Role role : Role.values()) {
+            role.registerTeam(sb);
+        }
+
+        Role.ADMIN.registerTeam(sb);
 
         Team team = sb.registerNewTeam("000001Admin");
         team.setPrefix("§4Admin §7| §4");
