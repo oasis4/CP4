@@ -51,7 +51,7 @@ public final class Main extends JavaPlugin implements Listener {
 
         Team team = sb.registerNewTeam("000001Admin");
         team.setPrefix("§4Admin §7| §4");
-       team.setColor(ChatColor.RED);
+       team.setColor(ChatColor.DARK_RED);
 
       team = sb.registerNewTeam("000000AFK");
        team.setPrefix("§cAFK §7| §c");
@@ -69,8 +69,13 @@ public final class Main extends JavaPlugin implements Listener {
        team.setPrefix("§8Spieler §7| §7");
         team.setColor(ChatColor.GRAY);
 
+        team = sb.registerNewTeam("000006Streamer");
+        team.setPrefix("§3Streamer §7| §3");
+        team.setColor(ChatColor.RED);
+
        team = sb.registerNewTeam("000004Live");
         team.setPrefix("§9Live §7| §7");
+        team.setColor(ChatColor.DARK_AQUA);
 
 
         this.getLogger().info("Start");
@@ -142,6 +147,8 @@ public final class Main extends JavaPlugin implements Listener {
             team = "000002Mod";
         } else if (player.hasPermission("cp4.sub")) {
             team = "000003Sub";
+        } else if (player.hasPermission("cp4.streamer")) {
+            team = "000006Streamer";
         } else {
             team = "000004Spieler";
         }

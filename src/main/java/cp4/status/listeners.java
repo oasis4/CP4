@@ -37,6 +37,7 @@ public class listeners implements Listener {
         Location location = p.getLocation();
         Location locationfire = p.getLocation().clone();
         p.setGlowing(false);
+        p.sendTitle("Willkommen", "", 1, 40, 1);
 
         e.setJoinMessage( p.getDisplayName() + " §8[§b+§8] ");
 
@@ -157,17 +158,20 @@ public class listeners implements Listener {
         String Message = e.getMessage();
         Message.replace("%", "Prozent");
 
-        if(p.hasPermission("")) {
-            e.setFormat("§7[§8Spieler§7] §2 " + p.getName() + " §c --> §7" + Message);
+        if(p.hasPermission("cp4.mod")) {
+            e.setFormat("§7[§6MOD§7] §2 " + p.getName() + " §c -> §6" + Message);
         }
         if(p.hasPermission("cp4.sub")) {
-            e.setFormat("§7[§eSub§7] §6 " + p.getName() + " §c --> §2" + Message);
+            e.setFormat("§7[§5Sub§7] §6 " + p.getName() + " §c -> §d" + Message);
         }
         if(p.hasPermission("cp4.admin")) {
-            e.setFormat("§7[§cOwner§7] §c " + p.getName() + " §c --> §3" + Message);
+            e.setFormat("§7[§cOwner§7] §c " + p.getName() + " §c -> §c" + Message);
+        }
+        if(p.hasPermission("cp4.streamer")){
+            e.setFormat("§7[§3Streamer§7] §6 " + p.getName() + " §c -> §3" + Message);
         }
         else  {
-            e.setFormat("§7[§8Spieler§7] §2 " + p.getName() + " §c --> §7" + Message);
+            e.setFormat("§7[§8Spieler§7] §2 " + p.getName() + " §c -> §8" + Message);
         }
     }
 
