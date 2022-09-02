@@ -6,6 +6,7 @@ import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
@@ -149,6 +150,26 @@ public class listeners implements Listener {
 
     }
 
+    @EventHandler
+    public void onChat(AsyncPlayerChatEvent e) {
+        Player p = e.getPlayer();
+
+        String Message = e.getMessage();
+        Message.replace("%", "Prozent");
+
+        if(p.hasPermission("")) {
+            e.setFormat("§7[§8Spieler§7] §2 " + p.getName() + " §c --> §7" + Message);
+        }
+        if(p.hasPermission("cp4.sub")) {
+            e.setFormat("§7[§eSub§7] §6 " + p.getName() + " §c --> §2" + Message);
+        }
+        if(p.hasPermission("cp4.admin")) {
+            e.setFormat("§7[§cOwner§7] §c " + p.getName() + " §c --> §3" + Message);
+        }
+        else  {
+            e.setFormat("§7[§8Spieler§7] §2 " + p.getName() + " §c --> §7" + Message);
+        }
+    }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {

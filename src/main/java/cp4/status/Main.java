@@ -38,33 +38,38 @@ public final class Main extends JavaPlugin implements Listener {
         Objective obj = sb.registerNewObjective("deathCount", "deathCount");
         obj.setDisplaySlot(DisplaySlot.PLAYER_LIST);
 
-        for(Role role : Role.values()) {
-            role.registerTeam(sb);
-        }
+      //  for(Role role : Role.values()) {
+       //     role.registerTeam(sb);
+     //   }
 
-        Role.ADMIN.registerTeam(sb);
+      //  Role.ADMIN.registerTeam(sb);
+      //  Role.MOD.registerTeam(sb);
+      //  Role.SUB.registerTeam(sb);
+      //  Role.LIVE.registerTeam(sb);
+      //  Role.AFK.registerTeam(sb);
+      //  Role.USER.registerTeam(sb);
 
         Team team = sb.registerNewTeam("000001Admin");
         team.setPrefix("§4Admin §7| §4");
+       team.setColor(ChatColor.RED);
+
+      team = sb.registerNewTeam("000000AFK");
+       team.setPrefix("§cAFK §7| §c");
         team.setColor(ChatColor.RED);
 
-        team = sb.registerNewTeam("000000AFK");
-        team.setPrefix("§cAFK §7| §c");
-        team.setColor(ChatColor.RED);
-
-        team = sb.registerNewTeam("000002Mod");
+       team = sb.registerNewTeam("000002Mod");
         team.setPrefix("§6Mod §7| §6");
-        team.setColor(ChatColor.GOLD);
+       team.setColor(ChatColor.GOLD);
 
-        team = sb.registerNewTeam("000003Sub");
-        team.setPrefix("§5Sub §7| §5");
-        team.setColor(ChatColor.DARK_PURPLE);
+       team = sb.registerNewTeam("000003Sub");
+       team.setPrefix("§5Sub §7| §5");
+       team.setColor(ChatColor.DARK_PURPLE);
 
-        team = sb.registerNewTeam("000005Spieler");
-        team.setPrefix("§8Spieler §7| §7");
+       team = sb.registerNewTeam("000005Spieler");
+       team.setPrefix("§8Spieler §7| §7");
         team.setColor(ChatColor.GRAY);
 
-        team = sb.registerNewTeam("000004Live");
+       team = sb.registerNewTeam("000004Live");
         team.setPrefix("§9Live §7| §7");
 
 
