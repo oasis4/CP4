@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -90,6 +91,9 @@ public final class Main extends JavaPlugin implements Listener {
 
         Sub Sub = new Sub((this));
         getCommand("Sub").setExecutor(Sub);
+
+        getServer().getPluginManager().registerEvents(this, (Plugin) new teamchat("teamchat"));
+
 
 
         reset reset = new reset((this));
