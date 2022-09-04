@@ -133,31 +133,24 @@ public class listeners implements Listener {
 
     @EventHandler
     public void onChat(AsyncPlayerChatEvent e) {
-        Player p = e.getPlayer();
+        Player player = e.getPlayer();
 
-        String Message = e.getMessage();
-        Message.replace("%", "Prozent");
-
-        if (p.hasPermission("cp4.admin")) {
-            e.setFormat("§7[§cOwner§7] §c" + p.getName() + " §c » §c" + Message);
-        }
-        if (p.hasPermission("cp4.mod")) {
-            e.setFormat("§7[§6MOD§7] §2" + p.getName() + " §6 » §6" + Message);
-        }
-        if (p.hasPermission("cp4.streamer")) {
-            e.setFormat("§7[§3Streamer§7] §6" + p.getName() + " §3 » §3" + Message);
-        }
-        if (p.hasPermission("cp4.sub")) {
-            e.setFormat("§7[§5Sub§7] §6" + p.getName() + " §5 » §5" + Message);
+        if (player.hasPermission("cp4.admin")) {
+            e.setFormat("§7[§cOwner§7] §c%s §c » §c%s");
+        } else if (player.hasPermission("cp4.mod")) {
+            e.setFormat("§7[§6MOD§7] §2%s §6 » §6%s");
+        } else if (player.hasPermission("cp4.streamer")) {
+            e.setFormat("§7[§3Streamer§7] §6%s §3 » §3%s");
+        } else if (player.hasPermission("cp4.sub")) {
+            e.setFormat("§7[§5Sub§7] §6%s §5 » §5%s");
         } else {
-            e.setFormat("§7[§8Spieler§7] §2" + p.getName() + " §8 » §7" + Message);
+            e.setFormat("§7[§8Spieler§7] §2%s §8 » §7%s");
         }
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
-
-        e.setQuitMessage("§7" + e.getPlayer().getDisplayName() + " Hatt das Spiel Verlassen!");
+        e.setQuitMessage("§7" + e.getPlayer().getDisplayName() + " hat das Spiel Verlassen!");
     }
 
 
