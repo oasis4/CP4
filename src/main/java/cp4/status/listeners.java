@@ -43,41 +43,6 @@ public class listeners implements Listener {
         // z = 0
 
         //Rakete
-        if (player.hasPermission("cp4.sub")) {
-            Firework fireWork = location.getWorld().spawn(location, Firework.class);
-            FireworkMeta fireworkMeta = fireWork.getFireworkMeta();
-            fireworkMeta.addEffect(FireworkEffect.builder().flicker(true).withTrail().withColor(Color.PURPLE).build());
-            fireworkMeta.setPower(1);
-            fireWork.setFireworkMeta(fireworkMeta);
-        }
-        if (player.hasPermission("cp4.admin")) {
-            Firework fireWork = location.getWorld().spawn(location, Firework.class);
-            FireworkMeta fireworkMeta = fireWork.getFireworkMeta();
-            fireworkMeta.addEffect(FireworkEffect.builder().flicker(true).withTrail().withColor(Color.RED).build());
-            fireworkMeta.setPower(1);
-            fireWork.setFireworkMeta(fireworkMeta);
-        }
-        if (player.hasPermission("cp4.mod")) {
-            Firework fireWork = location.getWorld().spawn(location, Firework.class);
-            FireworkMeta fireworkMeta = fireWork.getFireworkMeta();
-            fireworkMeta.addEffect(FireworkEffect.builder().flicker(true).withTrail().withColor(Color.ORANGE).build());
-            fireworkMeta.setPower(1);
-            fireWork.setFireworkMeta(fireworkMeta);
-        }
-        if (player.hasPermission("cp4.streamer")) {
-            Firework fireWork = location.getWorld().spawn(location, Firework.class);
-            FireworkMeta fireworkMeta = fireWork.getFireworkMeta();
-            fireworkMeta.addEffect(FireworkEffect.builder().flicker(true).withTrail().withColor(Color.BLUE).build());
-            fireworkMeta.setPower(1);
-            fireWork.setFireworkMeta(fireworkMeta);
-        }
-
-        Firework fireWork = location.getWorld().spawn(location, Firework.class);
-        FireworkMeta fireworkMeta = fireWork.getFireworkMeta();
-        fireworkMeta.addEffect(FireworkEffect.builder().flicker(true).withTrail().withColor(Color.GRAY).build());
-        fireworkMeta.setPower(1);
-        fireWork.setFireworkMeta(fireworkMeta);
-
 
         File userDataFolder = pl.getUserDataFolder();
         File userData = new File(userDataFolder, player.getUniqueId() + ".yml");
@@ -139,9 +104,8 @@ public class listeners implements Listener {
             e.setFormat("§c%s §c» §c%s");
         } else if (player.hasPermission("cp4.mod")) {
             e.setFormat("§2%s §6» §6%s");
-        } else if (player.hasPermission("cp4.streamer")) {
-            e.setFormat("§6%s §3» §3%s");
-        } else if (player.hasPermission("cp4.sub")) {
+        }
+         else if (player.hasPermission("cp4.sub")) {
             e.setFormat("§6%s §5» §5%s");
         } else {
             e.setFormat("§2%s §8» §7%s");
