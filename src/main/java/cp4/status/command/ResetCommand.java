@@ -1,4 +1,4 @@
-package cp4.status;
+package cp4.status.command;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -7,17 +7,12 @@ import org.bukkit.entity.Player;
 
 import static cp4.status.listeners.prefixPlugin;
 
-public class reset implements CommandExecutor {
+public class ResetCommand implements CommandExecutor {
 
-    private Main main;
-
-    public reset(Main main) {
-    }
 
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-
-        Player player = (Player) commandSender;
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        Player player = (Player) sender;
         player.setPlayerListName(player.getDisplayName());
         player.setGlowing(false);
         player.sendMessage(prefixPlugin + "§3Alles wurde von dir zurückgesetzt");

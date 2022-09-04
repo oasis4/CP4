@@ -1,19 +1,16 @@
 package cp4.status;
+
+import cp4.status.command.*;
+import cp4.status.feature.AFKRankFeature;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
-
-
 
 import java.io.File;
 
@@ -23,7 +20,6 @@ public final class Main extends JavaPlugin implements Listener {
     private File userDataFolder;
 
     Scoreboard sb;
-
 
     @Override
     public void onEnable() {
@@ -37,45 +33,16 @@ public final class Main extends JavaPlugin implements Listener {
         sb = Bukkit.getScoreboardManager().getNewScoreboard();
 
 
-      //  for(Role role : Role.values()) {
-       //     role.registerTeam(sb);
-     //   }
+        for (Role role : Role.values()) {
+            role.registerTeam(sb);
+        }
 
-      //  Role.ADMIN.registerTeam(sb);
-      //  Role.MOD.registerTeam(sb);
-      //  Role.SUB.registerTeam(sb);
-      //  Role.LIVE.registerTeam(sb);
-      //  Role.AFK.registerTeam(sb);
-      //  Role.USER.registerTeam(sb);
-
-        Team team = sb.registerNewTeam("000001Admin");
-        team.setPrefix("§4Admin §7| §4");
-        team.setColor(ChatColor.DARK_RED);
-
-       team = sb.registerNewTeam("000000AFK");
-       team.setPrefix("§cAFK §7| §c");
-       team.setColor(ChatColor.RED);
-
-       team = sb.registerNewTeam("000002Mod");
-       team.setPrefix("§6Mod §7| §6");
-       team.setColor(ChatColor.GOLD);
-
-       team = sb.registerNewTeam("000003Sub");
-       team.setPrefix("§5Sub §7| §5");
-       team.setColor(ChatColor.DARK_PURPLE);
-
-       team = sb.registerNewTeam("000007Spieler");
-       team.setPrefix("§8Spieler §7| §7");
-        team.setColor(ChatColor.GRAY);
-
-        team = sb.registerNewTeam("000006Streamer");
-        team.setPrefix("§3Streamer §7| §3");
-        team.setColor(ChatColor.RED);
-
-       team = sb.registerNewTeam("000004Live");
-        team.setPrefix("§9Live §7| §7");
-        team.setColor(ChatColor.DARK_AQUA);
-
+        //  Role.ADMIN.registerTeam(sb);
+        //  Role.MOD.registerTeam(sb);
+        //  Role.SUB.registerTeam(sb);
+        //  Role.LIVE.registerTeam(sb);
+        //  Role.AFK.registerTeam(sb);
+        //  Role.USER.registerTeam(sb);
 
         this.getLogger().info("Start");
 
@@ -83,18 +50,18 @@ public final class Main extends JavaPlugin implements Listener {
         getCommand("Onlinezeit").setExecutor(zeitCommand);
         getServer().getPluginManager().registerEvents(zeitCommand, this);
 
-        AFk_Rang AFk_Rang = new AFk_Rang((this));
-        getCommand("Afk").setExecutor(AFk_Rang);
-        getServer().getPluginManager().registerEvents(AFk_Rang, this);
+        AFKRankFeature AFk_RankFeature = new AFKRankFeature((this));
+        getCommand("Afk").setExecutor(AFk_RankFeature);
+        getServer().getPluginManager().registerEvents(AFk_RankFeature, this);
 
-        Sub Sub = new Sub((this));
-        getCommand("Sub").setExecutor(Sub);
+        SubCommand SubCommand = new SubCommand((this));
+        getCommand("Sub").setExecutor(SubCommand);
 
 
-        reset reset = new reset((this));
+        ResetCommand reset = new ResetCommand();
         getCommand("reset").setExecutor(reset);
 
-        flame flame = new flame(this);
+        FlameCommand flame = new FlameCommand(this);
         getCommand("flame").setExecutor(flame);
 
         Rang_Zuordnung Rang_Zuordnung = new Rang_Zuordnung(this);
@@ -103,11 +70,11 @@ public final class Main extends JavaPlugin implements Listener {
         Streamer_commands Streamer_commands = new Streamer_commands(this);
         getCommand("live").setExecutor(Streamer_commands);
 
-        oasis oasis = new oasis(this);
-        getCommand("Oasislive").setExecutor(oasis);
+        OasisCommand OasisCommand = new OasisCommand(this);
+        getCommand("Oasislive").setExecutor(OasisCommand);
 
-        rw rw = new rw(this);
-        getCommand("rw").setExecutor(rw);
+        SpawnFireworkCommand SpawnFireworkCommand = new SpawnFireworkCommand();
+        getCommand("rw").setExecutor(SpawnFireworkCommand);
 
 
         Bukkit.getPluginManager().registerEvents(this, this);
@@ -138,20 +105,18 @@ public final class Main extends JavaPlugin implements Listener {
     }
 
     public Team getTeamOfPlayer(Player player) {
-        String team;
+        Role role = Role.USER;
 
         if (player.hasPermission("cp4.admin")) {
-            team = "000001Admin";
+            role = Role.ADMIN;
         } else if (player.hasPermission("cp4.mod")) {
-            team = "000002Mod";
+            role = Role.MOD;
         } else if (player.hasPermission("cp4.sub")) {
-            team = "000003Sub";
+            role = Role.SUB;
         } else if (player.hasPermission("cp4.streamer")) {
-            team = "000006Streamer";
-        } else {
-            team = "000007Spieler";
+            role = Role.STREAMER;
         }
-        return sb.getTeam(team);
+        return sb.getTeam(role.getId());
     }
 
     @EventHandler

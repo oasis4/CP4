@@ -1,6 +1,7 @@
-package cp4.status;
+package cp4.status.feature;
 
 
+import cp4.status.Main;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -10,11 +11,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.scoreboard.Scoreboard;
 
-public class AFk_Rang implements CommandExecutor, Listener {
+public class AFKRankFeature implements CommandExecutor, Listener {
 
     private final Main main;
 
-    public AFk_Rang(Main main) {
+    public AFKRankFeature(Main main) {
         this.main = main;
     }
 

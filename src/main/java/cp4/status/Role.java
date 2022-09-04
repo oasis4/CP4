@@ -6,29 +6,32 @@ import org.bukkit.scoreboard.Team;
 
 public enum Role {
 
-   // ADMIN("000001Admin", "ง4Admin ง7| ง4", ChatColor.RED),
-  //  MOD("000002Mod", "ง6Mod ง7| ง6", ChatColor.GOLD),
-  //  SUB("000003Sub", "ง6Mod ง7| ง6", ChatColor.GOLD),
-  //  USER("000004spieler", "ง6Mod ง7| ง6", ChatColor.GOLD),
-  //  LIVE("000005Live", "ง6Mod ง7| ง6", ChatColor.GOLD),
-  //  AFK("000000AFK", "ง6Mod ง7| ง6", ChatColor.GOLD),;
+    ADMIN("000001Admin", "ยง4Admin ยง7| ยง4", ChatColor.RED),
+    MOD("000002Mod", "ยง6Mod ยง7| ยง6", ChatColor.GOLD),
+    SUB("000003Sub", "ยง5Sub ยง7| ยง5", ChatColor.DARK_PURPLE),
+    USER("000004Spieler", "ยง8Spieler ยง7| ยง7", ChatColor.GRAY),
+    STREAMER("000006Streamer", "ยง3Streamer ยง7| ยง3", ChatColor.RED),
+    LIVE("000005Live", "ยง9Live ยง7| ยง7", ChatColor.DARK_AQUA),
+    AFK("000000AFK", "ยงcAFK ยง7| ยงc", ChatColor.RED);
 
+    private final String id;
+    private final String prefix;
+    private final ChatColor color;
 
-  //  private final String id;
-  //  private final String prefix;
-  //  private final ChatColor color;
+    Role(String id, String prefix, ChatColor color) {
+        this.id = id;
+        this.prefix = prefix;
+        this.color = color;
+    }
 
-   // Role(String id, String prefix, ChatColor color) {
-   //     this.id = id;
-   //     this.prefix = prefix;
-   //     this.color = color;
-  //  }
+    public Team registerTeam(Scoreboard board) {
+        Team team = board.registerNewTeam(id);
+        team.setPrefix(prefix);
+        team.setColor(color);
+        return team;
+    }
 
-   // public Team registerTeam(Scoreboard board) {
-    //    Team team = board.registerNewTeam(id);
-    //    team.setPrefix(prefix);
-    //    team.setColor(color);
-    //    return team;
-   // }
-
+    public String getId() {
+        return id;
+    }
 }

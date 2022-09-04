@@ -1,5 +1,6 @@
-package cp4.status;
+package cp4.status.command;
 
+import cp4.status.Main;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;

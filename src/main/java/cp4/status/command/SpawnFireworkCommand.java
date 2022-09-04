@@ -1,4 +1,4 @@
-package cp4.status;
+package cp4.status.command;
 
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -10,15 +10,16 @@ import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
 
-public class rw implements CommandExecutor {
-
-    public rw(Main main) {
-    }
-
+public class SpawnFireworkCommand implements CommandExecutor {
 
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-        Player player = (Player) commandSender;
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if(!(sender instanceof Player)) {
+            sender.sendMessage("§cNur Spieler können diesen Befehl ausführen.");
+            return true;
+        }
+
+        Player player = (Player) sender;
 
         Location location = player.getLocation();
 
@@ -28,8 +29,6 @@ public class rw implements CommandExecutor {
         fireworkMeta.setPower(3);
 
         fireWork.setFireworkMeta(fireworkMeta);
-
-
         return true;
     }
 }

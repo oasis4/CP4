@@ -1,6 +1,7 @@
-package cp4.status;
+package cp4.status.command;
 
 
+import cp4.status.Main;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
@@ -11,13 +12,12 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-public class flame implements CommandExecutor {
+public class FlameCommand implements CommandExecutor {
 
 
 public final Main main;
-    ;
 
-    public flame(Main main) {
+    public FlameCommand(Main main) {
         this.main = main;
     }
 

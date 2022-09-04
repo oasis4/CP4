@@ -14,8 +14,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 
-import static org.bukkit.Bukkit.*;
-
 public class listeners implements Listener {
 
     public static String prefixPlugin = "§b[CP4 Plugin§b] ";
@@ -29,16 +27,14 @@ public class listeners implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
+        Player player = e.getPlayer();
+        World world = player.getWorld();
+        Location location = player.getLocation();
+        Location locationfire = player.getLocation().clone();
+        player.setGlowing(false);
+        // p.sendTitle("Willkommen", "", 1, 40, 1);
 
-
-        Player p = e.getPlayer();
-        World world = p.getWorld();
-        Location location = p.getLocation();
-        Location locationfire = p.getLocation().clone();
-        p.setGlowing(false);
-       // p.sendTitle("Willkommen", "", 1, 40, 1);
-
-        e.setJoinMessage("§8[§b+§8] " + p.getDisplayName() );
+        e.setJoinMessage("§8[§b+§8] " + player.getDisplayName());
 
         // Math.cos(0) = 1
         // Math.sin(0) = 0
@@ -47,28 +43,28 @@ public class listeners implements Listener {
         // z = 0
 
         //Rakete
-        if (p.hasPermission("cp4.sub")) {
+        if (player.hasPermission("cp4.sub")) {
             Firework fireWork = location.getWorld().spawn(location, Firework.class);
             FireworkMeta fireworkMeta = fireWork.getFireworkMeta();
             fireworkMeta.addEffect(FireworkEffect.builder().flicker(true).withTrail().withColor(Color.PURPLE).build());
             fireworkMeta.setPower(1);
             fireWork.setFireworkMeta(fireworkMeta);
         }
-        if (p.hasPermission("cp4.admin")) {
+        if (player.hasPermission("cp4.admin")) {
             Firework fireWork = location.getWorld().spawn(location, Firework.class);
             FireworkMeta fireworkMeta = fireWork.getFireworkMeta();
             fireworkMeta.addEffect(FireworkEffect.builder().flicker(true).withTrail().withColor(Color.RED).build());
             fireworkMeta.setPower(1);
             fireWork.setFireworkMeta(fireworkMeta);
         }
-        if (p.hasPermission("cp4.mod")) {
+        if (player.hasPermission("cp4.mod")) {
             Firework fireWork = location.getWorld().spawn(location, Firework.class);
             FireworkMeta fireworkMeta = fireWork.getFireworkMeta();
             fireworkMeta.addEffect(FireworkEffect.builder().flicker(true).withTrail().withColor(Color.ORANGE).build());
             fireworkMeta.setPower(1);
             fireWork.setFireworkMeta(fireworkMeta);
         }
-        if (p.hasPermission("cp4.streamer")) {
+        if (player.hasPermission("cp4.streamer")) {
             Firework fireWork = location.getWorld().spawn(location, Firework.class);
             FireworkMeta fireworkMeta = fireWork.getFireworkMeta();
             fireworkMeta.addEffect(FireworkEffect.builder().flicker(true).withTrail().withColor(Color.BLUE).build());
@@ -84,33 +80,21 @@ public class listeners implements Listener {
 
 
         File userDataFolder = pl.getUserDataFolder();
-        File userData = new File(userDataFolder, p.getUniqueId() + ".yml");
+        File userData = new File(userDataFolder, player.getUniqueId() + ".yml");
         YamlConfiguration configuration = YamlConfiguration.loadConfiguration(userData);
         long onlineTime = configuration.getLong("online-time", 0L);
 
 
-
-
-        if(onlineTime >= 604800000){
-
-            p.setPlayerListName("§6GOLD  " + p.getDisplayName());
-            p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
+        if (onlineTime >= 604800000) {
+            player.setPlayerListName("§6GOLD  " + player.getDisplayName());
+            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
+        } else if (onlineTime >= 86400000) {
+            player.setPlayerListName("§eAktiv " + player.getDisplayName());
+            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
+        } else if (onlineTime >= 18000000) {
+            player.setPlayerListName("§7Neu " + player.getDisplayName());
+            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
         }
-        else if (onlineTime >= 86400000){
-
-            p.setPlayerListName("§eAktiv " + p.getDisplayName());
-            p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
-
-
-        }
-        else if(onlineTime >= 18000000){
-
-            p.setPlayerListName("§7Neu " + p.getDisplayName());
-            p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
-
-
-        }
-
 
 
         double seconds = 3.0;
@@ -135,9 +119,7 @@ public class listeners implements Listener {
                                     Math.sin(pa) * radius // Z
                             );
                     world.spawnParticle(Particle.FLAME, l, 1, 0, 0, 0, 0);
-
                     Location l2 = l.clone().add(0, 0.4, 0);
-
                     world.spawnParticle(Particle.FLAME, l2, 1, 0, 0, 0, 0);
                 }
             }
@@ -145,7 +127,6 @@ public class listeners implements Listener {
 
         // if (p.isOp()) {
         //p.sendMessage("§7Willkommen Admin");
-
 
 
     }
@@ -157,19 +138,18 @@ public class listeners implements Listener {
         String Message = e.getMessage();
         Message.replace("%", "Prozent");
 
-        if(p.hasPermission("cp4.admin")) {
+        if (p.hasPermission("cp4.admin")) {
             e.setFormat("§7[§cOwner§7] §c" + p.getName() + " §c » §c" + Message);
         }
-        if(p.hasPermission("cp4.mod")) {
+        if (p.hasPermission("cp4.mod")) {
             e.setFormat("§7[§6MOD§7] §2" + p.getName() + " §6 » §6" + Message);
         }
-        if(p.hasPermission("cp4.streamer")){
+        if (p.hasPermission("cp4.streamer")) {
             e.setFormat("§7[§3Streamer§7] §6" + p.getName() + " §3 » §3" + Message);
         }
-        if(p.hasPermission("cp4.sub")) {
+        if (p.hasPermission("cp4.sub")) {
             e.setFormat("§7[§5Sub§7] §6" + p.getName() + " §5 » §5" + Message);
-        }
-        else  {
+        } else {
             e.setFormat("§7[§8Spieler§7] §2" + p.getName() + " §8 » §7" + Message);
         }
     }
