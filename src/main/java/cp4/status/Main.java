@@ -35,7 +35,7 @@ public final class Main extends JavaPlugin implements Listener {
 
 
         sb = Bukkit.getScoreboardManager().getNewScoreboard();
-        
+
 
       //  for(Role role : Role.values()) {
        //     role.registerTeam(sb);
