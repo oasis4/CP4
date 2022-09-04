@@ -52,21 +52,21 @@ public final class Main extends JavaPlugin implements Listener {
 
         Team team = sb.registerNewTeam("000001Admin");
         team.setPrefix("§4Admin §7| §4");
-       team.setColor(ChatColor.DARK_RED);
+        team.setColor(ChatColor.DARK_RED);
 
-      team = sb.registerNewTeam("000000AFK");
+       team = sb.registerNewTeam("000000AFK");
        team.setPrefix("§cAFK §7| §c");
-        team.setColor(ChatColor.RED);
+       team.setColor(ChatColor.RED);
 
        team = sb.registerNewTeam("000002Mod");
-        team.setPrefix("§6Mod §7| §6");
+       team.setPrefix("§6Mod §7| §6");
        team.setColor(ChatColor.GOLD);
 
        team = sb.registerNewTeam("000003Sub");
        team.setPrefix("§5Sub §7| §5");
        team.setColor(ChatColor.DARK_PURPLE);
 
-       team = sb.registerNewTeam("000005Spieler");
+       team = sb.registerNewTeam("000007Spieler");
        team.setPrefix("§8Spieler §7| §7");
         team.setColor(ChatColor.GRAY);
 
@@ -91,9 +91,6 @@ public final class Main extends JavaPlugin implements Listener {
 
         Sub Sub = new Sub((this));
         getCommand("Sub").setExecutor(Sub);
-
-        getServer().getPluginManager().registerEvents(this, (Plugin) new teamchat("teamchat"));
-
 
 
         reset reset = new reset((this));
@@ -154,7 +151,7 @@ public final class Main extends JavaPlugin implements Listener {
         } else if (player.hasPermission("cp4.streamer")) {
             team = "000006Streamer";
         } else {
-            team = "000004Spieler";
+            team = "000007Spieler";
         }
         return sb.getTeam(team);
     }
