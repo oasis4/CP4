@@ -35,9 +35,7 @@ public final class Main extends JavaPlugin implements Listener {
 
 
         sb = Bukkit.getScoreboardManager().getNewScoreboard();
-
-        Objective obj = sb.registerNewObjective("deathCount", "deathCount");
-        obj.setDisplaySlot(DisplaySlot.PLAYER_LIST);
+        
 
       //  for(Role role : Role.values()) {
        //     role.registerTeam(sb);
