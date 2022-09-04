@@ -136,15 +136,15 @@ public class listeners implements Listener {
         Player player = e.getPlayer();
 
         if (player.hasPermission("cp4.admin")) {
-            e.setFormat("§7[§cOwner§7] §c%s §c » §c%s");
+            e.setFormat("§c%s §c» §c%s");
         } else if (player.hasPermission("cp4.mod")) {
-            e.setFormat("§7[§6MOD§7] §2%s §6 » §6%s");
+            e.setFormat("§2%s §6» §6%s");
         } else if (player.hasPermission("cp4.streamer")) {
-            e.setFormat("§7[§3Streamer§7] §6%s §3 » §3%s");
+            e.setFormat("§6%s §3» §3%s");
         } else if (player.hasPermission("cp4.sub")) {
-            e.setFormat("§7[§5Sub§7] §6%s §5 » §5%s");
+            e.setFormat("§6%s §5» §5%s");
         } else {
-            e.setFormat("§7[§8Spieler§7] §2%s §8 » §7%s");
+            e.setFormat("§2%s §8» §7%s");
         }
     }
 
