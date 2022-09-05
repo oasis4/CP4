@@ -36,13 +36,14 @@ public final class CP4Plugin extends JavaPlugin implements Listener {
 
         sb = Bukkit.getScoreboardManager().getNewScoreboard();
 
-
         for (Role role : Role.values()) {
             role.registerTeam(sb);
         }
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            onlinePlayer.setScoreboard(sb);
+            setPrefix(onlinePlayer);
+        }
 
-        Objective objective = sb.registerNewObjective("deathCount", "deathCount", "DeathCount");
-        objective.setDisplaySlot(DisplaySlot.PLAYER_LIST);
 
         this.getLogger().info("Start");
 

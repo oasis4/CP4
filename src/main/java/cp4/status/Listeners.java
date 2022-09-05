@@ -49,13 +49,13 @@ public class Listeners implements Listener {
 
 
         if (onlineTime >= 604800000) {
-            player.setPlayerListName("§6GOLD  " + player.getDisplayName());
+            player.setPlayerListName("§6GOLD§7・" + player.getDisplayName());
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
         } else if (onlineTime >= 86400000) {
-            player.setPlayerListName("§eAktiv " + player.getDisplayName());
+            player.setPlayerListName("§eAktiv§7・" + player.getDisplayName());
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
         } else if (onlineTime >= 18000000) {
-            player.setPlayerListName("§7Neu " + player.getDisplayName());
+            player.setPlayerListName("§7Neu§7・" + player.getDisplayName());
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
         }
 
@@ -74,12 +74,11 @@ public class Listeners implements Listener {
                     return;
                 }
                 for (double pa = 0.0; pa < 2 * Math.PI; pa += 2 * Math.PI / segments) {
-                    Location l = locationfire.clone()
-                            .add(
-                                    Math.cos(pa) * radius, // X
-                                    0.3, // Y
-                                    Math.sin(pa) * radius // Z
-                            );
+                    Location l = locationfire.clone().add(
+                            Math.cos(pa) * radius, // X
+                            0.3, // Y
+                            Math.sin(pa) * radius // Z
+                    );
                     world.spawnParticle(Particle.FLAME, l, 1, 0, 0, 0, 0);
                     Location l2 = l.clone().add(0, 0.4, 0);
                     world.spawnParticle(Particle.FLAME, l2, 1, 0, 0, 0, 0);
@@ -97,8 +96,7 @@ public class Listeners implements Listener {
             e.setFormat("§c%s §c» §c%s");
         } else if (player.hasPermission("cp4.mod")) {
             e.setFormat("§2%s §6» §6%s");
-        }
-         else if (player.hasPermission("cp4.sub")) {
+        } else if (player.hasPermission("cp4.sub")) {
             e.setFormat("§6%s §5» §5%s");
         } else {
             e.setFormat("§2%s §8» §7%s");
@@ -107,7 +105,7 @@ public class Listeners implements Listener {
 
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
-        e.setQuitMessage("§7" + e.getPlayer().getDisplayName() + " hat das Spiel Verlassen!");
+        e.setQuitMessage("§7" + e.getPlayer().getDisplayName() + " hat das Spiel verlassen!");
     }
 
 
