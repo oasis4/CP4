@@ -1,6 +1,6 @@
 package cp4.status.command;
 
-import cp4.status.Main;
+import cp4.status.CP4Plugin;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -18,21 +18,20 @@ import org.bukkit.metadata.MetadataValue;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.Duration;
 import java.util.List;
 
-import static cp4.status.listeners.prefixPlugin;
+import static cp4.status.Listeners.prefixPlugin;
 
 
 public class ZeitCommand implements CommandExecutor, Listener {
 
-    private Main pl;
+    private CP4Plugin plugin;
 
-    public ZeitCommand(Main pl) {
-        this.pl = pl;
+    public ZeitCommand(CP4Plugin plugin) {
+        this.plugin = plugin;
 
         for (Player player : Bukkit.getOnlinePlayers()) {
-            player.setMetadata("last-joined", new FixedMetadataValue(pl, System.currentTimeMillis()));
+            player.setMetadata("last-joined", new FixedMetadataValue(plugin, System.currentTimeMillis()));
         }
     }
 
@@ -47,7 +46,7 @@ public class ZeitCommand implements CommandExecutor, Listener {
 
         Player player = (Player) sender;
 
-        File userDataFolder = pl.getUserDataFolder();
+        File userDataFolder = plugin.getUserDataFolder();
         File userData = new File(userDataFolder, player.getUniqueId() + ".yml");
 
         YamlConfiguration configuration = YamlConfiguration.loadConfiguration(userData);
@@ -69,7 +68,7 @@ public class ZeitCommand implements CommandExecutor, Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        event.getPlayer().setMetadata("last-joined", new FixedMetadataValue(pl, System.currentTimeMillis()));
+        event.getPlayer().setMetadata("last-joined", new FixedMetadataValue(plugin, System.currentTimeMillis()));
     }
 
     @EventHandler
@@ -80,7 +79,7 @@ public class ZeitCommand implements CommandExecutor, Listener {
 
     @EventHandler
     public void onDisable(PluginDisableEvent event) {
-        if (!pl.equals(event.getPlugin()))
+        if (!plugin.equals(event.getPlugin()))
             return;
         for (Player player : Bukkit.getOnlinePlayers()) {
             savePlayer(player);
@@ -88,7 +87,7 @@ public class ZeitCommand implements CommandExecutor, Listener {
     }
 
     private void savePlayer(Player player) {
-        File userDataFolder = pl.getUserDataFolder();
+        File userDataFolder = plugin.getUserDataFolder();
         File userData = new File(userDataFolder, player.getUniqueId() + ".yml");
 
         if (!userData.isFile()) {
@@ -116,6 +115,6 @@ public class ZeitCommand implements CommandExecutor, Listener {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        player.removeMetadata("last-joined", pl);
+        player.removeMetadata("last-joined", plugin);
     }
 }

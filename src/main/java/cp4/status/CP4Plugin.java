@@ -3,19 +3,24 @@ package cp4.status;
 import cp4.status.command.*;
 import cp4.status.feature.AFKRankFeature;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import java.io.File;
 
 
-public final class Main extends JavaPlugin implements Listener {
+public final class CP4Plugin extends JavaPlugin implements Listener {
 
     private File userDataFolder;
 
@@ -24,8 +29,7 @@ public final class Main extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
 
-        File dataFolder = getDataFolder();
-        userDataFolder = new File(dataFolder, "userdata");
+        userDataFolder = new File(getDataFolder(), "userdata");
         userDataFolder.mkdirs();
         File file = new File(getDataFolder(), "config.yml");
 
@@ -37,51 +41,44 @@ public final class Main extends JavaPlugin implements Listener {
             role.registerTeam(sb);
         }
 
-        //  Role.ADMIN.registerTeam(sb);
-        //  Role.MOD.registerTeam(sb);
-        //  Role.SUB.registerTeam(sb);
-        //  Role.LIVE.registerTeam(sb);
-        //  Role.AFK.registerTeam(sb);
-        //  Role.USER.registerTeam(sb);
+        Objective objective = sb.registerNewObjective("deathCount", "deathCount", "DeathCount");
+        objective.setDisplaySlot(DisplaySlot.PLAYER_LIST);
 
         this.getLogger().info("Start");
 
         ZeitCommand zeitCommand = new ZeitCommand(this);
-        getCommand("Onlinezeit").setExecutor(zeitCommand);
+        registerCommand("onlinezeit", zeitCommand);
         getServer().getPluginManager().registerEvents(zeitCommand, this);
 
-        AFKRankFeature AFk_RankFeature = new AFKRankFeature((this));
-        getCommand("Afk").setExecutor(AFk_RankFeature);
-        getServer().getPluginManager().registerEvents(AFk_RankFeature, this);
+        AFKRankFeature afkRankFeature = new AFKRankFeature(this);
+        registerCommand("afk", afkRankFeature);
+        getServer().getPluginManager().registerEvents(afkRankFeature, this);
 
-        SubCommand SubCommand = new SubCommand((this));
-        getCommand("Sub").setExecutor(SubCommand);
-
-
-        ResetCommand reset = new ResetCommand();
-        getCommand("reset").setExecutor(reset);
-
-        FlameCommand flame = new FlameCommand(this);
-        getCommand("flame").setExecutor(flame);
-
-        Rang_Zuordnung Rang_Zuordnung = new Rang_Zuordnung(this);
-        getServer().getPluginManager().registerEvents(Rang_Zuordnung, this);
-
-        Streamer_commands Streamer_commands = new Streamer_commands(this);
-        getCommand("live").setExecutor(Streamer_commands);
-
-        OasisCommand OasisCommand = new OasisCommand(this);
-        getCommand("Oasislive").setExecutor(OasisCommand);
-
-        SpawnFireworkCommand SpawnFireworkCommand = new SpawnFireworkCommand();
-        getCommand("rw").setExecutor(SpawnFireworkCommand);
+        registerCommand("sub", new SubCommand());
+        registerCommand("reset", new ResetCommand());
+        registerCommand("flame", new FlameCommand(this));
+        registerCommand("live", new StreamerCommands(this));
+        registerCommand("Oasislive", new OasisCommand(this));
+        registerCommand("rw", new SpawnFireworkCommand());
 
 
         Bukkit.getPluginManager().registerEvents(this, this);
-        Bukkit.getPluginManager().registerEvents(this, this);
-        Bukkit.getPluginManager().registerEvents(new listeners(this), this);
-        Bukkit.getPluginManager().registerEvents(new Rang_Zuordnung(this), this);
+        Bukkit.getPluginManager().registerEvents(new Listeners(this), this);
+        Bukkit.getPluginManager().registerEvents(new RangZuordnung(this), this);
 
+    }
+
+    private boolean registerCommand(String name, CommandExecutor executor) {
+        PluginCommand command = getCommand(name);
+        if(command == null)
+            return false;
+
+        command.setExecutor(executor);
+
+        if(executor instanceof TabCompleter) {
+            command.setExecutor(executor);
+        }
+        return true;
     }
 
     @Override

@@ -1,6 +1,6 @@
 package cp4.status.command;
 
-import cp4.status.Main;
+import cp4.status.CP4Plugin;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -10,10 +10,10 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import static cp4.status.listeners.prefixPlugin;
+import static cp4.status.Listeners.prefixPlugin;
 
 public class OasisCommand implements CommandExecutor {
-    public OasisCommand(Main main) {
+    public OasisCommand(CP4Plugin plugin) {
     }
 
     @Override

@@ -1,7 +1,7 @@
 package cp4.status.feature;
 
 
-import cp4.status.Main;
+import cp4.status.CP4Plugin;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -9,17 +9,14 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.scoreboard.Scoreboard;
 
 public class AFKRankFeature implements CommandExecutor, Listener {
 
-    private final Main main;
+    private final CP4Plugin plugin;
 
-    public AFKRankFeature(Main main) {
-        this.main = main;
+    public AFKRankFeature(CP4Plugin plugin) {
+        this.plugin = plugin;
     }
-
-    Scoreboard sb;
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -39,17 +36,17 @@ public class AFKRankFeature implements CommandExecutor, Listener {
 
     }
 
-     //@EventHandler
+    //@EventHandler
     //public void onMove(PlayerMoveEvent event) {
-        //Player player = event.getPlayer();
+    //Player player = event.getPlayer();
 
-        //Location to = event.getTo();
-       // Location from = event.getFrom();
+    //Location to = event.getTo();
+    // Location from = event.getFrom();
 
-     //   if (to.getBlockX() != from.getBlockX() || to.getBlockY() != from.getBlockY() || to.getBlockZ() != from.getBlockZ()) {
-        //    if (player.getPlayerListName().equalsIgnoreCase(player.getDisplayName()))
-       //         return;
-      //      player.setPlayerListName(player.getDisplayName());
+    //   if (to.getBlockX() != from.getBlockX() || to.getBlockY() != from.getBlockY() || to.getBlockZ() != from.getBlockZ()) {
+    //    if (player.getPlayerListName().equalsIgnoreCase(player.getDisplayName()))
+    //         return;
+    //      player.setPlayerListName(player.getDisplayName());
     //    }
 
     //}

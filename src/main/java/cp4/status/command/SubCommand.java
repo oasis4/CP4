@@ -1,6 +1,6 @@
 package cp4.status.command;
 
-import cp4.status.Main;
+import cp4.status.CP4Plugin;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -9,15 +9,10 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import static cp4.status.listeners.prefixPlugin;
+import static cp4.status.Listeners.prefixPlugin;
 
 
 public class SubCommand implements CommandExecutor {
-
-    private String subtitle = "TEST";
-
-    public SubCommand(Main main) {
-    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {

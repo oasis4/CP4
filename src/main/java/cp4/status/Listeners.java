@@ -2,26 +2,24 @@ package cp4.status;
 
 import org.bukkit.*;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 
-public class listeners implements Listener {
+public class Listeners implements Listener {
 
     public static String prefixPlugin = "§b[CP4 Plugin§b] ";
 
-    private Main pl;
+    private CP4Plugin plugin;
 
-    public listeners(Main pl) {
-        this.pl = pl;
+    public Listeners(CP4Plugin plugin) {
+        this.plugin = plugin;
     }
 
 
@@ -44,7 +42,7 @@ public class listeners implements Listener {
 
         //Rakete
 
-        File userDataFolder = pl.getUserDataFolder();
+        File userDataFolder = plugin.getUserDataFolder();
         File userData = new File(userDataFolder, player.getUniqueId() + ".yml");
         YamlConfiguration configuration = YamlConfiguration.loadConfiguration(userData);
         long onlineTime = configuration.getLong("online-time", 0L);
@@ -69,7 +67,6 @@ public class listeners implements Listener {
         new BukkitRunnable() {
             final long created = System.currentTimeMillis();
 
-
             @Override
             public void run() {
                 if ((created + seconds * 1000) < System.currentTimeMillis()) {
@@ -88,11 +85,7 @@ public class listeners implements Listener {
                     world.spawnParticle(Particle.FLAME, l2, 1, 0, 0, 0, 0);
                 }
             }
-        }.runTaskTimerAsynchronously(pl, 10, 10);
-
-        // if (p.isOp()) {
-        //p.sendMessage("§7Willkommen Admin");
-
+        }.runTaskTimerAsynchronously(plugin, 10, 10);
 
     }
 

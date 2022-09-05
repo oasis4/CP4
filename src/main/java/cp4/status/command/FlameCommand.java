@@ -1,7 +1,7 @@
 package cp4.status.command;
 
 
-import cp4.status.Main;
+import cp4.status.CP4Plugin;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
@@ -15,10 +15,10 @@ import java.util.UUID;
 public class FlameCommand implements CommandExecutor {
 
 
-public final Main main;
+    public final CP4Plugin plugin;
 
-    public FlameCommand(Main main) {
-        this.main = main;
+    public FlameCommand(CP4Plugin plugin) {
+        this.plugin = plugin;
     }
 
     @Override
@@ -27,16 +27,12 @@ public final Main main;
         Player player = (Player) sender;
         World world = player.getWorld();
         Location location = player.getLocation();
-        UUID uuid = player.getUniqueId();
 
-
-                        Location l = location;
-                        world.spawnParticle(Particle.FLAME, l, 1, 0, 0, 0, 0);
-
-        return false;
+        world.spawnParticle(Particle.FLAME, location, 1, 0, 0, 0, 0);
+        return true;
     }
 
-                }
+}
 
 
 

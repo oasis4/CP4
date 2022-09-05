@@ -1,29 +1,29 @@
 name: CP4
 version: '${project.version}'
-main: cp4.status.Main
+main: cp4.status.CP4Plugin
 api-version: 1.19
 authors: [ Oasis ]
 commands:
-  Onlinezeit:
+  onlinezeit:
     usage: /Onlinezeit
     description: Schau dir deine Onlinezeit an
-  AFK:
+  afk:
     usage: /Afk
     description: Du Bekommst die Rolle AFK
-  Sub:
+  sub:
     usage: /sub
-  Flame:
+  flame:
     usage: /flame
     aliases: [f]
-  Live:
+  live:
     usage: /Live
     aliases:
       - l
-  Reset:
+  reset:
     usage: /reset
     aliases:
       - r
-  Oasislive:
+  oasislive:
     usage: /oasislive
     aliases:
       - ol
