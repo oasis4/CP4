@@ -1,6 +1,7 @@
 package cp4.status;
 
 import cp4.status.command.*;
+import cp4.status.command.ZeitCommand;
 import cp4.status.feature.AFKRankFeature;
 import de.lebaasti.craftprotect4.CraftProtect4Kt;
 import org.bukkit.Bukkit;
@@ -11,12 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.Team;
 
 import java.io.File;
 
