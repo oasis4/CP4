@@ -73,7 +73,7 @@ class TablistManager : Listener {
         if(event.statistic == Statistic.DEATHS) {
             event.player.updateTablist(event.newValue)
         } else if (event.statistic == Statistic.TOTAL_WORLD_TIME) {
-            if(event.newValue / 20 >= 504000) { //7 Stunden
+            if(event.newValue / 20 >= 504000) { // 7 Stunden
 
             }
         }
