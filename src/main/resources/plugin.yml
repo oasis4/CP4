@@ -30,4 +30,10 @@ commands:
   rw:
     usage: /rw
 
+depend:
+  - LuckPerms
+
+libraries:
+  - org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.20-RC
+
 
