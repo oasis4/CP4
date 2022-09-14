@@ -66,17 +66,6 @@ var User.chatColor: String
         luckPerms.userManager.saveUser(this)
     }
 
-var User.tag: String
-    get() {
-        return ChatColor.of(this.cachedData.metaData.getMetaValue("tag") ?: return "").toString()
-    }
-    set(value) {
-        val chatColorNode = MetaNode.builder("tag", value).build()
-        this.data().clear(NodeType.META.predicate { mn: MetaNode -> mn.metaKey == "tag" })
-        this.data().add(chatColorNode)
-        luckPerms.userManager.saveUser(this)
-    }
-
 val UUID.user: User
     get() {
         return luckPerms.userManager.getUser(this) ?: luckPerms.userManager.loadUser(this).get()

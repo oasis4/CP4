@@ -1,5 +1,7 @@
 package cp4.status;
 
+import de.lebaasti.craftprotect4.functions.PlayerFunctionsKt;
+import de.lebaasti.craftprotect4.functions.Status;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -26,7 +28,7 @@ public class StreamerCommands implements CommandExecutor {
         }
 
         Player player = (Player) sender;
-        player.setPlayerListName("§1Live " + player.getDisplayName());
+        PlayerFunctionsKt.setStatus(player, Status.LIVE);
         return true;
     }
 
