@@ -51,6 +51,7 @@ public final class CP4Plugin extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(this, this);
         Bukkit.getPluginManager().registerEvents(new Listeners(this), this);
         Bukkit.getPluginManager().registerEvents(new RangZuordnung(this), this);
+        Bukkit.getPluginManager().registerEvents(new emoji(this), this);
         CraftProtect4Kt.registerEvents();
 
     }
