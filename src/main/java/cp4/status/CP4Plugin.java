@@ -46,6 +46,7 @@ public final class CP4Plugin extends JavaPlugin implements Listener {
         registerCommand("live", new StreamerCommands(this));
         registerCommand("Oasislive", new OasisCommand(this));
         registerCommand("rw", new SpawnFireworkCommand());
+        registerCommand("tanjo", new tanjo());
 
 
         Bukkit.getPluginManager().registerEvents(this, this);

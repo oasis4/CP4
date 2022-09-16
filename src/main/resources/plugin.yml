@@ -29,6 +29,8 @@ commands:
       - ol
   rw:
     usage: /rw
+  tanjo:
+    usage: /tanjo
 
 depend:
   - LuckPerms
