@@ -16,7 +16,7 @@ public class tanjo implements CommandExecutor, Listener {
         Player player = (Player) commandSender;
 
 
-        player.kickPlayer("TEST");
+        player.kickPlayer("Tanjo");
 
 
         return true;
