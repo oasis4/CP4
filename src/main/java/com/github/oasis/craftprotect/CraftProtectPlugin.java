@@ -1,8 +1,10 @@
 package com.github.oasis.craftprotect;
 
 import com.github.oasis.craftprotect.api.CraftProtect;
+import com.github.oasis.craftprotect.api.CraftProtectCommand;
 import com.github.oasis.craftprotect.command.*;
 import com.github.oasis.craftprotect.feature.AFKRankFeature;
+import com.github.oasis.craftprotect.feature.EmojiFeature;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import de.lebaasti.craftprotect4.CraftProtectKt;
@@ -13,7 +15,6 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
@@ -84,12 +85,12 @@ public final class CraftProtectPlugin extends JavaPlugin implements CraftProtect
         registerCommand("sub", new GlowCommand(this));
         registerCommand("reset", new ResetCommand(this));
         registerCommand("flame", new FlameCommand(this));
-        registerCommand("live", new StreamerCommands(this));
-        registerCommand("Oasislive", new OasisCommand(this));
+        registerCommand("live", new LiveCommand(this));
+        registerCommand("Oasislive", new OasisLiveCommand(this));
         registerCommand("rw", new SpawnFireworkCommand(this));
 
 
-        Bukkit.getPluginManager().registerEvents(new EmojiListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new EmojiFeature(this), this);
         Bukkit.getPluginManager().registerEvents(this, this);
         CraftProtectKt.registerEvents();
 
@@ -112,7 +113,7 @@ public final class CraftProtectPlugin extends JavaPlugin implements CraftProtect
         return replacements;
     }
 
-    private boolean registerCommand(String name, CommandExecutor executor) {
+    private boolean registerCommand(String name, CraftProtectCommand executor) {
         PluginCommand command = getCommand(name);
         if (command == null) return false;
 
@@ -121,6 +122,9 @@ public final class CraftProtectPlugin extends JavaPlugin implements CraftProtect
         if (executor instanceof TabCompleter) {
             command.setExecutor(executor);
         }
+
+        command.setPermission(executor.getPermission());
+        command.setPermissionMessage(executor.getPermissionMessage());
         return true;
     }
 

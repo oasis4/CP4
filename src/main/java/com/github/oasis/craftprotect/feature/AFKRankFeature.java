@@ -1,9 +1,9 @@
 package com.github.oasis.craftprotect.feature;
 
 
+import com.github.oasis.craftprotect.api.CraftProtectCommand;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-public class AFKRankFeature implements CommandExecutor, Listener {
+public class AFKRankFeature implements CraftProtectCommand, Listener {
 
     private final Map<Player, Location> locationMap = new WeakHashMap<>();
 

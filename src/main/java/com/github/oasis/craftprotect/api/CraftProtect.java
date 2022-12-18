@@ -53,12 +53,12 @@ public interface CraftProtect extends Plugin {
     }
 
     @NotNull
-    Component getMessage(@NotNull String key, @NotNull Object @NotNull ... objects);
+    Component getMessage(@NotNull String key, @NotNull Object... objects);
 
     @NotNull
     Configuration getUnformattedMessages();
 
-    void sendMessage(@NotNull CommandSender sender, @NotNull String key, @NotNull Object @NotNull ... objects);
+    void sendMessage(@NotNull CommandSender sender, @NotNull String key, @NotNull Object... objects);
 
     @NotNull
     Map<String, String> getChatReplacements();

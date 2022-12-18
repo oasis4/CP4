@@ -1,4 +1,4 @@
-package com.github.oasis.craftprotect;
+package com.github.oasis.craftprotect.feature;
 
 import com.github.oasis.craftprotect.api.CraftProtect;
 import org.bukkit.event.EventHandler;
@@ -7,15 +7,15 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.util.Map;
 
-public class EmojiListener implements Listener {
+public class EmojiFeature implements Listener {
 
     private final CraftProtect plugin;
 
-    public EmojiListener(CraftProtect plugin) {
+    public EmojiFeature(CraftProtect plugin) {
         this.plugin = plugin;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onChat(AsyncPlayerChatEvent event) {
         String message = event.getMessage();
 

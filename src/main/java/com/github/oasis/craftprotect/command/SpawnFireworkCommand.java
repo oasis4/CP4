@@ -1,18 +1,18 @@
 package com.github.oasis.craftprotect.command;
 
 import com.github.oasis.craftprotect.api.CraftProtect;
+import com.github.oasis.craftprotect.api.CraftProtectCommand;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.jetbrains.annotations.NotNull;
 
-public class SpawnFireworkCommand implements CommandExecutor {
+public class SpawnFireworkCommand implements CraftProtectCommand {
 
     private final CraftProtect protect;
 
@@ -23,11 +23,11 @@ public class SpawnFireworkCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(protect.getPrefix() + "§cNur Spieler können diesen Befehl ausführen.");
+            protect.sendMessage(sender, "no-player");
             return true;
         }
         if (!(sender.hasPermission("cp4.sub"))) {
-            sender.sendMessage(protect.getPrefix() + "§3Du musst Sub bei Oasis4_0 oder Oreocast sein");
+            protect.sendMessage(sender, "no-sub");
             return true;
         }
 

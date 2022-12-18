@@ -1,17 +1,17 @@
 package com.github.oasis.craftprotect.command;
 
 import com.github.oasis.craftprotect.api.CraftProtect;
+import com.github.oasis.craftprotect.api.CraftProtectCommand;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 
-public class GlowCommand implements CommandExecutor {
+public class GlowCommand implements CraftProtectCommand {
 
     private final CraftProtect plugin;
 
@@ -23,17 +23,16 @@ public class GlowCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
         if (!(sender.hasPermission("cp4.sub"))) {
-            sender.sendMessage(plugin.getPrefix() + "§3Du musst Sub bei Oasis4_0 oder Oreocast sein");
+            plugin.sendMessage(sender, "no-sub");
             return true;
         }
 
         if (!(sender instanceof Player player)) {
-            plugin.sendMessage(sender, "default.no-player");
+            plugin.sendMessage(sender, "no-player");
             return true;
         }
 
         Location location = player.getLocation();
-
         player.setGlowing(!player.isGlowing());
 
         if (player.isGlowing()) {

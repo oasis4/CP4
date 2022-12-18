@@ -1,10 +1,10 @@
 package com.github.oasis.craftprotect.command;
 
 import com.github.oasis.craftprotect.CraftProtectPlugin;
+import com.github.oasis.craftprotect.api.CraftProtectCommand;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.List;
 
 
-public class ZeitCommand implements CommandExecutor, Listener {
+public class ZeitCommand implements CraftProtectCommand, Listener {
 
     private final CraftProtectPlugin plugin;
 
@@ -39,7 +39,7 @@ public class ZeitCommand implements CommandExecutor, Listener {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
         if (!(sender instanceof Player player)) {
-            sender.sendMessage("§cDu musst ein Spieler sein.");
+            plugin.sendMessage(sender, "no-player");
             return true;
         }
 
@@ -114,9 +114,6 @@ public class ZeitCommand implements CommandExecutor, Listener {
         }
         player.removeMetadata("last-joined", plugin);
     }
-
-
-
 
 
 }

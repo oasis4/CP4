@@ -5,15 +5,15 @@ api-version: 1.19
 authors: [ Oasis, LeBaasti, CyntrixAlgorithm ]
 commands:
   onlinezeit:
-    usage: /onlinezeit
+    usage: '/<command>'
     description: Benutze diesen Befehl, um dir deine Spielzeit anzuschauen.
   afk:
-    usage: /afk
-    description: Wenn du diesen Befehl ausführst, bekommst du die Rolle AFK
+    usage: '/<command>'
+    description: 'Wenn du diesen Befehl ausführst, bekommst du die Rolle AFK'
   sub:
-    usage: /sub
+    usage: '/<command>'
   flame:
-    usage: /flame
+    usage: '/<command>'
     permission: craftprotect.command.flame
     aliases: [f]
   live:
@@ -25,7 +25,8 @@ commands:
     aliases:
       - r
   oasislive:
-    usage: /oasislive
+    usage: '/<command>'
+    permission: 'cp4.admin'
     aliases:
       - ol
   rw:
