@@ -1,19 +1,20 @@
-name: CP4
+name: CraftProtect
 version: '${project.version}'
-main: cp4.status.CP4Plugin
+main: com.github.oasis.craftprotect.CraftProtectPlugin
 api-version: 1.19
-authors: [ Oasis ]
+authors: [ Oasis, LeBaasti, CyntrixAlgorithm ]
 commands:
   onlinezeit:
-    usage: /Onlinezeit
-    description: Schau dir deine Onlinezeit an
+    usage: /onlinezeit
+    description: Benutze diesen Befehl, um dir deine Spielzeit anzuschauen.
   afk:
-    usage: /Afk
-    description: Du Bekommst die Rolle AFK
+    usage: /afk
+    description: Wenn du diesen Befehl ausführst, bekommst du die Rolle AFK
   sub:
     usage: /sub
   flame:
     usage: /flame
+    permission: craftprotect.command.flame
     aliases: [f]
   live:
     usage: /Live
@@ -29,13 +30,12 @@ commands:
       - ol
   rw:
     usage: /rw
-  tanjo:
-    usage: /tanjo
 
 depend:
   - LuckPerms
 
 libraries:
   - org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.20-RC
+  - org.apache.commons:commons-text:1.10.0
 
 

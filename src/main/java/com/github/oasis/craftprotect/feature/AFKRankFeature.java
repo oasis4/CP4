@@ -1,7 +1,6 @@
-package cp4.status.feature;
+package com.github.oasis.craftprotect.feature;
 
 
-import cp4.status.CP4Plugin;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -11,27 +10,20 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.WeakHashMap;
 
 public class AFKRankFeature implements CommandExecutor, Listener {
 
-    private final CP4Plugin plugin;
-
-    public AFKRankFeature(CP4Plugin plugin) {
-        this.plugin = plugin;
-    }
-
     private final Map<Player, Location> locationMap = new WeakHashMap<>();
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        if (!(sender instanceof Player player)) {
             return true;
         }
-
-        Player player = (Player) sender;
 
         Location remove = locationMap.remove(player);
         if (remove != null) {

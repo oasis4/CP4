@@ -1,6 +1,6 @@
-package cp4.status.command;
+package com.github.oasis.craftprotect.command;
 
-import cp4.status.CP4Plugin;
+import com.github.oasis.craftprotect.CraftProtectPlugin;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -15,19 +15,18 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import static cp4.status.Listeners.prefixPlugin;
-
 
 public class ZeitCommand implements CommandExecutor, Listener {
 
-    private CP4Plugin plugin;
+    private final CraftProtectPlugin plugin;
 
-    public ZeitCommand(CP4Plugin plugin) {
+    public ZeitCommand(CraftProtectPlugin plugin) {
         this.plugin = plugin;
 
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -37,14 +36,12 @@ public class ZeitCommand implements CommandExecutor, Listener {
 
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage("§cDu musst ein Spieler sein.");
             return true;
         }
-
-        Player player = (Player) sender;
 
         File userDataFolder = plugin.getUserDataFolder();
         File userData = new File(userDataFolder, player.getUniqueId() + ".yml");
@@ -60,7 +57,7 @@ public class ZeitCommand implements CommandExecutor, Listener {
         }
         onlineTime += (System.currentTimeMillis() - lastJoined);
 
-        sender.sendMessage(prefixPlugin + "§3Deine Spielzeit beträgt: §6 " + DurationFormatUtils.formatDuration(onlineTime, "dd:HH:mm:ss"));
+        plugin.sendMessage(sender, "command.onlinetime.duration", DurationFormatUtils.formatDuration(onlineTime, "HH:mm:ss"));
 
         return true;
 

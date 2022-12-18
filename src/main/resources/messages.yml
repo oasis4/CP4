@@ -1,0 +1,9 @@
+prefix: '<aqua><bold> CP </bold></aqua><white>❘</white>'
+default:
+  no-player: '<prefix> <red>Du musst ein Spieler sein.'
+command:
+  glow:
+    enabled: '<prefix> <dark_aqua>Du leuchtest jetzt'
+    disabled: '<prefix> <dark_aqua>Du leuchtest nun nicht mehr'
+  onlinetime:
+    duration: '<prefix> <dark_aqua>Deine Spielzeit beträgt: <gold><0>'
