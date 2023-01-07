@@ -2,6 +2,7 @@ package com.github.oasis.craftprotect.command;
 
 import com.github.oasis.craftprotect.api.CraftProtect;
 import com.github.oasis.craftprotect.api.CraftProtectCommand;
+import com.github.oasis.craftprotect.utils.M;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -18,8 +19,7 @@ public class ResetCommand implements CraftProtectCommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player player)) {
-            plugin.sendMessage(sender, "no-player");
-            sender.sendMessage(plugin.getPrefix() + "§cNur Spieler können diesen Befehl ausführen.");
+            plugin.sendMessage(sender, M.NO_PLAYER);
             return true;
         }
 

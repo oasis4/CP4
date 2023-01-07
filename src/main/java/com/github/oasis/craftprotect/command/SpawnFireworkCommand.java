@@ -2,6 +2,7 @@ package com.github.oasis.craftprotect.command;
 
 import com.github.oasis.craftprotect.api.CraftProtect;
 import com.github.oasis.craftprotect.api.CraftProtectCommand;
+import com.github.oasis.craftprotect.utils.M;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
@@ -23,11 +24,11 @@ public class SpawnFireworkCommand implements CraftProtectCommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player player)) {
-            protect.sendMessage(sender, "no-player");
+            protect.sendMessage(sender, M.NO_PLAYER);
             return true;
         }
         if (!(sender.hasPermission("cp4.sub"))) {
-            protect.sendMessage(sender, "no-sub");
+            protect.sendMessage(sender, M.NO_SUB);
             return true;
         }
 

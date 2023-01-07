@@ -3,6 +3,7 @@ package com.github.oasis.craftprotect.command;
 
 import com.github.oasis.craftprotect.api.CraftProtect;
 import com.github.oasis.craftprotect.api.CraftProtectCommand;
+import com.github.oasis.craftprotect.utils.M;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
@@ -16,6 +17,7 @@ import java.io.IOException;
 
 public class FlameCommand implements CraftProtectCommand {
 
+    private static final String taskName = "flame";
 
     public final CraftProtect plugin;
 
@@ -25,10 +27,12 @@ public class FlameCommand implements CraftProtectCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        if (!(sender instanceof Player player)) {
+            plugin.sendMessage(sender, M.NO_PLAYER);
+            return true;
+        }
 
-        Player player = (Player) sender;
-
-        Closeable flame = plugin.getTask(player, "flame");
+        Closeable flame = plugin.getTask(player, taskName);
         if (flame != null) {
             try {
                 flame.close();
@@ -38,7 +42,7 @@ public class FlameCommand implements CraftProtectCommand {
             return true;
         }
 
-        plugin.attachAsyncRepeaterTask(player, "flame", () -> {
+        plugin.attachAsyncRepeaterTask(player, taskName, () -> {
             World world = player.getWorld();
             Location location = player.getLocation();
             world.spawnParticle(Particle.FLAME, location, 1, 0, 0, 0, 0);

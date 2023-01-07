@@ -2,6 +2,7 @@ package com.github.oasis.craftprotect.command;
 
 import com.github.oasis.craftprotect.CraftProtectPlugin;
 import com.github.oasis.craftprotect.api.CraftProtectCommand;
+import com.github.oasis.craftprotect.utils.M;
 import de.lebaasti.craftprotect4.functions.PlayerFunctionsKt;
 import de.lebaasti.craftprotect4.functions.Status;
 import org.bukkit.command.Command;
@@ -24,11 +25,11 @@ public class LiveCommand implements CraftProtectCommand {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
 
         if (!sender.hasPermission("cp4.streamer")) {
-            plugin.sendMessage(sender, "no-permission");
+            plugin.sendMessage(sender, M.NO_PERM);
             return true;
         }
         if (!(sender instanceof Player player)) {
-            plugin.sendMessage(sender, "no-player");
+            plugin.sendMessage(sender, M.NO_PLAYER);
             return true;
         }
 
