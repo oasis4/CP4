@@ -85,6 +85,18 @@
             <version>4.2.0</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-codec-http</artifactId>
+            <version>4.1.86.Final</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-common</artifactId>
+            <version>4.1.86.Final</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 
@@ -129,35 +141,11 @@
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>default-compile</id>
-                        <phase>none</phase>
-                    </execution>
-                    <execution>
-                        <id>default-testCompile</id>
-                        <phase>none</phase>
-                    </execution>
-                    <execution>
-                        <id>java-compile</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>java-test-compile</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>testCompile</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
+                <version>3.4.1</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -166,6 +154,12 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <relocations>
+                                <relocation>
+                                    <pattern>io.netty</pattern>
+                                    <shadedPattern>com.github.oasis.craftprotect.lib.netty</shadedPattern>
+                                </relocation>
+                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
