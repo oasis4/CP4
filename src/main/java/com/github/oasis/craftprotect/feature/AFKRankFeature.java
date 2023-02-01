@@ -5,9 +5,11 @@ import com.github.oasis.craftprotect.api.CraftProtectCommand;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
@@ -30,6 +32,8 @@ public class AFKRankFeature implements CraftProtectCommand, Listener {
             player.setPlayerListName(player.getDisplayName());
             return true;
         }
+
+
 
         Location position = player.getLocation();
         locationMap.put(player, position.getBlock().getLocation().clone());
@@ -67,8 +71,19 @@ public class AFKRankFeature implements CraftProtectCommand, Listener {
         locationMap.remove(event.getPlayer());
     }
 
+    //@EventHandler
+    //**public void onEntityDamageProtection(EntityDamageByEntityEvent e) {
 
+   //    if (e.getDamager() instanceof Arrow) {
+   //         Player p = (Player) e.getDamager();
+    //        if (p.hasPermission("oasis.protection")) {
+     //           e.setCancelled(true);
+    //        }
+    //    }
+  //  }
 }
+
+
 
 
 
