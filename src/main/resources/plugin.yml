@@ -4,9 +4,9 @@ main: com.github.oasis.craftprotect.CraftProtectPlugin
 api-version: 1.19
 authors: [ Oasis, LeBaasti, CyntrixAlgorithm ]
 commands:
-  onlinezeit:
+  uptime:
     usage: '/<command>'
-    description: Benutze diesen Befehl, um dir deine Spielzeit anzuschauen.
+    description: Zeigt deine Spielzeit
   afk:
     usage: '/<command>'
     description: 'Wenn du diesen Befehl ausführst, bekommst du die Rolle AFK'

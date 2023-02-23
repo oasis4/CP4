@@ -6,7 +6,7 @@ command:
   glow:
     enabled: '<prefix> <dark_aqua>Du leuchtest jetzt'
     disabled: '<prefix> <dark_aqua>Du leuchtest nun nicht mehr'
-  onlinetime:
+  uptime:
     duration: '<prefix> <dark_aqua>Deine Spielzeit beträgt: <gold><0>'
   oasislive:
     broadcast: '<prefix> <dark_aqua>Oasis ist nun Live auf Twitch schaut rein: <dark_purple><click:open_url:https://www.twitch.tv/oasis4_0><hover:show_text:"<dark_aqua>Oasis Twitch!">Twitch</hover></click></dark_purple>'

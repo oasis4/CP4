@@ -78,9 +78,9 @@ public final class CraftProtectPlugin extends JavaPlugin implements CraftProtect
         }
         messages = YamlConfiguration.loadConfiguration(textResource);
 
-        ZeitCommand zeitCommand = new ZeitCommand(this);
-        registerCommand("onlinezeit", zeitCommand);
-        getServer().getPluginManager().registerEvents(zeitCommand, this);
+        UpTimeCommand upTimeCommand = new UpTimeCommand(this);
+        registerCommand("uptime", upTimeCommand);
+        getServer().getPluginManager().registerEvents(upTimeCommand, this);
 
         AFKRankFeature afkRankFeature = new AFKRankFeature();
         registerCommand("afk", afkRankFeature);

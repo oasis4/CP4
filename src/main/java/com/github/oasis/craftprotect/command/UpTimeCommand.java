@@ -23,11 +23,11 @@ import java.io.IOException;
 import java.util.List;
 
 
-public class ZeitCommand implements CraftProtectCommand, Listener {
+public class UpTimeCommand implements CraftProtectCommand, Listener {
 
     private final CraftProtectPlugin plugin;
 
-    public ZeitCommand(CraftProtectPlugin plugin) {
+    public UpTimeCommand(CraftProtectPlugin plugin) {
         this.plugin = plugin;
 
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -48,7 +48,7 @@ public class ZeitCommand implements CraftProtectCommand, Listener {
         File userData = new File(userDataFolder, player.getUniqueId() + ".yml");
 
         YamlConfiguration configuration = YamlConfiguration.loadConfiguration(userData);
-        long onlineTime = configuration.getLong("online-time", 0L);
+        long upTime = configuration.getLong("uptime", 0L);
 
 
         List<MetadataValue> list = player.getMetadata("last-joined");
@@ -56,9 +56,9 @@ public class ZeitCommand implements CraftProtectCommand, Listener {
         if (!list.isEmpty()) {
             lastJoined = list.get(0).asLong();
         }
-        onlineTime += (System.currentTimeMillis() - lastJoined);
+        upTime += (System.currentTimeMillis() - lastJoined);
 
-        plugin.sendMessage(sender, "command.onlinetime.duration", DurationFormatUtils.formatDuration(onlineTime, "HH:mm:ss"));
+        plugin.sendMessage(sender, "command.uptime.duration", DurationFormatUtils.formatDuration(upTime, "HH:mm:ss"));
 
         return true;
 
@@ -97,7 +97,7 @@ public class ZeitCommand implements CraftProtectCommand, Listener {
         }
 
         YamlConfiguration configuration = YamlConfiguration.loadConfiguration(userData);
-        long onlineTime = configuration.getLong("online-time", 0L);
+        long onlineTime = configuration.getLong("uptime", 0L);
 
         List<MetadataValue> list = player.getMetadata("last-joined");
         long lastJoined = 0;
@@ -107,7 +107,7 @@ public class ZeitCommand implements CraftProtectCommand, Listener {
 
         onlineTime += (System.currentTimeMillis() - lastJoined);
 
-        configuration.set("online-time", onlineTime);
+        configuration.set("uptime", onlineTime);
         try {
             configuration.save(userData);
         } catch (IOException e) {
