@@ -5,6 +5,7 @@ import com.github.oasis.craftprotect.api.CraftProtectCommand;
 import com.github.oasis.craftprotect.command.*;
 import com.github.oasis.craftprotect.feature.AFKRankFeature;
 import com.github.oasis.craftprotect.feature.EmojiFeature;
+import com.github.oasis.craftprotect.feature.PlayerGreetingFeature;
 import com.github.oasis.craftprotect.feature.SpawnElytraFeature;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
@@ -99,6 +100,7 @@ public final class CraftProtectPlugin extends JavaPlugin implements CraftProtect
 
         Bukkit.getPluginManager().registerEvents(new EmojiFeature(this), this);
         Bukkit.getPluginManager().registerEvents(new SpawnElytraFeature(this), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerGreetingFeature(this), this);
         Bukkit.getPluginManager().registerEvents(this, this);
         CraftProtectKt.registerEvents();
 
