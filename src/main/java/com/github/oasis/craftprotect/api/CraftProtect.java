@@ -50,10 +50,10 @@ public interface CraftProtect extends Plugin {
         }
     }
 
-    long getOnlineTime(@NotNull UUID uniqueId);
+    long getUptime(@NotNull UUID uniqueId);
 
-    default long getOnlineTime(@NotNull OfflinePlayer player) {
-        return getOnlineTime(player.getUniqueId());
+    default long getUptime(@NotNull OfflinePlayer player) {
+        return getUptime(player.getUniqueId());
     }
 
     @NotNull

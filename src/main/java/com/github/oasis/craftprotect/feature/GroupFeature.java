@@ -27,7 +27,7 @@ public class GroupFeature implements Listener {
         // z = 0
 
         //Rakete
-        long onlineTime = plugin.getOnlineTime(player);
+        long onlineTime = plugin.getUptime(player);
 
         if (onlineTime >= 604800000) {
             player.setPlayerListName("§6GOLD§7・" + player.getDisplayName());

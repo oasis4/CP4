@@ -23,11 +23,11 @@ import java.io.IOException;
 import java.util.List;
 
 
-public class UpTimeCommand implements CraftProtectCommand, Listener {
+public class UptimeCommand implements CraftProtectCommand, Listener {
 
     private final CraftProtectPlugin plugin;
 
-    public UpTimeCommand(CraftProtectPlugin plugin) {
+    public UptimeCommand(CraftProtectPlugin plugin) {
         this.plugin = plugin;
 
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -48,7 +48,7 @@ public class UpTimeCommand implements CraftProtectCommand, Listener {
         File userData = new File(userDataFolder, player.getUniqueId() + ".yml");
 
         YamlConfiguration configuration = YamlConfiguration.loadConfiguration(userData);
-        long upTime = configuration.getLong("uptime", 0L);
+        long uptime = configuration.getLong("uptime", 0L);
 
 
         List<MetadataValue> list = player.getMetadata("last-joined");
@@ -56,9 +56,9 @@ public class UpTimeCommand implements CraftProtectCommand, Listener {
         if (!list.isEmpty()) {
             lastJoined = list.get(0).asLong();
         }
-        upTime += (System.currentTimeMillis() - lastJoined);
+        uptime += (System.currentTimeMillis() - lastJoined);
 
-        plugin.sendMessage(sender, "command.uptime.duration", DurationFormatUtils.formatDuration(upTime, "HH:mm:ss"));
+        plugin.sendMessage(sender, "command.uptime.duration", DurationFormatUtils.formatDuration(uptime, "HH:mm:ss"));
 
         return true;
 

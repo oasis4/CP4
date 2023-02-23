@@ -79,9 +79,9 @@ public final class CraftProtectPlugin extends JavaPlugin implements CraftProtect
         }
         messages = YamlConfiguration.loadConfiguration(textResource);
 
-        UpTimeCommand upTimeCommand = new UpTimeCommand(this);
-        registerCommand("uptime", upTimeCommand);
-        getServer().getPluginManager().registerEvents(upTimeCommand, this);
+        UptimeCommand uptimeCommand = new UptimeCommand(this);
+        registerCommand("uptime", uptimeCommand);
+        getServer().getPluginManager().registerEvents(uptimeCommand, this);
 
         AFKRankFeature afkRankFeature = new AFKRankFeature();
         registerCommand("afk", afkRankFeature);
@@ -235,7 +235,7 @@ public final class CraftProtectPlugin extends JavaPlugin implements CraftProtect
     }
 
     @Override
-    public long getOnlineTime(@NotNull UUID uniqueId) {
+    public long getUptime(@NotNull UUID uniqueId) {
         File userDataFolder = getUserDataFolder();
         File userData = new File(userDataFolder, "%s.yml".formatted(uniqueId));
         YamlConfiguration configuration = YamlConfiguration.loadConfiguration(userData);
