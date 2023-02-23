@@ -5,6 +5,7 @@ import com.github.oasis.craftprotect.api.CraftProtectCommand;
 import com.github.oasis.craftprotect.command.*;
 import com.github.oasis.craftprotect.feature.AFKRankFeature;
 import com.github.oasis.craftprotect.feature.EmojiFeature;
+import com.github.oasis.craftprotect.feature.SpawnElytraFeature;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import de.lebaasti.craftprotect4.CraftProtectKt;
@@ -15,6 +16,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
@@ -28,6 +30,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Closeable;
 import java.io.File;
@@ -44,7 +47,9 @@ public final class CraftProtectPlugin extends JavaPlugin implements CraftProtect
 
     private Map<String, String> chatReplacements;
 
-    private final Table<Player, String, Closeable> table = HashBasedTable.create();
+    private final Table<Player, String, Closeable> schedulerTable = HashBasedTable.create();
+
+    private Location spawnLocation;
 
     private BukkitAudiences audiences;
 
@@ -81,6 +86,8 @@ public final class CraftProtectPlugin extends JavaPlugin implements CraftProtect
         registerCommand("afk", afkRankFeature);
         getServer().getPluginManager().registerEvents(afkRankFeature, this);
 
+        // TODO: Change this
+        spawnLocation = Bukkit.getWorlds().get(0).getSpawnLocation();
 
         registerCommand("sub", new GlowCommand(this));
         registerCommand("reset", new ResetCommand(this));
@@ -91,6 +98,7 @@ public final class CraftProtectPlugin extends JavaPlugin implements CraftProtect
 
 
         Bukkit.getPluginManager().registerEvents(new EmojiFeature(this), this);
+        Bukkit.getPluginManager().registerEvents(new SpawnElytraFeature(this), this);
         Bukkit.getPluginManager().registerEvents(this, this);
         CraftProtectKt.registerEvents();
 
@@ -150,15 +158,21 @@ public final class CraftProtectPlugin extends JavaPlugin implements CraftProtect
         return getDescription().getVersion();
     }
 
+    @Nullable
+    @Override
+    public Location getSpawnLocation() {
+        return spawnLocation;
+    }
+
     @NotNull
     @Override
     public Closeable attachRepeaterTask(@NotNull Player player, @NotNull String id, @NotNull Runnable task, int delay, int period) {
         BukkitTask bukkitTask = Bukkit.getScheduler().runTaskTimer(this, task, delay, period);
         Closeable closeable = () -> {
             bukkitTask.cancel();
-            table.remove(player, id);
+            schedulerTable.remove(player, id);
         };
-        table.put(player, id, closeable);
+        schedulerTable.put(player, id, closeable);
         return closeable;
     }
 
@@ -168,9 +182,9 @@ public final class CraftProtectPlugin extends JavaPlugin implements CraftProtect
         BukkitTask bukkitTask = Bukkit.getScheduler().runTaskLater(this, task, delay);
         Closeable closeable = () -> {
             bukkitTask.cancel();
-            table.remove(player, id);
+            schedulerTable.remove(player, id);
         };
-        table.put(player, id, closeable);
+        schedulerTable.put(player, id, closeable);
         return closeable;
     }
 
@@ -180,9 +194,9 @@ public final class CraftProtectPlugin extends JavaPlugin implements CraftProtect
         BukkitTask bukkitTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, task, delay, period);
         Closeable closeable = () -> {
             bukkitTask.cancel();
-            table.remove(player, id);
+            schedulerTable.remove(player, id);
         };
-        table.put(player, id, closeable);
+        schedulerTable.put(player, id, closeable);
         return closeable;
     }
 
@@ -192,21 +206,21 @@ public final class CraftProtectPlugin extends JavaPlugin implements CraftProtect
         BukkitTask bukkitTask = Bukkit.getScheduler().runTaskLaterAsynchronously(this, task, delay);
         Closeable closeable = () -> {
             bukkitTask.cancel();
-            table.remove(player, id);
+            schedulerTable.remove(player, id);
         };
-        table.put(player, id, closeable);
+        schedulerTable.put(player, id, closeable);
         return closeable;
     }
 
     @NotNull
     @Override
     public Closeable getTask(@NotNull Player player, @NotNull String id) {
-        return table.get(player, id);
+        return schedulerTable.get(player, id);
     }
 
     @EventHandler
     public void stopTasks(PlayerQuitEvent event) {
-        Map<String, Closeable> row = this.table.row(event.getPlayer());
+        Map<String, Closeable> row = this.schedulerTable.row(event.getPlayer());
         for (Map.Entry<String, Closeable> entry : row.entrySet()) {
             System.out.println("Closing " + entry.getKey() + "...");
 

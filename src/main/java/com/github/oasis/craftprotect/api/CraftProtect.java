@@ -1,6 +1,7 @@
 package com.github.oasis.craftprotect.api;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
@@ -20,6 +21,9 @@ public interface CraftProtect extends Plugin {
 
     @NotNull
     String getVersion();
+
+    @Nullable
+    Location getSpawnLocation();
 
     @NotNull
     Closeable attachRepeaterTask(@NotNull Player player, @NotNull String id, @NotNull Runnable task, int delay, int period);
