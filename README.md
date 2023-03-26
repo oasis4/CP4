@@ -1,7 +1,7 @@
 # CraftProtect
-- [ ] Temporäre Elytra beim Spawn
+- [x] Temporäre Elytra beim Spawn
 
-- [ ] Feuerkreis beim spawnen
+- [x] Feuerkreis beim spawnen
 
 - [ ] Commands
 - 
