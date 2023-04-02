@@ -3,8 +3,6 @@ package com.github.oasis.craftprotect.command;
 import com.github.oasis.craftprotect.CraftProtectPlugin;
 import com.github.oasis.craftprotect.api.CraftProtectCommand;
 import com.github.oasis.craftprotect.utils.M;
-import de.lebaasti.craftprotect4.functions.PlayerFunctionsKt;
-import de.lebaasti.craftprotect4.functions.Status;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -33,7 +31,6 @@ public class LiveCommand implements CraftProtectCommand {
             return true;
         }
 
-        PlayerFunctionsKt.setStatus(player, Status.LIVE);
         return true;
     }
 
