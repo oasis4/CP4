@@ -22,14 +22,15 @@ public class LiveCommand implements CraftProtectCommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
 
-        if (!sender.hasPermission("cp4.streamer")) {
+        if (!sender.hasPermission("*")) {
             plugin.sendMessage(sender, M.NO_PERM);
             return true;
         }
         if (!(sender instanceof Player player)) {
             plugin.sendMessage(sender, M.NO_PLAYER);
-            return true;
+            return false;
         }
+
 
         return true;
     }

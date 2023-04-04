@@ -22,7 +22,6 @@ public class ResetCommand implements CraftProtectCommand {
             plugin.sendMessage(sender, M.NO_PLAYER);
             return true;
         }
-
         player.setPlayerListName(player.getDisplayName());
         player.setGlowing(false);
         player.sendMessage(plugin.getPrefix() + "§3Alles wurde von dir zurückgesetzt");

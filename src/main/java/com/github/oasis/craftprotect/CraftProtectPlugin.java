@@ -3,13 +3,9 @@ package com.github.oasis.craftprotect;
 import com.github.oasis.craftprotect.api.CraftProtect;
 import com.github.oasis.craftprotect.api.CraftProtectCommand;
 import com.github.oasis.craftprotect.command.*;
-import com.github.oasis.craftprotect.feature.AFKRankFeature;
-import com.github.oasis.craftprotect.feature.EmojiFeature;
-import com.github.oasis.craftprotect.feature.PlayerGreetingFeature;
-import com.github.oasis.craftprotect.feature.SpawnElytraFeature;
+import com.github.oasis.craftprotect.feature.*;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import de.lebaasti.craftprotect4.CraftProtectKt;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -101,8 +97,8 @@ public final class CraftProtectPlugin extends JavaPlugin implements CraftProtect
         Bukkit.getPluginManager().registerEvents(new EmojiFeature(this), this);
         Bukkit.getPluginManager().registerEvents(new SpawnElytraFeature(this), this);
         Bukkit.getPluginManager().registerEvents(new PlayerGreetingFeature(this), this);
+        Bukkit.getPluginManager().registerEvents(new Teleportation(this), this);
         Bukkit.getPluginManager().registerEvents(this, this);
-        CraftProtectKt.registerEvents();
 
     }
 

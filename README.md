@@ -10,7 +10,7 @@
   
 - [ ] /uptime top —> Bestenliste von der Onlinezeit
 
-- [ ] Hoch Teleportieren beim Spawn
+- [x] Hoch Teleportieren beim Spawn
 
 - [ ] Item stacking
 
