@@ -3,7 +3,7 @@
 
 - [x] Feuerkreis beim spawnen
 
-- [ ] Commands
+Commands:
 - [ ] /live url —> eine Pop-up Benachrichtigung, dass der Streamer live ist (Abklingzeit von 12 Stunden)
   
 - [x] /uptime —> Onlinezeit von einem Spieler

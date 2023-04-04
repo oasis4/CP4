@@ -30,7 +30,10 @@ commands:
     aliases:
       - ol
   rw:
-    usage: /rw
+    usage: '/<command>'
+  tanjo:
+    usage: '/<command>'
+    description: "Du hast das Easteregg aus Cp4 gefunden. Melde dich gerne bei Oasis"
 
 libraries:
   - org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.20-RC

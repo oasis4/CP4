@@ -91,6 +91,7 @@ public final class CraftProtectPlugin extends JavaPlugin implements CraftProtect
         registerCommand("flame", new FlameCommand(this));
         registerCommand("live", new LiveCommand(this));
         registerCommand("Oasislive", new OasisLiveCommand(this));
+        registerCommand("tanjo", new TanjoCommand(this));
         registerCommand("rw", new SpawnFireworkCommand(this));
 
 
