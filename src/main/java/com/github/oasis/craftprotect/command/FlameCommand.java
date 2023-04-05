@@ -36,6 +36,7 @@ public class FlameCommand implements CraftProtectCommand {
         if (flame != null) {
             try {
                 flame.close();
+                plugin.sendMessage(player, "command.flame.disabled");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -47,6 +48,7 @@ public class FlameCommand implements CraftProtectCommand {
             Location location = player.getLocation();
             world.spawnParticle(Particle.FLAME, location, 1, 0, 0, 0, 0);
         }, 0, 1);
+        plugin.sendMessage(player, "command.flame.enabled");
         return true;
     }
 
