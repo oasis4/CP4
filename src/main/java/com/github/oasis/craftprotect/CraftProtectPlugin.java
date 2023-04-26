@@ -4,6 +4,7 @@ import com.github.oasis.craftprotect.api.CraftProtect;
 import com.github.oasis.craftprotect.api.CraftProtectCommand;
 import com.github.oasis.craftprotect.command.*;
 import com.github.oasis.craftprotect.feature.*;
+import com.github.oasis.craftprotect.feature.Combat.Combat;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
@@ -100,6 +101,7 @@ public final class CraftProtectPlugin extends JavaPlugin implements CraftProtect
         Bukkit.getPluginManager().registerEvents(new PlayerGreetingFeature(this), this);
         Bukkit.getPluginManager().registerEvents(new Teleportation(this), this);
         Bukkit.getPluginManager().registerEvents(this, this);
+        Bukkit.getPluginManager().registerEvents(new Combat(this), this);
 
     }
 
