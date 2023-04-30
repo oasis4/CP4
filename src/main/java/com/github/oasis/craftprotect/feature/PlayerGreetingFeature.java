@@ -51,52 +51,52 @@ public class PlayerGreetingFeature implements Listener {
                 double x = 0;
                 double z = radius;
                 Location center = locationfire.clone();
-//                do {
-//                    double bX = center.getX();
-//                    double bZ = center.getZ();
-//
-//                    // 7. Oktant
-//                    if (bX + x >= 0 && bZ + z >= 0) {
-//                        spawnParticle(center.clone().add(x, 0, z));
-//                    }
-//                    // 2. Oktant
-//                    if (bX + x >= 0 && bZ - z >= 0) {
-//                        spawnParticle(center.clone().add(x, 0, -z));
-//                    }
-//                    // 6. Oktant
-//                    if (bX - x >= 0 && bZ + z >= 0) {
-//                        spawnParticle(center.clone().add(-x, 0, z));
-//                    }
-//                    // 3. Oktant
-//                    if (bX - x >= 0 && bZ - z >= 0) {
-//                        spawnParticle(center.clone().add(-x, 0, -z));
-//                    }
-//                    // 8. Oktant
-//                    if (bX + z >= 0 && bZ + x >= 0) {
-//                        spawnParticle(center.clone().add(z, 0, x));
-//                    }
-//                    // 1. Oktant
-//                    if (bX + z >= 0 && bZ - x >= 0) {
-//                        spawnParticle(center.clone().add(z, 0, -x));
-//                    }
-//                    // 4. Oktant
-//                    if (bX - z >= 0 && bZ + x >= 0) {
-//                        spawnParticle(center.clone().add(-z, 0, x));
-//                    }
-//                    // 5. Oktant
-//                    if (bX - z >= 0 && bZ - x >= 0) {
-//                        spawnParticle(center.clone().add(-z, 0, -x));
-//                    }
-//
-//                    if (d < 0) {
-//                        d += 2 * x + 1;
-//                    } else {
-//                        d += 2 * (x - z) + 1;
-//                        z -= 1 / segments;
-//                    }
-//                    x += 1.0 / segments;
-//
-//                } while (x <= z);
+                do {
+                    double bX = center.getX();
+                    double bZ = center.getZ();
+
+                    // 7. Oktant
+                    if (bX + x >= 0 && bZ + z >= 0) {
+                        spawnParticle(center.clone().add(x, 0, z));
+                    }
+                    // 2. Oktant
+                    if (bX + x >= 0 && bZ - z >= 0) {
+                        spawnParticle(center.clone().add(x, 0, -z));
+                    }
+                    // 6. Oktant
+                   if (bX - x >= 0 && bZ + z >= 0) {
+                        spawnParticle(center.clone().add(-x, 0, z));
+                    }
+                    // 3. Oktant
+                    if (bX - x >= 0 && bZ - z >= 0) {
+                        spawnParticle(center.clone().add(-x, 0, -z));
+                    }
+                    // 8. Oktant
+                    if (bX + z >= 0 && bZ + x >= 0) {
+                        spawnParticle(center.clone().add(z, 0, x));
+                    }
+                    // 1. Oktant
+                   if (bX + z >= 0 && bZ - x >= 0) {
+                       spawnParticle(center.clone().add(z, 0, -x));
+                    }
+                  // 4. Oktant
+                   if (bX - z >= 0 && bZ + x >= 0) {
+                       spawnParticle(center.clone().add(-z, 0, x));
+                    }
+                    // 5. Oktant
+                    if (bX - z >= 0 && bZ - x >= 0) {
+                        spawnParticle(center.clone().add(-z, 0, -x));
+                    }
+
+                    if (d < 0) {
+                        d += 2 * x + 1;
+                    } else {
+                        d += 2 * (x - z) + 1;
+                        z -= 1 / segments;
+                   }
+                    x += 1.0 / segments;
+
+                } while (x <= z);
 
 
                 // Very heavy calculation. Replace this with the midpoint calculation
