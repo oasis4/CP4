@@ -1,19 +1,20 @@
-name: CP4
+name: CraftProtect
 version: '${project.version}'
-main: cp4.status.CP4Plugin
+main: com.github.oasis.craftprotect.CraftProtectPlugin
 api-version: 1.19
-authors: [ Oasis ]
+authors: [ Oasis, LeBaasti, CyntrixAlgorithm ]
 commands:
-  onlinezeit:
-    usage: /Onlinezeit
-    description: Schau dir deine Onlinezeit an
+  uptime:
+    usage: '/<command>'
+    description: Zeigt deine Spielzeit
   afk:
-    usage: /Afk
-    description: Du Bekommst die Rolle AFK
+    usage: '/<command>'
+    description: 'Wenn du diesen Befehl ausführst, bekommst du die Rolle AFK'
   sub:
-    usage: /sub
+    usage: '/<command>'
   flame:
-    usage: /flame
+    usage: '/<command>'
+    permission: craftprotect.command.flame
     aliases: [f]
   live:
     usage: /Live
@@ -24,18 +25,18 @@ commands:
     aliases:
       - r
   oasislive:
-    usage: /oasislive
+    usage: '/<command>'
+    permission: 'cp4.admin'
     aliases:
       - ol
   rw:
-    usage: /rw
+    usage: '/<command>'
   tanjo:
-    usage: /tanjo
-
-depend:
-  - LuckPerms
+    usage: '/<command>'
+    description: "Du hast das Easteregg aus Cp4 gefunden. Melde dich gerne bei Oasis"
 
 libraries:
   - org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.20-RC
+  - org.apache.commons:commons-text:1.10.0
 
 
