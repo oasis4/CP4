@@ -1,43 +1,57 @@
 package com.github.oasis.craftprotect.feature;
 
+import com.github.oasis.craftprotect.CraftProtectPlugin;
 import com.github.oasis.craftprotect.api.CraftProtect;
+import com.github.oasis.craftprotect.api.Feature;
+import com.google.common.collect.Iterables;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
-public class PlayerGreetingFeature implements Listener {
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-    private final CraftProtect plugin;
+public class PlayerGreetingFeature implements Feature<CraftProtectPlugin> {
 
-    public PlayerGreetingFeature(CraftProtect plugin) {
+    private static final int CIRCLE_SEGMENTS = 16;
+    private static final int CIRCLE_RADIUS = 1;
+
+    private CraftProtect plugin;
+    private final List<Vector> circleLocations = new ArrayList<>(CIRCLE_SEGMENTS);
+
+
+    @Override
+    public void init(CraftProtectPlugin plugin) {
         this.plugin = plugin;
+
+        // Precalculate the circle
+        for (double pa = 0.0; pa < 2 * Math.PI; pa += 2 * Math.PI / CIRCLE_SEGMENTS) {
+            this.circleLocations.add(new Vector(Math.cos(pa) * CIRCLE_RADIUS, 0, Math.sin(pa) * CIRCLE_RADIUS));
+        }
     }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
         World world = player.getWorld();
-        Location locationfire = player.getLocation().clone();
         player.setGlowing(false);
-        player.sendTitle("§3Willkommen", "§fbei " + plugin.getName(), 1, 20 * 3, 20*2);
-
-        //e.setJoinMessage("§8[§b+§8] " + player.getDisplayName());
-
+        player.sendTitle("§3Willkommen", "§fbei " + plugin.getName(), 1, 20 * 3, 20 * 2);
 
         double seconds = 3.0;
-        double segments = 3;
-        double radius = 1;
-
-        locationfire.add(0, 0.4, 0);
 
         new BukkitRunnable() {
             final long created = System.currentTimeMillis();
+            Location locationfire = player.getLocation().clone();
+
+            Iterator<Vector> iterator = Iterables.cycle(circleLocations).iterator();
 
             @Override
             public void run() {
@@ -45,84 +59,19 @@ public class PlayerGreetingFeature implements Listener {
                     cancel();
                     return;
                 }
-                System.out.println("Spawn circle");
 
-                double d = 16; // Kontrollvariable
-                double x = 0;
-                double z = radius;
-                Location center = locationfire.clone();
-//                do {
-//                    double bX = center.getX();
-//                    double bZ = center.getZ();
-//
-//                    // 7. Oktant
-//                    if (bX + x >= 0 && bZ + z >= 0) {
-//                        spawnParticle(center.clone().add(x, 0, z));
-//                    }
-//                    // 2. Oktant
-//                    if (bX + x >= 0 && bZ - z >= 0) {
-//                        spawnParticle(center.clone().add(x, 0, -z));
-//                    }
-//                    // 6. Oktant
-//                    if (bX - x >= 0 && bZ + z >= 0) {
-//                        spawnParticle(center.clone().add(-x, 0, z));
-//                    }
-//                    // 3. Oktant
-//                    if (bX - x >= 0 && bZ - z >= 0) {
-//                        spawnParticle(center.clone().add(-x, 0, -z));
-//                    }
-//                    // 8. Oktant
-//                    if (bX + z >= 0 && bZ + x >= 0) {
-//                        spawnParticle(center.clone().add(z, 0, x));
-//                    }
-//                    // 1. Oktant
-//                    if (bX + z >= 0 && bZ - x >= 0) {
-//                        spawnParticle(center.clone().add(z, 0, -x));
-//                    }
-//                    // 4. Oktant
-//                    if (bX - z >= 0 && bZ + x >= 0) {
-//                        spawnParticle(center.clone().add(-z, 0, x));
-//                    }
-//                    // 5. Oktant
-//                    if (bX - z >= 0 && bZ - x >= 0) {
-//                        spawnParticle(center.clone().add(-z, 0, -x));
-//                    }
-//
-//                    if (d < 0) {
-//                        d += 2 * x + 1;
-//                    } else {
-//                        d += 2 * (x - z) + 1;
-//                        z -= 1 / segments;
-//                    }
-//                    x += 1.0 / segments;
-//
-//                } while (x <= z);
+                Vector next = iterator.next();
+                Location loc = locationfire.clone().add(next);
+                world.spawnParticle(Particle.FLAME, loc, 1, 0, 0, 0, 0);
 
-
-                // Very heavy calculation. Replace this with the midpoint calculation
-                for (double pa = 0.0; pa < 2 * Math.PI; pa += 2 * Math.PI / segments) { // TODO: Use another algorithm
-                    Location l = locationfire.clone().add(
-                            Math.cos(pa) * radius, // X
-                            0.3, // Y
-                            Math.sin(pa) * radius // Z
-                    );
-                    world.spawnParticle(Particle.FLAME, l, 1, 0, 0, 0, 0);
-                    Location l2 = l.clone().add(0, 0.4, 0);
-                    world.spawnParticle(Particle.FLAME, l2, 1, 0, 0, 0, 0);
-                }
+                locationfire.add(0, 0.05, 0);
             }
-        }.runTaskTimerAsynchronously(plugin, 10, 10);
+        }.runTaskTimerAsynchronously(plugin, 1, 1);
 
     }
 
-    private void spawnParticle(Location location) {
-        World world = location.getWorld();
-        world.spawnParticle(Particle.FLAME, location, 1, 0, 0, 0, 0);
-    }
+    @Override
+    public void close() throws IOException {
 
-
-    @EventHandler
-    public void onQuit(PlayerQuitEvent e) {
-        //e.setQuitMessage("§7" + e.getPlayer().getDisplayName() + " hat das Spiel verlassen!");
     }
 }

@@ -31,9 +31,12 @@ commands:
       - ol
   rw:
     usage: /rw
+  link:
+    usage: /link <twitch|discord>
 
 libraries:
   - org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.20-RC
   - org.apache.commons:commons-text:1.10.0
-
-
+  - io.netty:netty-all:4.1.90.Final
+#  - com.github.twitch4j:twitch4j:1.15.0
+  - io.reactivex.rxjava3:rxjava:3.1.6

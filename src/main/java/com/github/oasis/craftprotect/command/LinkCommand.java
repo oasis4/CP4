@@ -1,0 +1,90 @@
+package com.github.oasis.craftprotect.command;
+
+import com.github.oasis.craftprotect.CraftProtectPlugin;
+import com.github.oasis.craftprotect.api.CraftProtectCommand;
+import com.github.oasis.craftprotect.api.CraftProtectUser;
+import com.github.oasis.craftprotect.link.MinecraftExecution;
+import com.github.oasis.craftprotect.link.TwitchExecution;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.util.StringUtil;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
+
+public class LinkCommand implements CraftProtectCommand {
+
+    private final CraftProtectPlugin plugin;
+
+    public LinkCommand(CraftProtectPlugin plugin) {
+        this.plugin = plugin;
+    }
+
+    @Override
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+
+        if (!(sender instanceof Player player))
+            return false;
+
+        if (args.length == 1 && args[0].equalsIgnoreCase("twitch")) {
+            byte[] bytes = new byte[8];
+            ThreadLocalRandom.current().nextBytes(bytes);
+            BigInteger integer = new BigInteger(bytes);
+            integer = integer.abs();
+
+            String token = integer.toString(Character.MAX_RADIX);
+            player.sendMessage(plugin.getTwitchAuthorizeURL().replace("{sessionId}", token));
+
+            plugin.getAuthorizationCache().put(token, (TwitchExecution) (userId, live) -> {
+
+                plugin.getUserStorage()
+                        .findUserAsync(player.getUniqueId())
+                        .thenApply(craftProtectUser -> {
+                            System.out.println(craftProtectUser);
+                            CraftProtectUser user = craftProtectUser.orElseGet(() -> new CraftProtectUser(player.getUniqueId(), null, null));
+                            user.setTwitchId(userId);
+                            return user;
+                        }).thenAccept(craftProtectUser -> {
+                            System.out.println("Storing: " + craftProtectUser);
+                            plugin.getUserStorage().persist(craftProtectUser);
+                        });
+
+                if (live)
+                    plugin.getPlayerDisplay(player).setLive(true);
+            });
+
+            return true;
+        }
+
+        if (args.length == 1 && args[0].equalsIgnoreCase("minecraft")) {
+            byte[] bytes = new byte[8];
+            ThreadLocalRandom.current().nextBytes(bytes);
+            BigInteger integer = new BigInteger(bytes);
+            integer = integer.abs();
+
+            String token = integer.toString(Character.MAX_RADIX);
+            player.sendMessage(plugin.getTwitchAuthorizeURL().replace("{sessionId}", token));
+            plugin.getAuthorizationCache().put(token, (MinecraftExecution) id -> player.sendMessage("Id: " + id));
+            return true;
+        }
+
+        return false;
+    }
+
+    @Nullable
+    @Override
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String
+            label, @NotNull String[] args) {
+        if (args.length <= 1) {
+            return StringUtil.copyPartialMatches(args[0], Arrays.asList("twitch", "discord", "minecraft"), new ArrayList<>());
+        }
+        return null;
+    }
+}

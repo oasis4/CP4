@@ -2,6 +2,7 @@ package com.github.oasis.craftprotect.feature;
 
 import com.github.oasis.craftprotect.CraftProtectPlugin;
 import com.github.oasis.craftprotect.api.CraftProtect;
+import com.github.oasis.craftprotect.api.Feature;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -30,16 +31,18 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public class SpawnElytraFeature implements Listener {
+public class SpawnElytraFeature implements Feature<CraftProtectPlugin> {
     private static final int radius = (int) Math.pow(25, 2);
 
-    private final CraftProtect protect;
-    private final NamespacedKey key;
+    private CraftProtect protect;
+    private NamespacedKey key;
 
-    public SpawnElytraFeature(CraftProtectPlugin plugin) {
+    @Override
+    public void init(CraftProtectPlugin plugin) {
         this.protect = plugin;
-        this.key = NamespacedKey.fromString("chestplate-save", plugin);
+        this.key = NamespacedKey.fromString("chestplate-safe", plugin);
     }
+
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
@@ -221,4 +224,8 @@ public class SpawnElytraFeature implements Listener {
     }
 
 
+    @Override
+    public void close() throws IOException {
+
+    }
 }

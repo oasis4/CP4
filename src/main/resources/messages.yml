@@ -10,3 +10,4 @@ command:
     duration: '<prefix> <dark_aqua>Deine Spielzeit beträgt: <gold><0>'
   oasislive:
     broadcast: '<prefix> <dark_aqua>Oasis ist nun Live auf Twitch schaut rein: <dark_purple><click:open_url:https://www.twitch.tv/oasis4_0><hover:show_text:"<dark_aqua>Oasis Twitch!">Twitch</hover></click></dark_purple>'
+  reset: '<prefix> <dark_aqua>Alles wurde von dir zurückgesetzt'

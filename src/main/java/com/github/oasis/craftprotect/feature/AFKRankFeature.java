@@ -1,7 +1,9 @@
 package com.github.oasis.craftprotect.feature;
 
 
+import com.github.oasis.craftprotect.CraftProtectPlugin;
 import com.github.oasis.craftprotect.api.CraftProtectCommand;
+import com.github.oasis.craftprotect.api.Feature;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -14,12 +16,18 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-public class AFKRankFeature implements CraftProtectCommand, Listener {
+public class AFKRankFeature implements CraftProtectCommand, Feature<CraftProtectPlugin> {
 
     private final Map<Player, Location> locationMap = new WeakHashMap<>();
+
+    @Override
+    public void init(CraftProtectPlugin plugin) {
+
+    }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -32,8 +40,6 @@ public class AFKRankFeature implements CraftProtectCommand, Listener {
             player.setPlayerListName(player.getDisplayName());
             return true;
         }
-
-
 
         Location position = player.getLocation();
         locationMap.put(player, position.getBlock().getLocation().clone());
@@ -69,6 +75,11 @@ public class AFKRankFeature implements CraftProtectCommand, Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         locationMap.remove(event.getPlayer());
+    }
+
+    @Override
+    public void close() throws IOException {
+
     }
 
     //@EventHandler

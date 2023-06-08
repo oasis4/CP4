@@ -2,14 +2,17 @@ package com.github.oasis.craftprotect;
 
 import com.github.oasis.craftprotect.api.CraftProtect;
 import com.github.oasis.craftprotect.api.CraftProtectCommand;
+import com.github.oasis.craftprotect.api.FeaturedPlugin;
 import com.github.oasis.craftprotect.command.*;
-import com.github.oasis.craftprotect.feature.AFKRankFeature;
-import com.github.oasis.craftprotect.feature.EmojiFeature;
-import com.github.oasis.craftprotect.feature.PlayerGreetingFeature;
-import com.github.oasis.craftprotect.feature.SpawnElytraFeature;
+import com.github.oasis.craftprotect.feature.*;
+import com.github.oasis.craftprotect.link.*;
+import com.github.oasis.craftprotect.storage.AsyncUserStorage;
+import com.github.oasis.craftprotect.utils.PlayerDisplay;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import de.lebaasti.craftprotect4.CraftProtectKt;
+import com.sun.net.httpserver.HttpServer;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -28,19 +31,23 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
+import java.net.InetSocketAddress;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.function.Consumer;
 
 
-public final class CraftProtectPlugin extends JavaPlugin implements CraftProtect, Listener {
+public final class CraftProtectPlugin extends FeaturedPlugin implements CraftProtect, Listener {
+
+    public static Executor MAIN_EXECUTOR;
 
     private File userDataFolder;
 
@@ -54,13 +61,24 @@ public final class CraftProtectPlugin extends JavaPlugin implements CraftProtect
 
     private BukkitAudiences audiences;
 
-    @Override
-    public void sendMessage(@NotNull CommandSender sender, @NotNull String key, @NotNull Object... objects) {
-        audiences.sender(sender).sendMessage(getMessage(key, objects));
-    }
+    private AsyncUserStorage userStorage;
+
+    private String twitchAuthorizeURL;
+    private HttpServer httpServer;
+
+    private Map<Player, PlayerDisplay> displayMap = new WeakHashMap<>();
+
+    private Cache<String, Execution> authorizationCache = CacheBuilder.newBuilder()
+            .expireAfterWrite(Duration.ofSeconds(30))
+            .weakValues()
+            .build();
+
 
     @Override
     public void onEnable() {
+        super.onEnable();
+
+        MAIN_EXECUTOR = command -> Bukkit.getScheduler().runTask(CraftProtectPlugin.this, command);
 
         this.audiences = BukkitAudiences.create(this);
 
@@ -73,15 +91,12 @@ public final class CraftProtectPlugin extends JavaPlugin implements CraftProtect
         userDataFolder = new File(getDataFolder(), "userdata");
         if (!userDataFolder.isDirectory()) userDataFolder.mkdirs();
 
-        Reader textResource = getTextResource("messages.yml");
-        if (textResource == null) {
-            throw new RuntimeException("Missing messages.yml");
-        }
-        messages = YamlConfiguration.loadConfiguration(textResource);
+        File messagesFile = new File(getDataFolder(), "messages.yml");
+        setupMessages(messagesFile);
 
-        UptimeCommand uptimeCommand = new UptimeCommand(this);
-        registerCommand("uptime", uptimeCommand);
-        getServer().getPluginManager().registerEvents(uptimeCommand, this);
+        PlaytimeCommand playtimeCommand = new PlaytimeCommand(this);
+        registerCommand("playtime", playtimeCommand);
+        getServer().getPluginManager().registerEvents(playtimeCommand, this);
 
         AFKRankFeature afkRankFeature = new AFKRankFeature();
         registerCommand("afk", afkRankFeature);
@@ -96,14 +111,85 @@ public final class CraftProtectPlugin extends JavaPlugin implements CraftProtect
         registerCommand("live", new LiveCommand(this));
         registerCommand("Oasislive", new OasisLiveCommand(this));
         registerCommand("rw", new SpawnFireworkCommand(this));
+        registerCommand("link", new LinkCommand(this));
 
 
-        Bukkit.getPluginManager().registerEvents(new EmojiFeature(this), this);
-        Bukkit.getPluginManager().registerEvents(new SpawnElytraFeature(this), this);
-        Bukkit.getPluginManager().registerEvents(new PlayerGreetingFeature(this), this);
-        Bukkit.getPluginManager().registerEvents(this, this);
-        CraftProtectKt.registerEvents();
+        loadFeature(new EmojiFeature());
+        loadFeature(new SpawnElytraFeature());
+        loadFeature(new PlayerGreetingFeature());
+        loadFeature(new GroupFeature());
 
+        ConfigurationSection database = getConfig().getConfigurationSection("database");
+        if (database != null) {
+            this.userStorage = new AsyncUserStorage(() -> {
+                try {
+                    return DriverManager.getConnection(database.getString("url"), database.getString("username"), database.getString("password"));
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            });
+        }
+        try {
+            httpServer = HttpServer.create(new InetSocketAddress(3000), 0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ConfigurationSection twitchSection = getConfig().getConfigurationSection("twitch");
+        if (twitchSection != null && httpServer != null) {
+            String clientId = twitchSection.getString("client-id");
+            String clientSecret = twitchSection.getString("client-secret");
+            String callbackURI = twitchSection.getString("callback-uri", "localhost:3000");
+            twitchAuthorizeURL = "https://id.twitch.tv/oauth2/authorize?client_id=%s&redirect_uri=%s&response_type=%s&scope=%s&state={sessionId}".formatted(clientId, callbackURI, "code", "");
+
+            LiveStreamFeature feature = new LiveStreamFeature(clientId, clientSecret);
+            loadFeature(feature);
+
+            httpServer.createContext("/twitch", new TwitchLinkHandler(this, new TwitchClientInfo(clientId, clientSecret, callbackURI), feature));
+        }
+
+
+        ConfigurationSection minecraftSection = getConfig().getConfigurationSection("minecraft");
+        if (minecraftSection != null && httpServer != null) {
+            String clientId = minecraftSection.getString("client-id");
+            //String clientSecret = twitchSection.getString("client-secret");
+            String callbackURI = minecraftSection.getString("callback-uri", "localhost:3000");
+            twitchAuthorizeURL = """
+                    https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize?
+                    client_id=%s
+                    &response_type=token
+                    &redirect_uri=%s
+                    &scope=XboxLive.signin
+                    &response_mode=fragment
+                    &state={sessionId}
+                    &nonce=678910
+                    """;
+
+            httpServer.createContext("/minecraft", new MinecraftLinkHandler(this, new MinecraftClientInfo(clientId, callbackURI)));
+        }
+
+
+        httpServer.start();
+
+
+    }
+
+
+    private void setupMessages(File messagesFile) {
+        saveResource(messagesFile.getName(), false);
+
+        try (FileReader reader = new FileReader(messagesFile)) {
+            messages = YamlConfiguration.loadConfiguration(reader);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        try (Reader reader = getTextResource(messagesFile.getName())) {
+            messages.setDefaults(YamlConfiguration.loadConfiguration(reader));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private Map<String, String> loadChatReplacements() {
@@ -140,8 +226,9 @@ public final class CraftProtectPlugin extends JavaPlugin implements CraftProtect
 
     @Override
     public void onDisable() {
-        this.getLogger().info("ENDE");
+        super.onDisable();
 
+        httpServer.stop(0);
     }
 
     public File getUserDataFolder() {
@@ -168,7 +255,8 @@ public final class CraftProtectPlugin extends JavaPlugin implements CraftProtect
 
     @NotNull
     @Override
-    public Closeable attachRepeaterTask(@NotNull Player player, @NotNull String id, @NotNull Runnable task, int delay, int period) {
+    public Closeable attachRepeaterTask(@NotNull Player player, @NotNull String id, @NotNull Runnable task,
+                                        int delay, int period) {
         BukkitTask bukkitTask = Bukkit.getScheduler().runTaskTimer(this, task, delay, period);
         Closeable closeable = () -> {
             bukkitTask.cancel();
@@ -192,7 +280,8 @@ public final class CraftProtectPlugin extends JavaPlugin implements CraftProtect
 
     @NotNull
     @Override
-    public Closeable attachAsyncRepeaterTask(@NotNull Player player, @NotNull String id, @NotNull Runnable task, int delay, int period) {
+    public Closeable attachAsyncRepeaterTask(@NotNull Player player, @NotNull String id, @NotNull Runnable task,
+                                             int delay, int period) {
         BukkitTask bukkitTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, task, delay, period);
         Closeable closeable = () -> {
             bukkitTask.cancel();
@@ -204,7 +293,8 @@ public final class CraftProtectPlugin extends JavaPlugin implements CraftProtect
 
     @NotNull
     @Override
-    public Closeable attachAsyncDelayedTask(@NotNull Player player, @NotNull String id, @NotNull Runnable task, int delay) {
+    public Closeable attachAsyncDelayedTask(@NotNull Player player, @NotNull String id, @NotNull Runnable task,
+                                            int delay) {
         BukkitTask bukkitTask = Bukkit.getScheduler().runTaskLaterAsynchronously(this, task, delay);
         Closeable closeable = () -> {
             bukkitTask.cancel();
@@ -269,6 +359,30 @@ public final class CraftProtectPlugin extends JavaPlugin implements CraftProtect
             return Collections.emptyMap();
         }
         return chatReplacements;
+    }
+
+    public String getTwitchAuthorizeURL() {
+        return twitchAuthorizeURL;
+    }
+
+    @Override
+    public void sendMessage(@NotNull CommandSender sender, @NotNull String key, @NotNull Object... objects) {
+        audiences.sender(sender).sendMessage(getMessage(key, objects));
+    }
+
+    @Override
+    public AsyncUserStorage getUserStorage() {
+        return userStorage;
+    }
+
+    @Override
+    public Map<Player, PlayerDisplay> getDisplayMap() {
+        return this.displayMap;
+    }
+
+    @Override
+    public Cache<String, Execution> getAuthorizationCache() {
+        return authorizationCache;
     }
 }
 
