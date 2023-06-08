@@ -23,11 +23,11 @@ import java.io.IOException;
 import java.util.List;
 
 
-public class UptimeCommand implements CraftProtectCommand, Listener {
+public class PlaytimeCommand implements CraftProtectCommand, Listener {
 
     private final CraftProtectPlugin plugin;
 
-    public UptimeCommand(CraftProtectPlugin plugin) {
+    public PlaytimeCommand(CraftProtectPlugin plugin) {
         this.plugin = plugin;
 
         for (Player player : Bukkit.getOnlinePlayers()) {

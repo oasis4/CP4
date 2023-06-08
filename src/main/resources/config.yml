@@ -1,3 +1,9 @@
+database:
+  url: 'jdbc:mysql://localhost:3306'
+  database: 'test'
+  username: 'root'
+  password: 'test'
+
 chat:
   replacements:
     ':)': '☺'
