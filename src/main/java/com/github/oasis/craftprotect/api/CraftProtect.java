@@ -4,6 +4,7 @@ import com.github.oasis.craftprotect.link.Execution;
 import com.github.oasis.craftprotect.storage.AsyncUserStorage;
 import com.github.oasis.craftprotect.utils.PlayerDisplay;
 import com.google.common.cache.Cache;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -22,6 +23,8 @@ import java.util.UUID;
 public interface CraftProtect extends Plugin {
 
     Component getPrefix();
+
+    Component getMessageOfTheDay();
 
     @NotNull
     String getVersion();
@@ -80,4 +83,6 @@ public interface CraftProtect extends Plugin {
     }
 
     Cache<String, Execution> getAuthorizationCache();
+
+    BukkitAudiences getAudiences();
 }

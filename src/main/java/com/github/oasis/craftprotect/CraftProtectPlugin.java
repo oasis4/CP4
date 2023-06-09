@@ -5,8 +5,7 @@ import com.github.oasis.craftprotect.api.CraftProtectCommand;
 import com.github.oasis.craftprotect.api.FeaturedPlugin;
 import com.github.oasis.craftprotect.command.*;
 import com.github.oasis.craftprotect.feature.*;
-import com.github.oasis.craftprotect.feature.Combat.Combat;
-import com.github.oasis.craftprotect.feature.*;
+import com.github.oasis.craftprotect.feature.combat.Combat;
 import com.github.oasis.craftprotect.link.*;
 import com.github.oasis.craftprotect.storage.AsyncUserStorage;
 import com.github.oasis.craftprotect.utils.PlayerDisplay;
@@ -44,7 +43,6 @@ import java.sql.SQLException;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.Executor;
-import java.util.function.Consumer;
 
 
 public final class CraftProtectPlugin extends FeaturedPlugin implements CraftProtect, Listener {
@@ -74,6 +72,7 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
             .expireAfterWrite(Duration.ofSeconds(30))
             .weakValues()
             .build();
+    private Component messageOfTheDay;
 
 
     @Override
@@ -121,6 +120,20 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
         loadFeature(new SpawnElytraFeature());
         loadFeature(new PlayerGreetingFeature());
         loadFeature(new GroupFeature());
+        loadFeature(new PlayerWingsFeature());
+
+        File motdFile = new File(getDataFolder(), "motd.txt");
+        if (motdFile.isFile()) {
+            try (FileReader reader = new FileReader(motdFile)) {
+                StringWriter writer = new StringWriter();
+                reader.transferTo(writer);
+                this.messageOfTheDay = MiniMessage.miniMessage().deserialize(writer.toString());
+                loadFeature(new MotdFeature());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
 
         ConfigurationSection database = getConfig().getConfigurationSection("database");
         if (database != null) {
@@ -244,6 +257,11 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
     @Override
     public Component getPrefix() {
         return getMessage("prefix");
+    }
+
+    @Override
+    public Component getMessageOfTheDay() {
+        return this.messageOfTheDay;
     }
 
     @NotNull
@@ -388,6 +406,11 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
     @Override
     public Cache<String, Execution> getAuthorizationCache() {
         return authorizationCache;
+    }
+
+    @Override
+    public BukkitAudiences getAudiences() {
+        return audiences;
     }
 }
 

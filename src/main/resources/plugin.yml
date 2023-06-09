@@ -33,7 +33,6 @@ commands:
     usage: /rw
   link:
     usage: /link <twitch|discord>
-    usage: '/<command>'
   tanjo:
     usage: '/<command>'
     description: "Du hast das Easteregg aus Cp4 gefunden. Melde dich gerne bei Oasis"
@@ -44,3 +43,4 @@ libraries:
   - io.netty:netty-all:4.1.90.Final
 #  - com.github.twitch4j:twitch4j:1.15.0
   - io.reactivex.rxjava3:rxjava:3.1.6
+  - de.javagl:obj:0.4.0

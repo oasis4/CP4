@@ -11,8 +11,13 @@ public class FeaturedPlugin extends JavaPlugin {
     private final Set<Feature<?>> features = new HashSet<>();
 
     public final <T extends JavaPlugin> void loadFeature(Feature<T> feature) {
-        feature.init((T) this);
-        getServer().getPluginManager().registerEvents(feature, this);
+        try {
+            feature.init((T) this);
+            getServer().getPluginManager().registerEvents(feature, this);
+        } catch (IOException e) {
+            System.err.println("Failed to activate feature: " + feature.getClass().getCanonicalName());
+            e.printStackTrace();
+        }
     }
 
     @Override
