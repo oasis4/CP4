@@ -1,3 +1,5 @@
+![Logo](https://github.com/CraftProtectDE/CraftProtect-Paper/blob/v5/assets/logo.png)
+
 # CraftProtect
 - [x] Temporäre Elytra beim Spawn
 
