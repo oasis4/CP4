@@ -3,6 +3,8 @@ package com.github.oasis.craftprotect.command;
 import com.github.oasis.craftprotect.api.CraftProtect;
 import com.github.oasis.craftprotect.api.CraftProtectCommand;
 import com.github.oasis.craftprotect.utils.M;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
@@ -13,13 +15,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.jetbrains.annotations.NotNull;
 
+@Singleton
 public class SpawnFireworkCommand implements CraftProtectCommand {
 
-    private final CraftProtect protect;
-
-    public SpawnFireworkCommand(CraftProtect protect) {
-        this.protect = protect;
-    }
+    @Inject
+    private CraftProtect protect;
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {

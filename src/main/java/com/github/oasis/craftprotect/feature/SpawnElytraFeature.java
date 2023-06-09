@@ -1,8 +1,9 @@
 package com.github.oasis.craftprotect.feature;
 
 import com.github.oasis.craftprotect.CraftProtectPlugin;
-import com.github.oasis.craftprotect.api.CraftProtect;
 import com.github.oasis.craftprotect.api.Feature;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -10,7 +11,6 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityToggleGlideEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -31,18 +31,18 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public class SpawnElytraFeature implements Feature<CraftProtectPlugin> {
+@Singleton
+public class SpawnElytraFeature implements Feature {
     private static final int radius = (int) Math.pow(25, 2);
 
-    private CraftProtect protect;
-    private NamespacedKey key;
+    private final CraftProtectPlugin protect;
+    private final NamespacedKey key;
 
-    @Override
-    public void init(CraftProtectPlugin plugin) {
-        this.protect = plugin;
-        this.key = NamespacedKey.fromString("chestplate-safe", plugin);
+    @Inject
+    public SpawnElytraFeature(CraftProtectPlugin protect) {
+        this.protect = protect;
+        this.key = NamespacedKey.fromString("chestplate-vault", protect);
     }
-
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {

@@ -4,6 +4,8 @@ package com.github.oasis.craftprotect.command;
 import com.github.oasis.craftprotect.api.CraftProtect;
 import com.github.oasis.craftprotect.api.CraftProtectCommand;
 import com.github.oasis.craftprotect.utils.M;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
@@ -15,15 +17,13 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Closeable;
 import java.io.IOException;
 
+@Singleton
 public class FlameCommand implements CraftProtectCommand {
 
     private static final String taskName = "flame";
 
-    public final CraftProtect plugin;
-
-    public FlameCommand(CraftProtect plugin) {
-        this.plugin = plugin;
-    }
+    @Inject
+    public CraftProtect plugin;
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {

@@ -3,6 +3,8 @@ package com.github.oasis.craftprotect.command;
 import com.github.oasis.craftprotect.api.CraftProtect;
 import com.github.oasis.craftprotect.api.CraftProtectCommand;
 import com.github.oasis.craftprotect.utils.M;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -12,13 +14,11 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 
+@Singleton
 public class GlowCommand implements CraftProtectCommand {
 
-    private final CraftProtect plugin;
-
-    public GlowCommand(CraftProtect plugin) {
-        this.plugin = plugin;
-    }
+    @Inject
+    private CraftProtect plugin;
 
     @Override
     public boolean onCommand(CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {

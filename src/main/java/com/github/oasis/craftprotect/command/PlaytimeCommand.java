@@ -3,6 +3,8 @@ package com.github.oasis.craftprotect.command;
 import com.github.oasis.craftprotect.CraftProtectPlugin;
 import com.github.oasis.craftprotect.api.CraftProtectCommand;
 import com.github.oasis.craftprotect.utils.M;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -23,13 +25,14 @@ import java.io.IOException;
 import java.util.List;
 
 
+@Singleton
 public class PlaytimeCommand implements CraftProtectCommand, Listener {
 
     private final CraftProtectPlugin plugin;
 
+    @Inject
     public PlaytimeCommand(CraftProtectPlugin plugin) {
         this.plugin = plugin;
-
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.setMetadata("last-joined", new FixedMetadataValue(plugin, System.currentTimeMillis()));
         }
@@ -48,7 +51,7 @@ public class PlaytimeCommand implements CraftProtectCommand, Listener {
         File userData = new File(userDataFolder, player.getUniqueId() + ".yml");
 
         YamlConfiguration configuration = YamlConfiguration.loadConfiguration(userData);
-        long uptime = configuration.getLong("uptime", 0L);
+        long uptime = configuration.getLong("play-time", 0L);
 
 
         List<MetadataValue> list = player.getMetadata("last-joined");
@@ -97,7 +100,7 @@ public class PlaytimeCommand implements CraftProtectCommand, Listener {
         }
 
         YamlConfiguration configuration = YamlConfiguration.loadConfiguration(userData);
-        long onlineTime = configuration.getLong("uptime", 0L);
+        long onlineTime = configuration.getLong("play-time", 0L);
 
         List<MetadataValue> list = player.getMetadata("last-joined");
         long lastJoined = 0;
@@ -107,7 +110,7 @@ public class PlaytimeCommand implements CraftProtectCommand, Listener {
 
         onlineTime += (System.currentTimeMillis() - lastJoined);
 
-        configuration.set("uptime", onlineTime);
+        configuration.set("play-time", onlineTime);
         try {
             configuration.save(userData);
         } catch (IOException e) {

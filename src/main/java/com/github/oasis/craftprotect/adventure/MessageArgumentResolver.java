@@ -1,6 +1,6 @@
-package com.github.oasis.craftprotect;
+package com.github.oasis.craftprotect.adventure;
 
-import com.github.oasis.craftprotect.api.CraftProtect;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.tag.Tag;
@@ -9,22 +9,27 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class MessageResolver implements TagResolver {
+public class MessageArgumentResolver implements TagResolver {
 
-    private final CraftProtect protect;
+    private final Object[] objects;
 
-    public MessageResolver(CraftProtect protect) {
-        this.protect = protect;
+    public MessageArgumentResolver(Object[] objects) {
+        this.objects = objects;
     }
 
     @Override
     public @Nullable Tag resolve(@NotNull String name, @NotNull ArgumentQueue arguments, @NotNull Context ctx) throws ParsingException {
-        //noinspection DataFlowIssue
-        return Tag.preProcessParsed(protect.getUnformattedMessages().getString(name));
+        int i = Integer.parseInt(name);
+        return Tag.inserting(Component.text(objects[i].toString()));
     }
 
     @Override
     public boolean has(@NotNull String name) {
-        return protect.getUnformattedMessages().isString(name);
+        try {
+            int i = Integer.parseInt(name);
+            return objects.length > i;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 }

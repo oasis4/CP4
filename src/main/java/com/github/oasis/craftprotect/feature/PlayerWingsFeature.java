@@ -2,6 +2,8 @@ package com.github.oasis.craftprotect.feature;
 
 import com.github.oasis.craftprotect.CraftProtectPlugin;
 import com.github.oasis.craftprotect.api.Feature;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import de.javagl.obj.Obj;
 import de.javagl.obj.ObjReader;
 import de.javagl.obj.ObjUtils;
@@ -18,19 +20,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class PlayerWingsFeature implements Feature<CraftProtectPlugin> {
+@Singleton
+public class PlayerWingsFeature implements Feature {
 
+    @Inject
     private CraftProtectPlugin plugin;
     private List<Vector> vectors = new ArrayList<>();
 
-    @Override
-    public void init(CraftProtectPlugin plugin) throws IOException {
-        this.plugin = plugin;
+    public PlayerWingsFeature() throws IOException {
         InputStream resourceAsStream = getClass().getResourceAsStream("/wings.obj");
         if (resourceAsStream != null) {
             this.vectors = loadModel(resourceAsStream, 0.05f);
         }
     }
+
 
     public static List<Vector> loadModel(InputStream file, float scale) throws IOException {
 
@@ -65,40 +68,36 @@ public class PlayerWingsFeature implements Feature<CraftProtectPlugin> {
     public void onJoin(PlayerJoinEvent event) {
 
 
-        plugin.attachAsyncRepeaterTask(event.getPlayer(), "wings", new Runnable() {
-            @Override
-            public void run() {
-                float rotation = event.getPlayer().getLocation().getYaw();
-                try {
-                    Object handle = event.getPlayer().getClass().getMethod("getHandle").invoke(event.getPlayer());
-                    rotation = (float) handle.getClass().getField("aW").get(handle);
-                } catch (Exception ignored) {
-                    System.out.println("Not found");
-                }
-
-                double radians = Math.toRadians(rotation);
-
-                double cos = Math.cos(radians);
-                double sin = Math.sin(radians);
-
-                Vector directionVector = new Vector();
-                directionVector.setX(-Math.sin(Math.toRadians(rotation)));
-                directionVector.setZ(Math.cos(Math.toRadians(rotation)));
-                directionVector = directionVector.multiply(0.2F);
-                directionVector.setY(0.2);
-
-                Location clone = event.getPlayer().getEyeLocation().clone().subtract(directionVector);
-
-
-                for (Vector vector : vectors) {
-
-                    Vector rotatedVector = new Vector(cos * vector.getX() - sin * vector.getZ(), vector.getY(), sin * vector.getX() + cos * vector.getZ());
-                    Location add = clone.clone().add(rotatedVector);
-                    add.getWorld().spawnParticle(Particle.FLAME, add, 1, 0, 0, 0, 0);
-                }
-
-
+        plugin.attachAsyncRepeaterTask(event.getPlayer(), "wings", () -> {
+            float rotation = event.getPlayer().getLocation().getYaw();
+            try {
+                Object handle = event.getPlayer().getClass().getMethod("getHandle").invoke(event.getPlayer());
+                rotation = (float) handle.getClass().getField("aV").get(handle);
+            } catch (Exception ignored) {
+                System.out.println("Not found");
             }
+
+            double radians = Math.toRadians(rotation);
+
+            double cos = Math.cos(radians);
+            double sin = Math.sin(radians);
+
+            Vector directionVector = new Vector();
+            directionVector.setX(-Math.sin(Math.toRadians(rotation)));
+            directionVector.setZ(Math.cos(Math.toRadians(rotation)));
+            directionVector = directionVector.multiply(0.2F);
+            directionVector.setY(0.2);
+
+            Location clone = event.getPlayer().getEyeLocation().clone().subtract(directionVector);
+
+
+            for (Vector vector : vectors) {
+                Vector rotatedVector = new Vector(cos * vector.getX() - sin * vector.getZ(), vector.getY(), sin * vector.getX() + cos * vector.getZ());
+                Location add = clone.clone().add(rotatedVector);
+                add.getWorld().spawnParticle(Particle.FLAME, add, 1, 0, 0, 0, 0);
+            }
+
+
         }, 5, 5);
 
     }

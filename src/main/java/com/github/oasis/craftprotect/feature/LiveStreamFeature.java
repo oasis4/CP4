@@ -2,16 +2,18 @@ package com.github.oasis.craftprotect.feature;
 
 import com.github.oasis.craftprotect.CraftProtectPlugin;
 import com.github.oasis.craftprotect.TwitchTokenRefreshScheduler;
-import com.github.oasis.craftprotect.api.CraftProtect;
 import com.github.oasis.craftprotect.api.CraftProtectUser;
 import com.github.oasis.craftprotect.api.Feature;
+import com.github.oasis.craftprotect.controller.PlayerDisplayController;
+import com.github.oasis.craftprotect.model.PlayerDisplayModel;
 import com.github.oasis.craftprotect.storage.AsyncUserStorage;
-import com.github.oasis.craftprotect.utils.PlayerDisplay;
 import com.github.twitch4j.TwitchClient;
 import com.github.twitch4j.TwitchClientBuilder;
 import com.github.twitch4j.events.ChannelGoLiveEvent;
 import com.github.twitch4j.events.ChannelGoOfflineEvent;
 import com.github.twitch4j.helix.domain.User;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,37 +25,37 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-public class LiveStreamFeature implements Feature<CraftProtectPlugin> {
+@Singleton
+public class LiveStreamFeature implements Feature {
 
-    private CraftProtect craftProtect;
-    private Map<Player, CraftProtectUser> userMap = new WeakHashMap<>();
+    @Inject
+    private CraftProtectPlugin craftProtect;
+    @Inject
+    private PlayerDisplayController controller;
 
-    private TwitchTokenRefreshScheduler twitchTokenRefreshScheduler;
-    private TwitchClient twitchClient;
-    private Map<Player, User> subscribedAccounts = new WeakHashMap<>();
+    private final Map<Player, CraftProtectUser> userMap = new WeakHashMap<>();
 
-    private final String clientId, clientSecret;
+    private final TwitchTokenRefreshScheduler twitchTokenRefreshScheduler;
+    private final TwitchClient twitchClient;
+    private final Map<Player, User> subscribedAccounts = new WeakHashMap<>();
 
     public LiveStreamFeature(String clientId, String clientSecret) {
-        this.clientId = clientId;
-        this.clientSecret = clientSecret;
-    }
 
-    @Override
-    public void init(CraftProtectPlugin plugin) {
-        this.craftProtect = plugin;
-        this.twitchTokenRefreshScheduler = new TwitchTokenRefreshScheduler(plugin.getLogger(), clientId, clientSecret);
+        this.twitchTokenRefreshScheduler = new TwitchTokenRefreshScheduler(craftProtect.getLogger(), clientId, clientSecret);
 
         twitchClient = TwitchClientBuilder.builder().withClientId(clientId).withClientSecret(clientSecret).withEnableHelix(true).build();
 
         twitchClient.getEventManager().onEvent(ChannelGoLiveEvent.class, event -> {
             subscribedAccounts.entrySet().stream()
                     .filter(playerUserEntry -> playerUserEntry.getValue().getId().equals(event.getChannel().getId()))
-                            .forEach(playerUserEntry -> {
-                                Player key = playerUserEntry.getKey();
-                                PlayerDisplay playerDisplay = craftProtect.getPlayerDisplay(key);
-                                playerDisplay.setLive(true);
-                            });
+                    .forEach(playerUserEntry -> {
+                        Player key = playerUserEntry.getKey();
+                        controller.update(key, model -> model.setLive(true));
+
+                        PlayerDisplayModel playerDisplay = controller.get(key);
+                        playerDisplay.setLive(true);
+                        controller.update(key, playerDisplay);
+                    });
             Bukkit.broadcastMessage("LIVE! " + event.getEventId() + " AA");
         });
 
@@ -62,8 +64,7 @@ public class LiveStreamFeature implements Feature<CraftProtectPlugin> {
                     .filter(playerUserEntry -> playerUserEntry.getValue().getId().equals(event.getChannel().getId()))
                     .forEach(playerUserEntry -> {
                         Player key = playerUserEntry.getKey();
-                        PlayerDisplay playerDisplay = craftProtect.getPlayerDisplay(key);
-                        playerDisplay.setLive(false);
+                        controller.update(key, model -> model.setLive(false));
                     });
             Bukkit.broadcastMessage("Offline! " + event.getEventId() + " AA");
         });
@@ -93,9 +94,8 @@ public class LiveStreamFeature implements Feature<CraftProtectPlugin> {
                             twitchClient.getClientHelper().enableStreamEventListener(twitchUser.getId(), twitchUser.getLogin());
                             this.subscribedAccounts.put(event.getPlayer(), twitchUser);
                         });
-                boolean isLive = twitchClient.getHelix().getStreams(null, null, null, "live", 1, null, null,  List.of(user.getTwitchId()), null).execute().getStreams().size() > 0;
-                PlayerDisplay playerDisplay = craftProtect.getPlayerDisplay(event.getPlayer());
-                playerDisplay.setLive(isLive);
+                boolean isLive = twitchClient.getHelix().getStreams(null, null, null, "live", 1, null, null, List.of(user.getTwitchId()), null).execute().getStreams().size() > 0;
+                controller.update(event.getPlayer(), model -> model.setLive(isLive));
             }
         });
     }
@@ -103,11 +103,10 @@ public class LiveStreamFeature implements Feature<CraftProtectPlugin> {
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         User user1 = this.subscribedAccounts.get(event.getPlayer());
-        if(user1 == null)
+        if (user1 == null)
             return;
         twitchClient.getClientHelper().disableStreamEventListenerForId(user1.getId());
-        PlayerDisplay playerDisplay = craftProtect.getPlayerDisplay(event.getPlayer());
-        playerDisplay.setLive(false);
+        controller.update(event.getPlayer(), model -> model.setLive(false));
     }
 
     @Override
@@ -118,7 +117,7 @@ public class LiveStreamFeature implements Feature<CraftProtectPlugin> {
             for (Map.Entry<Player, User> entry : this.subscribedAccounts.entrySet()) {
                 this.twitchClient.getClientHelper().disableStreamEventListenerForId(entry.getValue().getId());
             }
-            craftProtect.getDisplayMap().forEach((player, playerDisplay) -> playerDisplay.setLive(false));
+            controller.updateAll((player, model) -> model.setLive(false));
             this.twitchClient.close();
         }
     }

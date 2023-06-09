@@ -1,10 +1,12 @@
 package com.github.oasis.craftprotect.feature;
 
-import com.github.oasis.craftprotect.CraftProtectPlugin;
 import com.github.oasis.craftprotect.api.CraftProtect;
 import com.github.oasis.craftprotect.api.Feature;
 import com.github.oasis.craftprotect.api.GroupType;
-import com.github.oasis.craftprotect.utils.PlayerDisplay;
+import com.github.oasis.craftprotect.controller.PlayerDisplayController;
+import com.github.oasis.craftprotect.model.PlayerDisplayModel;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
@@ -13,33 +15,26 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.io.IOException;
 
-public class GroupFeature implements Feature<CraftProtectPlugin> {
+@Singleton
+public class GroupFeature implements Feature {
 
+    @Inject
     private CraftProtect plugin;
 
-    @Override
-    public void init(CraftProtectPlugin plugin) {
-        this.plugin = plugin;
-    }
+    @Inject
+    private PlayerDisplayController controller;
 
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
 
-        // Math.cos(0) = 1
-        // Math.sin(0) = 0
-
-        // x = 1
-        // z = 0
-
-
-        PlayerDisplay display = plugin.getPlayerDisplay(player);
-        display.executeAndSubscribe(playerDisplay -> {
-            player.setPlayerListName(playerDisplay.toTabList(player.getDisplayName()));
-        });
+        PlayerDisplayModel display = controller.get(player);
 
         long onlineTime = plugin.getUptime(player);
+
+        player.sendMessage(String.valueOf(onlineTime / 1000f));
+
         if (onlineTime >= 604800000) {
             display.setGroupType(GroupType.GOLD);
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
@@ -52,6 +47,9 @@ public class GroupFeature implements Feature<CraftProtectPlugin> {
         } else {
             display.setGroupType(GroupType.NEW);
         }
+
+        System.out.println("Update: " + display);
+        controller.update(player, display);
 
     }
 

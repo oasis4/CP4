@@ -38,6 +38,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>7.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>de.javagl</groupId>
             <artifactId>obj</artifactId>
             <version>0.4.0</version>
@@ -95,7 +101,7 @@
             <groupId>com.github.twitch4j</groupId>
             <artifactId>twitch4j</artifactId>
             <version>1.15.1</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.mysql</groupId>

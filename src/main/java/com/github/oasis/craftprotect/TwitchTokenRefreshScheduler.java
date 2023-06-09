@@ -32,10 +32,10 @@ public class TwitchTokenRefreshScheduler implements Closeable {
                 } while (true);
             } catch (IOException e) {
                 logger.severe("Failed to provide new access token");
-                throw new RuntimeException(e);
+                e.printStackTrace();
             } catch (InterruptedException ignored) {
             } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
             }
 
         }, "Twitch-Token-Refresher");
@@ -62,7 +62,7 @@ public class TwitchTokenRefreshScheduler implements Closeable {
             if (jsonObject == null)
                 throw new IllegalStateException("Cannot parse response");
 
-            if(jsonObject.has("status")) {
+            if (jsonObject.has("status")) {
                 int status = jsonObject.get("status").getAsInt();
                 String message = jsonObject.get("message").getAsString();
                 throw new IllegalAccessException(status + ": " + message);

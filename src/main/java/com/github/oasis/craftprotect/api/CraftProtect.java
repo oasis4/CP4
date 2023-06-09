@@ -2,7 +2,6 @@ package com.github.oasis.craftprotect.api;
 
 import com.github.oasis.craftprotect.link.Execution;
 import com.github.oasis.craftprotect.storage.AsyncUserStorage;
-import com.github.oasis.craftprotect.utils.PlayerDisplay;
 import com.google.common.cache.Cache;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
@@ -23,6 +22,8 @@ import java.util.UUID;
 public interface CraftProtect extends Plugin {
 
     Component getPrefix();
+
+    Component getFullPrefix();
 
     Component getMessageOfTheDay();
 
@@ -75,12 +76,6 @@ public interface CraftProtect extends Plugin {
     Map<String, String> getChatReplacements();
 
     AsyncUserStorage getUserStorage();
-
-    Map<Player, PlayerDisplay> getDisplayMap();
-
-    default PlayerDisplay getPlayerDisplay(Player player) {
-        return getDisplayMap().computeIfAbsent(player, player1 -> new PlayerDisplay());
-    }
 
     Cache<String, Execution> getAuthorizationCache();
 

@@ -1,18 +1,24 @@
 package com.github.oasis.craftprotect;
 
+import com.github.oasis.craftprotect.adventure.MessageArgumentResolver;
+import com.github.oasis.craftprotect.adventure.MessageResolver;
 import com.github.oasis.craftprotect.api.CraftProtect;
 import com.github.oasis.craftprotect.api.CraftProtectCommand;
 import com.github.oasis.craftprotect.api.FeaturedPlugin;
 import com.github.oasis.craftprotect.command.*;
 import com.github.oasis.craftprotect.feature.*;
 import com.github.oasis.craftprotect.feature.combat.Combat;
-import com.github.oasis.craftprotect.link.*;
+import com.github.oasis.craftprotect.link.Execution;
+import com.github.oasis.craftprotect.link.MinecraftClientInfo;
+import com.github.oasis.craftprotect.link.MinecraftLinkHandler;
 import com.github.oasis.craftprotect.storage.AsyncUserStorage;
-import com.github.oasis.craftprotect.utils.PlayerDisplay;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Stage;
 import com.sun.net.httpserver.HttpServer;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
@@ -66,9 +72,8 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
     private String twitchAuthorizeURL;
     private HttpServer httpServer;
 
-    private Map<Player, PlayerDisplay> displayMap = new WeakHashMap<>();
 
-    private Cache<String, Execution> authorizationCache = CacheBuilder.newBuilder()
+    private final Cache<String, Execution> authorizationCache = CacheBuilder.newBuilder()
             .expireAfterWrite(Duration.ofSeconds(30))
             .weakValues()
             .build();
@@ -95,32 +100,38 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
         File messagesFile = new File(getDataFolder(), "messages.yml");
         setupMessages(messagesFile);
 
-        PlaytimeCommand playtimeCommand = new PlaytimeCommand(this);
-        registerCommand("playtime", playtimeCommand);
-        getServer().getPluginManager().registerEvents(playtimeCommand, this);
-
-        AFKRankFeature afkRankFeature = new AFKRankFeature();
-        registerCommand("afk", afkRankFeature);
-        getServer().getPluginManager().registerEvents(afkRankFeature, this);
 
         // TODO: Change this
         spawnLocation = Bukkit.getWorlds().get(0).getSpawnLocation();
 
-        registerCommand("sub", new GlowCommand(this));
-        registerCommand("reset", new ResetCommand(this));
-        registerCommand("flame", new FlameCommand(this));
-        registerCommand("live", new LiveCommand(this));
-        registerCommand("Oasislive", new OasisLiveCommand(this));
-        registerCommand("tanjo", new TanjoCommand(this));
-        registerCommand("rw", new SpawnFireworkCommand(this));
-        registerCommand("link", new LinkCommand(this));
+        loadFeature(EmojiFeature.class);
+        loadFeature(SpawnElytraFeature.class);
+        loadFeature(PlayerGreetingFeature.class);
+        loadFeature(GroupFeature.class);
+        loadFeature(PlayerWingsFeature.class);
+        loadFeature(SpawnTeleportationFeature.class);
+        loadFeature(PlayerDisplayFeature.class);
+
+        loadFeature(AfkFeature.class);
+        registerCommand("afk", AfkCommand.class);
+
+        loadFeature(ChallengeFeature.class);
+        registerCommand("challenge", ChallengeCommand.class);
+
+        registerCommand("sub", GlowCommand.class);
+        registerCommand("reset", ResetCommand.class);
+        registerCommand("flame", FlameCommand.class);
+        registerCommand("live", LiveCommand.class);
+        registerCommand("Oasislive", OasisLiveCommand.class);
+        registerCommand("tanjo", TanjoCommand.class);
+        registerCommand("rw", SpawnFireworkCommand.class);
+        registerCommand("link", LinkCommand.class);
+        registerCommand("playtime", PlaytimeCommand.class);
+        registerCommand("setplaytime", SetPlayTimeCommand.class);
 
 
-        loadFeature(new EmojiFeature());
-        loadFeature(new SpawnElytraFeature());
-        loadFeature(new PlayerGreetingFeature());
-        loadFeature(new GroupFeature());
-        loadFeature(new PlayerWingsFeature());
+        Bukkit.getPluginManager().registerEvents(new Combat(this), this);
+
 
         File motdFile = new File(getDataFolder(), "motd.txt");
         if (motdFile.isFile()) {
@@ -128,7 +139,7 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
                 StringWriter writer = new StringWriter();
                 reader.transferTo(writer);
                 this.messageOfTheDay = MiniMessage.miniMessage().deserialize(writer.toString());
-                loadFeature(new MotdFeature());
+                loadFeature(MotdFeature.class);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -152,18 +163,18 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
             e.printStackTrace();
         }
 
-        ConfigurationSection twitchSection = getConfig().getConfigurationSection("twitch");
-        if (twitchSection != null && httpServer != null) {
-            String clientId = twitchSection.getString("client-id");
-            String clientSecret = twitchSection.getString("client-secret");
-            String callbackURI = twitchSection.getString("callback-uri", "localhost:3000");
-            twitchAuthorizeURL = "https://id.twitch.tv/oauth2/authorize?client_id=%s&redirect_uri=%s&response_type=%s&scope=%s&state={sessionId}".formatted(clientId, callbackURI, "code", "");
-
-            LiveStreamFeature feature = new LiveStreamFeature(clientId, clientSecret);
-            loadFeature(feature);
-
-            httpServer.createContext("/twitch", new TwitchLinkHandler(this, new TwitchClientInfo(clientId, clientSecret, callbackURI), feature));
-        }
+//        ConfigurationSection twitchSection = getConfig().getConfigurationSection("twitch");
+//        if (twitchSection != null && httpServer != null) {
+//            String clientId = twitchSection.getString("client-id");
+//            String clientSecret = twitchSection.getString("client-secret");
+//            String callbackURI = twitchSection.getString("callback-uri", "localhost:3000");
+//            twitchAuthorizeURL = "https://id.twitch.tv/oauth2/authorize?client_id=%s&redirect_uri=%s&response_type=%s&scope=%s&state={sessionId}".formatted(clientId, callbackURI, "code", "");
+//
+//            LiveStreamFeature feature = new LiveStreamFeature(clientId, clientSecret);
+//            loadFeature(LiveStreamFeature.class);
+//
+//            httpServer.createContext("/twitch", new TwitchLinkHandler(this, new TwitchClientInfo(clientId, clientSecret, callbackURI), feature));
+//        }
 
 
         ConfigurationSection minecraftSection = getConfig().getConfigurationSection("minecraft");
@@ -188,11 +199,12 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
 
         httpServer.start();
 
-        Bukkit.getPluginManager().registerEvents(new Teleportation(this), this);
-        Bukkit.getPluginManager().registerEvents(new Combat(this), this);
-
     }
 
+    @Override
+    public Injector newInjector() {
+        return Guice.createInjector(Stage.PRODUCTION, new CraftProtectInjectModule(this));
+    }
 
     private void setupMessages(File messagesFile) {
         saveResource(messagesFile.getName(), false);
@@ -227,19 +239,24 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
         return replacements;
     }
 
-    private boolean registerCommand(String name, CraftProtectCommand executor) {
+    public void registerCommand(String name, Class<? extends CraftProtectCommand> executorClass) {
+        CraftProtectCommand instance = super.injector.getInstance(executorClass);
+
+        System.out.println("Registering " + instance + "...");
+
         PluginCommand command = getCommand(name);
-        if (command == null) return false;
-
-        command.setExecutor(executor);
-
-        if (executor instanceof TabCompleter) {
-            command.setExecutor(executor);
+        if (command != null) {
+            command.setExecutor(instance);
+            if (instance instanceof TabCompleter) {
+                command.setExecutor(instance);
+            }
+            command.setPermission(instance.getPermission());
+            command.setPermissionMessage(instance.getPermissionMessage());
         }
 
-        command.setPermission(executor.getPermission());
-        command.setPermissionMessage(executor.getPermissionMessage());
-        return true;
+        if (instance instanceof Listener listener) {
+            Bukkit.getPluginManager().registerEvents(listener, this);
+        }
     }
 
     @Override
@@ -257,6 +274,11 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
     @Override
     public Component getPrefix() {
         return getMessage("prefix");
+    }
+
+    @Override
+    public Component getFullPrefix() {
+        return getMessage("full-prefix");
     }
 
     @Override
@@ -352,7 +374,7 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
         File userDataFolder = getUserDataFolder();
         File userData = new File(userDataFolder, "%s.yml".formatted(uniqueId));
         YamlConfiguration configuration = YamlConfiguration.loadConfiguration(userData);
-        return configuration.getLong("online-time", 0L);
+        return configuration.getLong("play-time", 0L);
     }
 
     private final TagResolver DEFAULT = TagResolver.builder().resolvers(new MessageResolver(this), TagResolver.standard()).build();
@@ -396,11 +418,6 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
     @Override
     public AsyncUserStorage getUserStorage() {
         return userStorage;
-    }
-
-    @Override
-    public Map<Player, PlayerDisplay> getDisplayMap() {
-        return this.displayMap;
     }
 
     @Override
