@@ -24,7 +24,6 @@ public class AfkFeature implements Feature {
     @Inject
     private PlayerDisplayController controller;
 
-
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();

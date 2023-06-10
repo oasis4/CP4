@@ -4,14 +4,10 @@ import com.github.oasis.craftprotect.CraftProtectPlugin;
 import com.github.oasis.craftprotect.api.Feature;
 import com.github.oasis.craftprotect.controller.SpawnController;
 import com.github.oasis.craftprotect.utils.CircleUtils;
-import com.github.oasis.craftprotect.utils.MoveUtils;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -40,7 +36,7 @@ public class SpawnTeleportationFeature implements Feature {
 
     @EventHandler
     public void onPlayerMoveEvent(PlayerMoveEvent event) {
-        if (controller.getLocation() == null || !MoveUtils.movedBlock(event.getFrom(), event.getTo()))
+        if (controller.getLocation() == null || !event.hasChangedBlock())
             return;
 
 
@@ -51,8 +47,6 @@ public class SpawnTeleportationFeature implements Feature {
                 remove.cancel();
             return;
         }
-        if (!player.isOnGround())
-            return;
         map.computeIfAbsent(player, player1 -> new BukkitRunnable() {
             private final long start = System.currentTimeMillis();
             final Iterator<Vector> iterator = Iterables.cycle(CircleUtils.getCircleLocations()).iterator();
@@ -60,19 +54,27 @@ public class SpawnTeleportationFeature implements Feature {
             @Override
             public void run() {
 
-                if (System.currentTimeMillis() - start > 5000) {
+                float progress = (System.currentTimeMillis() - start) / 5000f;
+
+                if (progress >= 1) {
                     Bukkit.getScheduler().runTask(plugin, () -> player1.teleport(controller.getLocation()));
                     cancel();
                     map.remove(player);
                     return;
                 }
-
                 Location location = player1.getLocation().getBlock().getLocation().clone();
                 location.add(0.5, 0.5, 0.5);
-                Location add = location.add(iterator.next());
-                player1.getWorld().spawnParticle(Particle.FLAME, add, 1, 0, 0, 0, 0);
+
+                for (int i = 0; i < CircleUtils.CIRCLE_SEGMENTS; i++) {
+                    Color color = (float) i / CircleUtils.CIRCLE_SEGMENTS <= progress ? Color.GREEN : Color.RED;
+                    Particle.DustOptions options = new Particle.DustOptions(color, 1);
+
+                    Location add = location.clone().add(iterator.next());
+                    player1.getWorld().spawnParticle(Particle.REDSTONE, add, 1, 0, 0, 0, 0, options);
+                }
+
             }
-        }.runTaskTimerAsynchronously(plugin, 0, 1));
+        }.runTaskTimerAsynchronously(plugin, 0, 5));
     }
 
     @EventHandler
