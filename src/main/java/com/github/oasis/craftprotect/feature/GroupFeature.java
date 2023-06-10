@@ -1,9 +1,9 @@
 package com.github.oasis.craftprotect.feature;
 
-import com.github.oasis.craftprotect.api.CraftProtect;
 import com.github.oasis.craftprotect.api.Feature;
 import com.github.oasis.craftprotect.api.GroupType;
 import com.github.oasis.craftprotect.controller.PlayerDisplayController;
+import com.github.oasis.craftprotect.controller.PlaytimeController;
 import com.github.oasis.craftprotect.model.PlayerDisplayModel;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -19,11 +19,10 @@ import java.io.IOException;
 public class GroupFeature implements Feature {
 
     @Inject
-    private CraftProtect plugin;
-
-    @Inject
     private PlayerDisplayController controller;
 
+    @Inject
+    private PlaytimeController playtimeController;
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
@@ -31,26 +30,23 @@ public class GroupFeature implements Feature {
 
         PlayerDisplayModel display = controller.get(player);
 
-        long onlineTime = plugin.getUptime(player);
+        playtimeController.getPlaytime(player).thenAccept(onlineTime -> {
 
-        player.sendMessage(String.valueOf(onlineTime / 1000f));
+            if (onlineTime >= 604800000) {
+                display.setGroupType(GroupType.GOLD);
+                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
+            } else if (onlineTime >= 86400000) {
+                display.setGroupType(GroupType.ACTIVE);
+                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
+            } else if (onlineTime >= 18000000) {
+                display.setGroupType(GroupType.NEWBIE);
+                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
+            } else {
+                display.setGroupType(GroupType.NEW);
+            }
 
-        if (onlineTime >= 604800000) {
-            display.setGroupType(GroupType.GOLD);
-            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
-        } else if (onlineTime >= 86400000) {
-            display.setGroupType(GroupType.ACTIVE);
-            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
-        } else if (onlineTime >= 18000000) {
-            display.setGroupType(GroupType.NEWBIE);
-            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
-        } else {
-            display.setGroupType(GroupType.NEW);
-        }
-
-        System.out.println("Update: " + display);
-        controller.update(player, display);
-
+            controller.update(player, display);
+        });
     }
 
     @Override

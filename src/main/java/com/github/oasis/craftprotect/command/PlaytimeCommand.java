@@ -2,6 +2,7 @@ package com.github.oasis.craftprotect.command;
 
 import com.github.oasis.craftprotect.CraftProtectPlugin;
 import com.github.oasis.craftprotect.api.CraftProtectCommand;
+import com.github.oasis.craftprotect.controller.PlaytimeController;
 import com.github.oasis.craftprotect.utils.M;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -9,7 +10,6 @@ import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,8 +20,6 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 
@@ -29,6 +27,9 @@ import java.util.List;
 public class PlaytimeCommand implements CraftProtectCommand, Listener {
 
     private final CraftProtectPlugin plugin;
+
+    @Inject
+    private PlaytimeController controller;
 
     @Inject
     public PlaytimeCommand(CraftProtectPlugin plugin) {
@@ -47,22 +48,9 @@ public class PlaytimeCommand implements CraftProtectCommand, Listener {
             return true;
         }
 
-        File userDataFolder = plugin.getUserDataFolder();
-        File userData = new File(userDataFolder, player.getUniqueId() + ".yml");
-
-        YamlConfiguration configuration = YamlConfiguration.loadConfiguration(userData);
-        long uptime = configuration.getLong("play-time", 0L);
-
-
-        List<MetadataValue> list = player.getMetadata("last-joined");
-        long lastJoined = 0;
-        if (!list.isEmpty()) {
-            lastJoined = list.get(0).asLong();
-        }
-        uptime += (System.currentTimeMillis() - lastJoined);
-
-        plugin.sendMessage(sender, "command.uptime.duration", DurationFormatUtils.formatDuration(uptime, "HH:mm:ss"));
-
+        controller.getPlaytime(player)
+                .thenApply(playtime -> playtime + (System.currentTimeMillis() - lastJoinedAt(player)))
+                .thenAccept(playtime -> plugin.sendMessage(sender, "command.playtime.duration", DurationFormatUtils.formatDuration(playtime, "HH:mm:ss")));
         return true;
 
     }
@@ -70,12 +58,23 @@ public class PlaytimeCommand implements CraftProtectCommand, Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         event.getPlayer().setMetadata("last-joined", new FixedMetadataValue(plugin, System.currentTimeMillis()));
+        System.out.println("Joining");
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        savePlayer(player);
+        controller.updatePlaytime(player, playtime -> playtime + (System.currentTimeMillis() - lastJoinedAt(player)));
+        player.removeMetadata("last-joined", plugin);
+    }
+
+    private long lastJoinedAt(Player player) {
+        List<MetadataValue> list = player.getMetadata("last-joined");
+        long lastJoined = System.currentTimeMillis();
+        if (!list.isEmpty()) {
+            lastJoined = list.get(0).asLong();
+        }
+        return lastJoined;
     }
 
     @EventHandler
@@ -83,40 +82,9 @@ public class PlaytimeCommand implements CraftProtectCommand, Listener {
         if (!plugin.equals(event.getPlugin()))
             return;
         for (Player player : Bukkit.getOnlinePlayers()) {
-            savePlayer(player);
+            controller.updatePlaytime(player, playtime -> playtime + (System.currentTimeMillis() - lastJoinedAt(player)));
+            player.removeMetadata("last-joined", plugin);
         }
-    }
-
-    private void savePlayer(Player player) {
-        File userDataFolder = plugin.getUserDataFolder();
-        File userData = new File(userDataFolder, player.getUniqueId() + ".yml");
-
-        if (!userData.isFile()) {
-            try {
-                userData.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        YamlConfiguration configuration = YamlConfiguration.loadConfiguration(userData);
-        long onlineTime = configuration.getLong("play-time", 0L);
-
-        List<MetadataValue> list = player.getMetadata("last-joined");
-        long lastJoined = 0;
-        if (!list.isEmpty()) {
-            lastJoined = list.get(0).asLong();
-        }
-
-        onlineTime += (System.currentTimeMillis() - lastJoined);
-
-        configuration.set("play-time", onlineTime);
-        try {
-            configuration.save(userData);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        player.removeMetadata("last-joined", plugin);
     }
 
 

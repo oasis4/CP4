@@ -1,7 +1,6 @@
 package com.github.oasis.craftprotect.link;
 
 import com.github.oasis.craftprotect.CraftProtectPlugin;
-import com.github.oasis.craftprotect.feature.LiveStreamFeature;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 

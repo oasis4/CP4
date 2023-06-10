@@ -1,7 +1,6 @@
 package com.github.oasis.craftprotect.link;
 
 import com.github.oasis.craftprotect.CraftProtectPlugin;
-import com.github.oasis.craftprotect.api.CraftProtectUser;
 import com.github.oasis.craftprotect.feature.LiveStreamFeature;
 import com.github.oasis.craftprotect.utils.UrlUtils;
 import com.github.twitch4j.helix.domain.StreamList;
@@ -10,7 +9,6 @@ import com.google.gson.JsonObject;
 import com.netflix.hystrix.HystrixCommand;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import org.bukkit.entity.Player;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -18,7 +16,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 public class TwitchLinkHandler implements HttpHandler {
 

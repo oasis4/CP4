@@ -6,6 +6,7 @@ import com.github.oasis.craftprotect.api.CraftProtect;
 import com.github.oasis.craftprotect.api.CraftProtectCommand;
 import com.github.oasis.craftprotect.api.FeaturedPlugin;
 import com.github.oasis.craftprotect.command.*;
+import com.github.oasis.craftprotect.config.CraftProtectConfig;
 import com.github.oasis.craftprotect.feature.*;
 import com.github.oasis.craftprotect.feature.combat.Combat;
 import com.github.oasis.craftprotect.link.Execution;
@@ -27,7 +28,6 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
@@ -40,7 +40,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
 import java.net.InetSocketAddress;
@@ -48,22 +48,15 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.Executor;
 
 
 public final class CraftProtectPlugin extends FeaturedPlugin implements CraftProtect, Listener {
-
-    public static Executor MAIN_EXECUTOR;
-
-    private File userDataFolder;
 
     private Configuration messages;
 
     private Map<String, String> chatReplacements;
 
     private final Table<Player, String, Closeable> schedulerTable = HashBasedTable.create();
-
-    private Location spawnLocation;
 
     private BukkitAudiences audiences;
 
@@ -77,74 +70,16 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
             .expireAfterWrite(Duration.ofSeconds(30))
             .weakValues()
             .build();
-    private Component messageOfTheDay;
-
+    private CraftProtectConfig craftProtectConfig;
 
     @Override
     public void onEnable() {
         super.onEnable();
-
-        MAIN_EXECUTOR = command -> Bukkit.getScheduler().runTask(CraftProtectPlugin.this, command);
-
         this.audiences = BukkitAudiences.create(this);
 
         getLogger().info("Initializing configuration files...");
         saveDefaultConfig();
-        reloadConfig();
-
-        chatReplacements = loadChatReplacements();
-
-        userDataFolder = new File(getDataFolder(), "userdata");
-        if (!userDataFolder.isDirectory()) userDataFolder.mkdirs();
-
-        File messagesFile = new File(getDataFolder(), "messages.yml");
-        setupMessages(messagesFile);
-
-
-        // TODO: Change this
-        spawnLocation = Bukkit.getWorlds().get(0).getSpawnLocation();
-
-        loadFeature(EmojiFeature.class);
-        loadFeature(SpawnElytraFeature.class);
-        loadFeature(PlayerGreetingFeature.class);
-        loadFeature(GroupFeature.class);
-        loadFeature(PlayerWingsFeature.class);
-        loadFeature(SpawnTeleportationFeature.class);
-        loadFeature(PlayerDisplayFeature.class);
-
-        loadFeature(AfkFeature.class);
-        registerCommand("afk", AfkCommand.class);
-
-        loadFeature(ChallengeFeature.class);
-        registerCommand("challenge", ChallengeCommand.class);
-
-        registerCommand("sub", GlowCommand.class);
-        registerCommand("reset", ResetCommand.class);
-        registerCommand("flame", FlameCommand.class);
-        registerCommand("live", LiveCommand.class);
-        registerCommand("Oasislive", OasisLiveCommand.class);
-        registerCommand("tanjo", TanjoCommand.class);
-        registerCommand("rw", SpawnFireworkCommand.class);
-        registerCommand("link", LinkCommand.class);
-        registerCommand("playtime", PlaytimeCommand.class);
-        registerCommand("setplaytime", SetPlayTimeCommand.class);
-
-
-        Bukkit.getPluginManager().registerEvents(new Combat(this), this);
-
-
-        File motdFile = new File(getDataFolder(), "motd.txt");
-        if (motdFile.isFile()) {
-            try (FileReader reader = new FileReader(motdFile)) {
-                StringWriter writer = new StringWriter();
-                reader.transferTo(writer);
-                this.messageOfTheDay = MiniMessage.miniMessage().deserialize(writer.toString());
-                loadFeature(MotdFeature.class);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
+        reloadCraftProtectConfig();
 
         ConfigurationSection database = getConfig().getConfigurationSection("database");
         if (database != null) {
@@ -162,6 +97,52 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        super.injector = newInjector();
+
+        chatReplacements = loadChatReplacements();
+
+
+        File messagesFile = new File(getDataFolder(), "messages.yml");
+        setupMessages(messagesFile);
+
+
+        loadFeature(EmojiFeature.class);
+        loadFeature(SpawnElytraFeature.class);
+        loadFeature(PlayerGreetingFeature.class);
+        loadFeature(GroupFeature.class);
+        //loadFeature(PlayerWingsFeature.class);
+        loadFeature(SpawnTeleportationFeature.class);
+        loadFeature(PlayerDisplayFeature.class);
+        loadFeature(SpawnFeature.class);
+        loadFeature(MotdFeature.class);
+
+        loadFeature(AfkFeature.class);
+        registerCommand("afk", AfkCommand.class);
+
+        loadFeature(ChallengeFeature.class);
+        registerCommand("challenge", ChallengeCommand.class);
+
+        registerCommand("sub", GlowCommand.class);
+        registerCommand("reset", ResetCommand.class);
+        registerCommand("flame", FlameCommand.class);
+        registerCommand("live", LiveCommand.class);
+        registerCommand("Oasislive", OasisLiveCommand.class);
+        registerCommand("tanjo", TanjoCommand.class);
+        registerCommand("rw", SpawnFireworkCommand.class);
+        registerCommand("link", LinkCommand.class);
+        registerCommand("playtime", PlaytimeCommand.class);
+        registerCommand("setplaytime", SetPlaytimeCommand.class);
+        registerCommand("setspawn", SetSpawnCommand.class);
+        registerCommand("spawn", SpawnCommand.class);
+
+
+        Bukkit.getPluginManager().registerEvents(new Combat(this), this);
+
+        reloadCraftProtectConfig();
+
+        System.out.println(this.craftProtectConfig);
+
 
 //        ConfigurationSection twitchSection = getConfig().getConfigurationSection("twitch");
 //        if (twitchSection != null && httpServer != null) {
@@ -201,9 +182,24 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
 
     }
 
-    @Override
+    public void reloadCraftProtectConfig() {
+        File configFile = new File(getDataFolder(), "config.yml");
+        if (configFile.isFile()) {
+            try (FileReader reader = new FileReader(configFile)) {
+                Yaml yaml = new Yaml();
+                this.craftProtectConfig = yaml.loadAs(reader, CraftProtectConfig.class);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public Injector newInjector() {
         return Guice.createInjector(Stage.PRODUCTION, new CraftProtectInjectModule(this));
+    }
+
+    public HttpServer getHttpServer() {
+        return httpServer;
     }
 
     private void setupMessages(File messagesFile) {
@@ -242,8 +238,6 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
     public void registerCommand(String name, Class<? extends CraftProtectCommand> executorClass) {
         CraftProtectCommand instance = super.injector.getInstance(executorClass);
 
-        System.out.println("Registering " + instance + "...");
-
         PluginCommand command = getCommand(name);
         if (command != null) {
             command.setExecutor(instance);
@@ -266,11 +260,6 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
         httpServer.stop(0);
     }
 
-    public File getUserDataFolder() {
-        return this.userDataFolder;
-    }
-
-
     @Override
     public Component getPrefix() {
         return getMessage("prefix");
@@ -281,21 +270,10 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
         return getMessage("full-prefix");
     }
 
-    @Override
-    public Component getMessageOfTheDay() {
-        return this.messageOfTheDay;
-    }
-
     @NotNull
     @Override
     public String getVersion() {
         return getDescription().getVersion();
-    }
-
-    @Nullable
-    @Override
-    public Location getSpawnLocation() {
-        return spawnLocation;
     }
 
     @NotNull
@@ -369,13 +347,6 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
         }
     }
 
-    @Override
-    public long getUptime(@NotNull UUID uniqueId) {
-        File userDataFolder = getUserDataFolder();
-        File userData = new File(userDataFolder, "%s.yml".formatted(uniqueId));
-        YamlConfiguration configuration = YamlConfiguration.loadConfiguration(userData);
-        return configuration.getLong("play-time", 0L);
-    }
 
     private final TagResolver DEFAULT = TagResolver.builder().resolvers(new MessageResolver(this), TagResolver.standard()).build();
 

@@ -121,6 +121,12 @@
             <version>1.18.24</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>2.0</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 
@@ -151,6 +157,10 @@
                                 <relocation>
                                     <pattern>io.netty</pattern>
                                     <shadedPattern>com.github.oasis.craftprotect.lib.netty</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.yaml.snakeyaml</pattern>
+                                    <shadedPattern>com.github.oasis.craftprotect.lib.snakeyaml</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>

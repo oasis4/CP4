@@ -11,7 +11,7 @@ public abstract class FeaturedPlugin extends JavaPlugin {
 
     private final Set<Feature> features = new HashSet<>();
 
-    protected final Injector injector = newInjector();
+    protected Injector injector;
 
 
     public final <T extends JavaPlugin> void loadFeature(Class<? extends Feature> featureClass) {
@@ -40,5 +40,7 @@ public abstract class FeaturedPlugin extends JavaPlugin {
         return features;
     }
 
-    public abstract Injector newInjector();
+    public Injector getInjector() {
+        return injector;
+    }
 }

@@ -1,21 +1,16 @@
 package com.github.oasis.craftprotect.link;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class MinecraftClientInfo {
 
-    private final String clientId;
+    private String clientId;
 
-    private final String callbackURI;
+    private String callbackURI;
 
-    public MinecraftClientInfo(String clientId, String callbackURI) {
-        this.clientId = clientId;
-        this.callbackURI = callbackURI;
-    }
-
-    public String getClientId() {
-        return clientId;
-    }
-
-    public String getCallbackURI() {
-        return callbackURI;
-    }
 }

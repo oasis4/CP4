@@ -1,27 +1,16 @@
 package com.github.oasis.craftprotect.link;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class TwitchClientInfo {
 
-    private final String clientId;
-    private final transient String clientSecret;
+    private String clientId;
+    private String clientSecret;
+    private String callbackURI;
 
-    private final String callbackURI;
-
-    public TwitchClientInfo(String clientId, String clientSecret, String callbackURI) {
-        this.clientId = clientId;
-        this.clientSecret = clientSecret;
-        this.callbackURI = callbackURI;
-    }
-
-    public String getClientId() {
-        return clientId;
-    }
-
-    public String getClientSecret() {
-        return clientSecret;
-    }
-
-    public String getCallbackURI() {
-        return callbackURI;
-    }
 }

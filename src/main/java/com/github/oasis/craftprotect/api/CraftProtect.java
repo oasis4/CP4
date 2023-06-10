@@ -5,8 +5,6 @@ import com.github.oasis.craftprotect.storage.AsyncUserStorage;
 import com.google.common.cache.Cache;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
@@ -17,7 +15,6 @@ import org.jetbrains.annotations.Nullable;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Map;
-import java.util.UUID;
 
 public interface CraftProtect extends Plugin {
 
@@ -25,13 +22,8 @@ public interface CraftProtect extends Plugin {
 
     Component getFullPrefix();
 
-    Component getMessageOfTheDay();
-
     @NotNull
     String getVersion();
-
-    @Nullable
-    Location getSpawnLocation();
 
     @NotNull
     Closeable attachRepeaterTask(@NotNull Player player, @NotNull String id, @NotNull Runnable task, int delay, int period);
@@ -58,12 +50,6 @@ public interface CraftProtect extends Plugin {
         }
     }
 
-    long getUptime(@NotNull UUID uniqueId);
-
-    default long getUptime(@NotNull OfflinePlayer player) {
-        return getUptime(player.getUniqueId());
-    }
-
     @NotNull
     Component getMessage(@NotNull String key, @NotNull Object... objects);
 
@@ -80,4 +66,6 @@ public interface CraftProtect extends Plugin {
     Cache<String, Execution> getAuthorizationCache();
 
     BukkitAudiences getAudiences();
+
+
 }

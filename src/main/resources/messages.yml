@@ -3,15 +3,22 @@ full-prefix: '<aqua><bold>CraftProtect.DE </bold></aqua><white>❘</white>'
 no-player: '<prefix> <red>Du musst ein Spieler sein.'
 no-sub: '<prefix> <red>Du musst ein Subscriber von Oreocast oder Oasis4_0 sein.'
 no-permission: '<prefix> <red>Dir fehlen Berechtigungen um dies zutun.'
+spawn:
+  missing: '<prefix> <red>Der Spawnpunkt wurde noch nicht gesetzt'
 command:
   glow:
     enabled: '<prefix> <dark_aqua>Du leuchtest jetzt'
     disabled: '<prefix> <dark_aqua>Du leuchtest nun nicht mehr'
-  uptime:
-    duration: '<prefix> <dark_aqua>Deine Spielzeit beträgt: <gold><0>'
+  playtime:
+    duration: '<prefix> <dark_aqua>Du hast bis jetzt <gold><0> <dark_aqua>auf dem Server gespielt'
   oasislive:
     broadcast: '<prefix> <dark_aqua>Oasis ist nun Live auf Twitch schaut rein: <dark_purple><click:open_url:https://www.twitch.tv/oasis4_0><hover:show_text:"<dark_aqua>Oasis Twitch!">Twitch</hover></click></dark_purple>'
   reset: '<prefix> <dark_aqua>Alles wurde von dir zurückgesetzt'
   flame:
     enabled: "<prefix> <dark_aqua>Flammen an'"
     disabled: '<prefix> <dark_aqua>Flammen aus'
+  setspawn:
+    successful: '<prefix> <grey>Du hast erfolgreich den Spawnpunkt für den Server gesetzt.'
+    fail: '<prefix> <red>Es ist etwas schief gelaufen beim Setzen des Spawnpunktes'
+  spawn:
+    successful: '<prefix> <grey>Du wurdest erfolgeich zum Spawn teleportiert.'

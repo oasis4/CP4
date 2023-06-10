@@ -2,6 +2,7 @@ package com.github.oasis.craftprotect.feature;
 
 import com.github.oasis.craftprotect.CraftProtectPlugin;
 import com.github.oasis.craftprotect.api.Feature;
+import com.github.oasis.craftprotect.controller.MotdController;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.kyori.adventure.text.Component;
@@ -17,12 +18,14 @@ public class MotdFeature implements Feature {
     @Inject
     private CraftProtectPlugin plugin;
 
+    @Inject
+    private MotdController controller;
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        Component messageOfTheDay = plugin.getMessageOfTheDay();
+        Component messageOfTheDay = controller.getMessageOfTheDay();
         if (messageOfTheDay != null) {
             plugin.getAudiences().sender(player).sendMessage(messageOfTheDay);
         }

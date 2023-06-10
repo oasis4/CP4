@@ -2,10 +2,10 @@ package com.github.oasis.craftprotect.command;
 
 import com.github.oasis.craftprotect.CraftProtectPlugin;
 import com.github.oasis.craftprotect.api.CraftProtectCommand;
+import com.github.oasis.craftprotect.controller.PlaytimeController;
 import com.github.oasis.craftprotect.utils.M;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.bukkit.Statistic;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -13,10 +13,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Singleton
-public class SetPlayTimeCommand implements CraftProtectCommand {
+public class SetPlaytimeCommand implements CraftProtectCommand {
 
     @Inject
     private CraftProtectPlugin plugin;
+
+    @Inject
+    private PlaytimeController controller;
 
     @Override
     public @Nullable String getPermission() {
@@ -31,7 +34,7 @@ public class SetPlayTimeCommand implements CraftProtectCommand {
         }
 
         if (args.length == 0) {
-            player.setStatistic(Statistic.TOTAL_WORLD_TIME, 0);
+            controller.updatePlaytime(player, aLong -> 0L);
             return true;
         }
 
@@ -47,7 +50,7 @@ public class SetPlayTimeCommand implements CraftProtectCommand {
             return true;
         }
 
-        player.setStatistic(Statistic.TOTAL_WORLD_TIME, time * 20);
+        controller.updatePlaytime(player, playtime -> time * 1000L);
         return true;
     }
 }

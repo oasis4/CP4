@@ -40,6 +40,10 @@ commands:
     usage: '/<command>'
   setplaytime:
     usage: '/<command> [<seconds>]'
+  setspawn:
+    usage: '/<command>'
+  spawn:
+    usage: '/<command>'
 
 libraries:
   - org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.20-RC
