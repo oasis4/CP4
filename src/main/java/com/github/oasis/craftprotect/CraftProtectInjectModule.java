@@ -24,6 +24,7 @@ public class CraftProtectInjectModule extends AbstractModule {
         bind(CraftProtectPlugin.class).toInstance(plugin);
         bind(UserStorage.class).to(AsyncUserStorage.class);
         bind(AsyncUserStorage.class).toInstance(plugin.getUserStorage());
-        bind(HttpServer.class).toInstance(this.plugin.getHttpServer());
+        if (this.plugin.getHttpServer() != null)
+            bind(HttpServer.class).toInstance(this.plugin.getHttpServer());
     }
 }

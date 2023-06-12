@@ -1,5 +1,6 @@
 package com.github.oasis.craftprotect.api;
 
+import com.github.oasis.craftprotect.config.CraftProtectConfig;
 import com.github.oasis.craftprotect.link.Execution;
 import com.github.oasis.craftprotect.storage.AsyncUserStorage;
 import com.google.common.cache.Cache;
@@ -14,9 +15,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.Map;
 
 public interface CraftProtect extends Plugin {
+
+    CraftProtectConfig getCraftProtectConfig();
 
     Component getPrefix();
 
@@ -58,8 +60,6 @@ public interface CraftProtect extends Plugin {
 
     void sendMessage(@NotNull CommandSender sender, @NotNull String key, @NotNull Object... objects);
 
-    @NotNull
-    Map<String, String> getChatReplacements();
 
     AsyncUserStorage getUserStorage();
 

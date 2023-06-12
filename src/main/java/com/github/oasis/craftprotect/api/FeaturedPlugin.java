@@ -3,7 +3,6 @@ package com.github.oasis.craftprotect.api;
 import com.google.inject.Injector;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,7 +29,7 @@ public abstract class FeaturedPlugin extends JavaPlugin {
         for (Feature feature : features) {
             try {
                 feature.close();
-            } catch (IOException e) {
+            } catch (Throwable e) {
                 e.printStackTrace();
             }
         }

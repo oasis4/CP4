@@ -10,8 +10,6 @@ import com.github.oasis.craftprotect.config.CraftProtectConfig;
 import com.github.oasis.craftprotect.feature.*;
 import com.github.oasis.craftprotect.feature.combat.Combat;
 import com.github.oasis.craftprotect.link.Execution;
-import com.github.oasis.craftprotect.link.MinecraftClientInfo;
-import com.github.oasis.craftprotect.link.MinecraftLinkHandler;
 import com.github.oasis.craftprotect.storage.AsyncUserStorage;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -27,7 +25,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
@@ -36,8 +33,10 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.yaml.snakeyaml.Yaml;
@@ -47,14 +46,13 @@ import java.net.InetSocketAddress;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.time.Duration;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
 
 
 public final class CraftProtectPlugin extends FeaturedPlugin implements CraftProtect, Listener {
 
     private Configuration messages;
-
-    private Map<String, String> chatReplacements;
 
     private final Table<Player, String, Closeable> schedulerTable = HashBasedTable.create();
 
@@ -64,7 +62,6 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
 
     private String twitchAuthorizeURL;
     private HttpServer httpServer;
-
 
     private final Cache<String, Execution> authorizationCache = CacheBuilder.newBuilder()
             .expireAfterWrite(Duration.ofSeconds(30))
@@ -100,22 +97,21 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
 
         super.injector = newInjector();
 
-        chatReplacements = loadChatReplacements();
-
+        reloadCraftProtectConfig();
 
         File messagesFile = new File(getDataFolder(), "messages.yml");
         setupMessages(messagesFile);
-
 
         loadFeature(EmojiFeature.class);
         loadFeature(SpawnElytraFeature.class);
         loadFeature(PlayerGreetingFeature.class);
         loadFeature(GroupFeature.class);
-        //loadFeature(PlayerWingsFeature.class);
+        loadFeature(PlayerWingsFeature.class);
         loadFeature(SpawnTeleportationFeature.class);
         loadFeature(PlayerDisplayFeature.class);
         loadFeature(SpawnFeature.class);
         loadFeature(MotdFeature.class);
+        loadFeature(LiveStreamFeature.class);
 
         loadFeature(AfkFeature.class);
         registerCommand("afk", AfkCommand.class);
@@ -135,50 +131,13 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
         registerCommand("setplaytime", SetPlaytimeCommand.class);
         registerCommand("setspawn", SetSpawnCommand.class);
         registerCommand("spawn", SpawnCommand.class);
+        registerCommand("user", UserCommand.class);
 
 
         Bukkit.getPluginManager().registerEvents(new Combat(this), this);
 
-        reloadCraftProtectConfig();
-
-        System.out.println(this.craftProtectConfig);
-
-
-//        ConfigurationSection twitchSection = getConfig().getConfigurationSection("twitch");
-//        if (twitchSection != null && httpServer != null) {
-//            String clientId = twitchSection.getString("client-id");
-//            String clientSecret = twitchSection.getString("client-secret");
-//            String callbackURI = twitchSection.getString("callback-uri", "localhost:3000");
-//            twitchAuthorizeURL = "https://id.twitch.tv/oauth2/authorize?client_id=%s&redirect_uri=%s&response_type=%s&scope=%s&state={sessionId}".formatted(clientId, callbackURI, "code", "");
-//
-//            LiveStreamFeature feature = new LiveStreamFeature(clientId, clientSecret);
-//            loadFeature(LiveStreamFeature.class);
-//
-//            httpServer.createContext("/twitch", new TwitchLinkHandler(this, new TwitchClientInfo(clientId, clientSecret, callbackURI), feature));
-//        }
-
-
-        ConfigurationSection minecraftSection = getConfig().getConfigurationSection("minecraft");
-        if (minecraftSection != null && httpServer != null) {
-            String clientId = minecraftSection.getString("client-id");
-            //String clientSecret = twitchSection.getString("client-secret");
-            String callbackURI = minecraftSection.getString("callback-uri", "localhost:3000");
-            twitchAuthorizeURL = """
-                    https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize?
-                    client_id=%s
-                    &response_type=token
-                    &redirect_uri=%s
-                    &scope=XboxLive.signin
-                    &response_mode=fragment
-                    &state={sessionId}
-                    &nonce=678910
-                    """;
-
-            httpServer.createContext("/minecraft", new MinecraftLinkHandler(this, new MinecraftClientInfo(clientId, callbackURI)));
-        }
-
-
-        httpServer.start();
+        if (httpServer != null)
+            httpServer.start();
 
     }
 
@@ -218,22 +177,6 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
         }
     }
 
-    private Map<String, String> loadChatReplacements() {
-        ConfigurationSection section = getConfig().getConfigurationSection("chat.replacements");
-        if (section == null) {
-            return Collections.emptyMap();
-        }
-        Set<String> keys = section.getKeys(false);
-        Map<String, String> replacements = new HashMap<>(keys.size());
-        for (String key : keys) {
-            String replacement = section.getString(key);
-            if (replacement == null) {
-                continue;
-            }
-            replacements.put(key, ChatColor.translateAlternateColorCodes('&', replacement));
-        }
-        return replacements;
-    }
 
     public void registerCommand(String name, Class<? extends CraftProtectCommand> executorClass) {
         CraftProtectCommand instance = super.injector.getInstance(executorClass);
@@ -257,7 +200,16 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
     public void onDisable() {
         super.onDisable();
 
-        httpServer.stop(0);
+        if (httpServer != null) {
+            getLogger().info("Stopping http server on port 3000...");
+            httpServer.stop(0);
+        }
+
+        HandlerList.unregisterAll((Plugin) this);
+    }
+
+    public CraftProtectConfig getCraftProtectConfig() {
+        return craftProtectConfig;
     }
 
     @Override
@@ -366,15 +318,6 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
     @Override
     public Configuration getUnformattedMessages() {
         return this.messages;
-    }
-
-    @NotNull
-    @Override
-    public Map<String, String> getChatReplacements() {
-        if (chatReplacements == null) {
-            return Collections.emptyMap();
-        }
-        return chatReplacements;
     }
 
     public String getTwitchAuthorizeURL() {

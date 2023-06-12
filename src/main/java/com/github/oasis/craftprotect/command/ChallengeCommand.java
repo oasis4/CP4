@@ -28,7 +28,7 @@ public class ChallengeCommand implements CraftProtectCommand {
             return true;
         }
 
-        plugin.getAudiences().sender(player).sendMessage(ChatChallengeView.getDisplay(plugin, controller.getModel(player), 35, 5));
+        plugin.getAudiences().sender(player).sendMessage(ChatChallengeView.getDisplay(plugin, controller.getModel(player), 45, 5));
 
         return true;
     }

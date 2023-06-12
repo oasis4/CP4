@@ -43,7 +43,8 @@ public class LinkCommand implements CraftProtectCommand {
             integer = integer.abs();
 
             String token = integer.toString(Character.MAX_RADIX);
-            player.sendMessage(plugin.getTwitchAuthorizeURL().replace("{sessionId}", token));
+            String uri = plugin.getCraftProtectConfig().getTwitch().formattedURI();
+            player.sendMessage(uri.replace("{sessionId}", token));
 
             plugin.getAuthorizationCache().put(token, (TwitchExecution) (userId, live) -> {
 
@@ -73,7 +74,8 @@ public class LinkCommand implements CraftProtectCommand {
             integer = integer.abs();
 
             String token = integer.toString(Character.MAX_RADIX);
-            player.sendMessage(plugin.getTwitchAuthorizeURL().replace("{sessionId}", token));
+            String uri = plugin.getCraftProtectConfig().getMinecraft().formattedURI();
+            player.sendMessage(uri.replace("{sessionId}", token));
             plugin.getAuthorizationCache().put(token, (MinecraftExecution) id -> player.sendMessage("Id: " + id));
             return true;
         }

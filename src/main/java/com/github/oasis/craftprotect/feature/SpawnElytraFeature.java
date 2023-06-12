@@ -3,7 +3,6 @@ package com.github.oasis.craftprotect.feature;
 import com.github.oasis.craftprotect.CraftProtectPlugin;
 import com.github.oasis.craftprotect.api.Feature;
 import com.github.oasis.craftprotect.controller.SpawnController;
-import com.github.oasis.craftprotect.utils.MoveUtils;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.bukkit.Location;
@@ -142,7 +141,7 @@ public class SpawnElytraFeature implements Feature {
 
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
-        if (!MoveUtils.movedBlock(event.getFrom(), event.getTo()))
+        if (!event.hasChangedBlock())
             return;
         Player player = event.getPlayer();
         PersistentDataContainer container = player.getPersistentDataContainer();

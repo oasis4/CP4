@@ -5,6 +5,8 @@ import com.github.oasis.craftprotect.TwitchTokenRefreshScheduler;
 import com.github.oasis.craftprotect.api.CraftProtectUser;
 import com.github.oasis.craftprotect.api.Feature;
 import com.github.oasis.craftprotect.controller.PlayerDisplayController;
+import com.github.oasis.craftprotect.link.TwitchClientInfo;
+import com.github.oasis.craftprotect.link.TwitchLinkHandler;
 import com.github.oasis.craftprotect.model.PlayerDisplayModel;
 import com.github.oasis.craftprotect.storage.AsyncUserStorage;
 import com.github.twitch4j.TwitchClient;
@@ -14,6 +16,7 @@ import com.github.twitch4j.events.ChannelGoOfflineEvent;
 import com.github.twitch4j.helix.domain.User;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.sun.net.httpserver.HttpServer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -38,7 +41,11 @@ public class LiveStreamFeature implements Feature {
     private final Map<Player, User> subscribedAccounts = new WeakHashMap<>();
 
     @Inject
-    public LiveStreamFeature(CraftProtectPlugin craftProtect, String clientId, String clientSecret) {
+    public LiveStreamFeature(CraftProtectPlugin craftProtect, HttpServer server) {
+
+        TwitchClientInfo twitch = craftProtect.getCraftProtectConfig().getTwitch();
+        String clientId = twitch.getClientId();
+        String clientSecret = twitch.getClientSecret();
 
         this.twitchTokenRefreshScheduler = new TwitchTokenRefreshScheduler(craftProtect.getLogger(), clientId, clientSecret);
 
@@ -62,6 +69,7 @@ public class LiveStreamFeature implements Feature {
                     controller.update(key, model -> model.setLive(false));
                 }));
 
+        server.createContext("/twitch", new TwitchLinkHandler(craftProtect, twitch, this));
     }
 
 

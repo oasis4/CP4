@@ -26,7 +26,7 @@ public abstract class Controller<K, V> {
         });
     }
 
-    public void update(K key, Consumer<V> modifier) {
+    public final void update(K key, Consumer<V> modifier) {
         V value = get(key);
         modifier.accept(value);
         update(key, value);

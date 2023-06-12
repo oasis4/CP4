@@ -19,7 +19,7 @@ public class ChatChallengeView {
 
     public static Component getDisplay(CraftProtect protect, ChallengeModel model, int width, int leftPadding) {
 
-        float progress = ((float) model.getCurrent()) / (float) model.getGoal();
+        float progress = Math.min(((float) model.getCurrent()) / (float) model.getGoal(), 1f);
 
         int leftWidth = width - leftPadding;
 

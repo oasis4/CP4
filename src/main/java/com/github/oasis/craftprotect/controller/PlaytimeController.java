@@ -5,6 +5,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -16,6 +17,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 
+@Singleton
 public class PlaytimeController {
 
     private final File userDataFolder;
@@ -27,6 +29,9 @@ public class PlaytimeController {
                     return loadPlaytime(player.getUniqueId());
                 }
             });
+
+    @Inject
+    private PlayerDisplayController displayController;
 
     @Inject
     public PlaytimeController(CraftProtectPlugin plugin) {
@@ -55,6 +60,7 @@ public class PlaytimeController {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                    displayController.updateGroup(player, time);
                 });
     }
 

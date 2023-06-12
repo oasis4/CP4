@@ -2,6 +2,8 @@ package com.github.oasis.craftprotect.feature;
 
 import com.github.oasis.craftprotect.api.CraftProtect;
 import com.github.oasis.craftprotect.api.Feature;
+import com.github.oasis.craftprotect.config.ChatConfig;
+import com.github.oasis.craftprotect.config.CraftProtectConfig;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.bukkit.event.EventHandler;
@@ -20,9 +22,14 @@ public class EmojiFeature implements Feature {
     public void onChat(AsyncPlayerChatEvent event) {
         String message = event.getMessage();
 
-        for (Map.Entry<String, String> entry : plugin.getChatReplacements().entrySet()) {
+        CraftProtectConfig craftProtectConfig = plugin.getCraftProtectConfig();
+        ChatConfig chat = craftProtectConfig.getChat();
+        for (Map.Entry<String, String> entry : chat.getReplacements().entrySet()) {
             message = message.replace(entry.getKey(), entry.getValue());
         }
+
+        event.setMessage(message);
+
     }
 
     @Override

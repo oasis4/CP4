@@ -1,56 +1,52 @@
 package com.github.oasis.craftprotect.feature;
 
+import com.github.oasis.craftprotect.CraftProtectPlugin;
 import com.github.oasis.craftprotect.api.Feature;
-import com.github.oasis.craftprotect.api.GroupType;
 import com.github.oasis.craftprotect.controller.PlayerDisplayController;
 import com.github.oasis.craftprotect.controller.PlaytimeController;
-import com.github.oasis.craftprotect.model.PlayerDisplayModel;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.bukkit.Sound;
-import org.bukkit.SoundCategory;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.IOException;
 
 @Singleton
 public class GroupFeature implements Feature {
 
+    private final BukkitTask updaterTask;
     @Inject
     private PlayerDisplayController controller;
 
     @Inject
     private PlaytimeController playtimeController;
 
+    @Inject
+    public GroupFeature(CraftProtectPlugin plugin) {
+        this.updaterTask = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
+            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                playtimeController.getPlaytime(onlinePlayer)
+                        .thenAccept(time -> {
+                            System.out.println(onlinePlayer.getName() + ": " + time);
+                            controller.updateGroup(onlinePlayer, time);
+                        });
+            }
+        }, 20 * 60, 20 * 60);
+    }
+
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
 
-        PlayerDisplayModel display = controller.get(player);
-
-        playtimeController.getPlaytime(player).thenAccept(onlineTime -> {
-
-            if (onlineTime >= 604800000) {
-                display.setGroupType(GroupType.GOLD);
-                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
-            } else if (onlineTime >= 86400000) {
-                display.setGroupType(GroupType.ACTIVE);
-                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
-            } else if (onlineTime >= 18000000) {
-                display.setGroupType(GroupType.NEWBIE);
-                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
-            } else {
-                display.setGroupType(GroupType.NEW);
-            }
-
-            controller.update(player, display);
-        });
+        playtimeController.getPlaytime(player)
+                .thenAccept(time -> controller.updateGroup(player, time));
     }
 
     @Override
     public void close() throws IOException {
-
+        this.updaterTask.cancel();
     }
 }
