@@ -7,13 +7,18 @@ import com.github.oasis.craftprotect.config.CraftProtectConfig;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.ObjectInputFilter;
 import java.util.Map;
 
 @Singleton
-public class EmojiFeature implements Feature {
+public class EmojiFeature implements Feature, Listener {
+
+
 
     @Inject
     private CraftProtect plugin;
@@ -31,6 +36,27 @@ public class EmojiFeature implements Feature {
         event.setMessage(message);
 
     }
+
+
+    @EventHandler
+    public void onPlayerChat(AsyncPlayerChatEvent event) {
+        String message = event.getMessage();
+        String[] words = message.split(" ");
+
+        for (int i = 0; i < words.length; i++) {
+            String word = words[i];
+            if (config.contains("emotes." + word)) {
+                String emote = config.getString("emotes." + word);
+                words[i] = emote;
+            }
+        }
+
+        message = String.join(" ", words);
+        event.setMessage(message);
+    }
+
+    ObjectInputFilter.Config config = config.init(new File(getDataFolder(), "emotes.yml"), "emotes.yml");
+
 
     @Override
     public void close() throws IOException {

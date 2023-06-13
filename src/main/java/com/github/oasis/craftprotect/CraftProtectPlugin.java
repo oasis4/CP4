@@ -102,6 +102,9 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
         File messagesFile = new File(getDataFolder(), "messages.yml");
         setupMessages(messagesFile);
 
+        File emotesFile = new File(getDataFolder(), "emotes.yml");
+        setupEmotes(emotesFile);
+
         loadFeature(EmojiFeature.class);
         loadFeature(SpawnElytraFeature.class);
         loadFeature(PlayerGreetingFeature.class);
@@ -176,6 +179,22 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
             throw new RuntimeException(e);
         }
     }
+    private void setupEmotes(File emotesFile) {
+        saveResource(emotesFile.getName(), false);
+
+        try (FileReader reader = new FileReader(emotesFile, StandardCharsets.UTF_8)) {
+            messages = YamlConfiguration.loadConfiguration(reader);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        try (Reader reader = getTextResource(emotesFile.getName())) {
+            messages.setDefaults(YamlConfiguration.loadConfiguration(reader));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 
     public void registerCommand(String name, Class<? extends CraftProtectCommand> executorClass) {
