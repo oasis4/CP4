@@ -7,8 +7,7 @@ database:
 
 chat:
   replacements:
-    ':)': '😂'
-    ':panda': '父'
+    ':pandasad': '父'
     ':eyes': '火'
     'eyessus': '升'
     ':f': '互'
