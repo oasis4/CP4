@@ -37,27 +37,6 @@ public class EmojiFeature implements Feature, Listener {
 
     }
 
-
-    @EventHandler
-    public void onPlayerChat(AsyncPlayerChatEvent event) {
-        String message = event.getMessage();
-        String[] words = message.split(" ");
-
-        for (int i = 0; i < words.length; i++) {
-            String word = words[i];
-            if (config.contains("emotes." + word)) {
-                String emote = config.getString("emotes." + word);
-                words[i] = emote;
-            }
-        }
-
-        message = String.join(" ", words);
-        event.setMessage(message);
-    }
-
-    ObjectInputFilter.Config config = config.init(new File(getDataFolder(), "emotes.yml"), "emotes.yml");
-
-
     @Override
     public void close() throws IOException {
 
