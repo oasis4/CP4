@@ -7,8 +7,8 @@ import com.github.oasis.craftprotect.api.CraftProtectCommand;
 import com.github.oasis.craftprotect.api.FeaturedPlugin;
 import com.github.oasis.craftprotect.command.*;
 import com.github.oasis.craftprotect.config.CraftProtectConfig;
+import com.github.oasis.craftprotect.config.SQLDatabaseConfig;
 import com.github.oasis.craftprotect.feature.*;
-import com.github.oasis.craftprotect.feature.combat.Combat;
 import com.github.oasis.craftprotect.link.Execution;
 import com.github.oasis.craftprotect.storage.AsyncUserStorage;
 import com.google.common.cache.Cache;
@@ -29,7 +29,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.Configuration;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -43,6 +42,7 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
 import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.time.Duration;
@@ -78,11 +78,11 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
         saveDefaultConfig();
         reloadCraftProtectConfig();
 
-        ConfigurationSection database = getConfig().getConfigurationSection("database");
-        if (database != null) {
+        SQLDatabaseConfig database = getCraftProtectConfig().getDatabase();
+        if (database != null && database.isEnabled()) {
             this.userStorage = new AsyncUserStorage(() -> {
                 try {
-                    return DriverManager.getConnection(database.getString("url"), database.getString("username"), database.getString("password"));
+                    return DriverManager.getConnection(database.getUrl(), database.getUsername(), database.getPassword());
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -106,12 +106,14 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
         loadFeature(SpawnElytraFeature.class);
         loadFeature(PlayerGreetingFeature.class);
         loadFeature(GroupFeature.class);
-        loadFeature(PlayerWingsFeature.class);
+        //loadFeature(PlayerWingsFeature.class);
+        loadFeature(CrystalFeature.class);
         loadFeature(SpawnTeleportationFeature.class);
         loadFeature(PlayerDisplayFeature.class);
         loadFeature(SpawnFeature.class);
         loadFeature(MotdFeature.class);
-        loadFeature(LiveStreamFeature.class);
+        if (this.userStorage != null)
+            loadFeature(LiveStreamFeature.class);
 
         loadFeature(AfkFeature.class);
         registerCommand("afk", AfkCommand.class);
@@ -131,10 +133,8 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
         registerCommand("setplaytime", SetPlaytimeCommand.class);
         registerCommand("setspawn", SetSpawnCommand.class);
         registerCommand("spawn", SpawnCommand.class);
-        registerCommand("user", UserCommand.class);
-
-
-        Bukkit.getPluginManager().registerEvents(new Combat(this), this);
+        if (userStorage != null)
+            registerCommand("user", UserCommand.class);
 
         if (httpServer != null)
             httpServer.start();
@@ -164,7 +164,7 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
     private void setupMessages(File messagesFile) {
         saveResource(messagesFile.getName(), false);
 
-        try (FileReader reader = new FileReader(messagesFile)) {
+        try (FileReader reader = new FileReader(messagesFile, StandardCharsets.UTF_8)) {
             messages = YamlConfiguration.loadConfiguration(reader);
         } catch (IOException e) {
             throw new RuntimeException(e);

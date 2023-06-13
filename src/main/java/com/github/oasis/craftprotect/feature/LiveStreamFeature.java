@@ -90,7 +90,10 @@ public class LiveStreamFeature implements Feature {
                             twitchClient.getClientHelper().enableStreamEventListener(twitchUser.getId(), twitchUser.getLogin());
                             this.subscribedAccounts.put(event.getPlayer(), twitchUser);
                         });
-                boolean isLive = twitchClient.getHelix().getStreams(null, null, null, "live", 1, null, null, List.of(user.getTwitchId()), null).execute().getStreams().size() > 0;
+                boolean isLive = twitchClient.getHelix().getStreams(null, null, null, 1, null, null, List.of(user.getTwitchId()), null).execute()
+                        .getStreams()
+                        .stream()
+                        .anyMatch(stream -> "live".equalsIgnoreCase(stream.getType()));
                 controller.update(event.getPlayer(), model -> model.setLive(isLive));
             }
         });

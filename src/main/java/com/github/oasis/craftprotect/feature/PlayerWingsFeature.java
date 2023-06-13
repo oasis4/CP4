@@ -7,6 +7,7 @@ import com.google.inject.Singleton;
 import de.javagl.obj.Obj;
 import de.javagl.obj.ObjReader;
 import de.javagl.obj.ObjUtils;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.event.EventHandler;
@@ -28,9 +29,10 @@ public class PlayerWingsFeature implements Feature {
     private List<Vector> vectors = new ArrayList<>();
 
     public PlayerWingsFeature() throws IOException {
-        InputStream resourceAsStream = getClass().getResourceAsStream("/wings.obj");
+        InputStream resourceAsStream = getClass().getResourceAsStream("/hat.obj");
         if (resourceAsStream != null) {
-            this.vectors = loadModel(resourceAsStream, 0.05f);
+            this.vectors = loadModel(resourceAsStream, 1f);
+//                    0.05f);
         }
     }
 
@@ -67,7 +69,6 @@ public class PlayerWingsFeature implements Feature {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
 
-
         plugin.attachAsyncRepeaterTask(event.getPlayer(), "wings", () -> {
             float rotation = event.getPlayer().getLocation().getYaw();
             try {
@@ -83,18 +84,19 @@ public class PlayerWingsFeature implements Feature {
             double sin = Math.sin(radians);
 
             Vector directionVector = new Vector();
-            directionVector.setX(-Math.sin(Math.toRadians(rotation)));
-            directionVector.setZ(Math.cos(Math.toRadians(rotation)));
-            directionVector = directionVector.multiply(0.2F);
-            directionVector.setY(0.2);
+            //directionVector.setX(-Math.sin(Math.toRadians(rotation)));
+            //directionVector.setZ(Math.cos(Math.toRadians(rotation)));
+            //directionVector = directionVector.multiply(0.2F);
+            directionVector.setY(-0.8);
 
             Location clone = event.getPlayer().getEyeLocation().clone().subtract(directionVector);
 
+            Particle.DustOptions options = new Particle.DustOptions(Color.PURPLE, 0.5f);
 
             for (Vector vector : vectors) {
                 Vector rotatedVector = new Vector(cos * vector.getX() - sin * vector.getZ(), vector.getY(), sin * vector.getX() + cos * vector.getZ());
                 Location add = clone.clone().add(rotatedVector);
-                add.getWorld().spawnParticle(Particle.FLAME, add, 1, 0, 0, 0, 0);
+                add.getWorld().spawnParticle(Particle.REDSTONE, add, 1, 0, 0, 0, 0, options);
             }
 
 

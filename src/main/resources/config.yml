@@ -1,4 +1,5 @@
 database:
+  enabled: false
   url: 'jdbc:mysql://localhost:3306'
   database: 'test'
   username: 'root'

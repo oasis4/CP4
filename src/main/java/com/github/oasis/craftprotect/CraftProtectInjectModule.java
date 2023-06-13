@@ -4,6 +4,7 @@ import com.github.oasis.craftprotect.api.CraftProtect;
 import com.github.oasis.craftprotect.storage.AsyncUserStorage;
 import com.github.oasis.craftprotect.storage.UserStorage;
 import com.google.inject.AbstractModule;
+import com.google.inject.util.Providers;
 import com.sun.net.httpserver.HttpServer;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -23,7 +24,8 @@ public class CraftProtectInjectModule extends AbstractModule {
         bind(CraftProtect.class).to(CraftProtectPlugin.class);
         bind(CraftProtectPlugin.class).toInstance(plugin);
         bind(UserStorage.class).to(AsyncUserStorage.class);
-        bind(AsyncUserStorage.class).toInstance(plugin.getUserStorage());
+        bind(AsyncUserStorage.class)
+                .toProvider(Providers.of(plugin.getUserStorage()));
         if (this.plugin.getHttpServer() != null)
             bind(HttpServer.class).toInstance(this.plugin.getHttpServer());
     }

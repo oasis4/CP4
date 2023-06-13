@@ -81,7 +81,7 @@ public class TwitchLinkHandler implements HttpHandler {
 
             System.out.println(connection.getResponseCode());
 
-            HystrixCommand<StreamList> streams = feature.getTwitchClient().getHelix().getStreams(null, null, null, "live", null, null, null, List.of(userId), null);
+            HystrixCommand<StreamList> streams = feature.getTwitchClient().getHelix().getStreams(null, null, null, null, null, null, List.of(userId), null);
             StreamList execute = streams.execute();
 
             boolean live = execute.getStreams().stream().anyMatch(stream -> "live".equals(stream.getType()));

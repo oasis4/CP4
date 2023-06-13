@@ -99,8 +99,8 @@
         <dependency>
             <groupId>com.github.twitch4j</groupId>
             <artifactId>twitch4j</artifactId>
-            <version>1.15.1</version>
-            <scope>compile</scope>
+            <version>1.15.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.mysql</groupId>
