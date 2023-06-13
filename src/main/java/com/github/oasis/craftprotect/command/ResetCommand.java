@@ -22,7 +22,6 @@ public class ResetCommand implements CraftProtectCommand {
             plugin.sendMessage(sender, M.NO_PLAYER);
             return true;
         }
-        player.setPlayerListName(player.getDisplayName());
         player.setGlowing(false);
         plugin.sendMessage(sender, "command.reset");
 
