@@ -106,7 +106,7 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
         loadFeature(SpawnElytraFeature.class);
         loadFeature(PlayerGreetingFeature.class);
         loadFeature(GroupFeature.class);
-        //loadFeature(PlayerWingsFeature.class);
+        loadFeature(PlayerWingsFeature.class);
         loadFeature(CrystalFeature.class);
         loadFeature(SpawnTeleportationFeature.class);
         loadFeature(PlayerDisplayFeature.class);
@@ -144,7 +144,7 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
     public void reloadCraftProtectConfig() {
         File configFile = new File(getDataFolder(), "config.yml");
         if (configFile.isFile()) {
-            try (FileReader reader = new FileReader(configFile)) {
+            try (FileReader reader = new FileReader(configFile, StandardCharsets.UTF_8)) {
                 Yaml yaml = new Yaml();
                 this.craftProtectConfig = yaml.loadAs(reader, CraftProtectConfig.class);
             } catch (Exception e) {
