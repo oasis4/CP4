@@ -29,10 +29,6 @@ public class ClearItemCommand implements CraftProtectCommand {
             return true;
         }
 
-        new BukkitRunnable() {
-            @SuppressWarnings("deprecation")
-            @Override
-            public void run() {
                 int amount=0;
                 for(int i=0;i<getServer().getWorlds().size();i++) {
                     for(int j=0;j<getServer().getWorlds().get(i).getEntities().size();j++) {
@@ -43,11 +39,8 @@ public class ClearItemCommand implements CraftProtectCommand {
                     }
                 }
                //for(int i=0; i<getServer().getOnlinePlayers().length ;i++) {
-                 //   getServer().getOnlinePlayers()[i].sendMessage("[Cp5]Clear "+amount+" Drop Item!");
-              //  }
-            }
-        }.runTaskTimer((Plugin) this,0, 60*20);
-
+                //    getServer().getOnlinePlayers()[i].sendMessage("[Cp5]Clear "+amount+" Drop Item!");
+           //   }
 
         return true;
     }
