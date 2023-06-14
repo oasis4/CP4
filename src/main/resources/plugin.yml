@@ -46,6 +46,8 @@ commands:
     usage: '/<command>'
   user:
     usage: '/<command> [<target>]'
+  clear:
+    usage: '/<command>'
 
 libraries:
   - org.apache.commons:commons-text:1.10.0
