@@ -8,7 +8,7 @@ database:
 chat:
   replacements:
     ':pandasad': '父'
-    ':eyes': '火'
+    ':eyesn': '火'
     'eyessus': '升'
     ':f': '互'
     ':kappa': '水'
@@ -17,10 +17,9 @@ chat:
     ':monkas': '呂'
     ':pandahug': '夫'
     ':pandalove': '太'
-    ':pandalurk': '収'
     ':happy': '双'
     ':pepe5head': '及'
-    ':pepeg': '午'
+    ':pepenerd': '午'
     ':pepeheart': '手'
     ':pepeok': '己'
     ':pepepolice': '巾'
