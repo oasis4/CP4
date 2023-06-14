@@ -42,7 +42,8 @@ public class ClearItemCommand implements CraftProtectCommand {
            //    for(int i=0; i<getServer().getOnlinePlayers().length ;i++) {
             //       (getServer().getOnlinePlayers().sendMessage("[Cp5]Clear "+amount+" Drop Item!"));
            //   }
-        getServer().getOnlinePlayers().forEach( (EntityType) -> player.sendMessage("[Cp5]Clear \"+amount+\" Drop Item!"));
+        int finalAmount = amount;
+        getServer().getOnlinePlayers().forEach( (player1) -> player.sendMessage("[Cp5]Clear " + finalAmount + " Drop Item!"));
 
         return true;
     }
