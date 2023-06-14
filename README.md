@@ -22,7 +22,7 @@ Commands:
 
 - [ ] Death counter
 
-- [ ] Crystals machen weniger Schaden und zerstören nichts
+- [x] Crystals machen weniger Schaden und zerstören nichts
 
 - [ ] Combat Plugin
 -
