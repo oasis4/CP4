@@ -4,6 +4,7 @@ import com.github.oasis.craftprotect.api.CraftProtect;
 import com.github.oasis.craftprotect.api.CraftProtectCommand;
 import com.github.oasis.craftprotect.utils.M;
 import com.google.inject.Inject;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
@@ -38,9 +39,10 @@ public class ClearItemCommand implements CraftProtectCommand {
                         }
                     }
                 }
-               //for(int i=0; i<getServer().getOnlinePlayers().length ;i++) {
-                //    getServer().getOnlinePlayers()[i].sendMessage("[Cp5]Clear "+amount+" Drop Item!");
+           //    for(int i=0; i<getServer().getOnlinePlayers().length ;i++) {
+            //       (getServer().getOnlinePlayers().sendMessage("[Cp5]Clear "+amount+" Drop Item!"));
            //   }
+        getServer().getOnlinePlayers().forEach( (EntityType) -> player.sendMessage("[Cp5]Clear \"+amount+\" Drop Item!"));
 
         return true;
     }
