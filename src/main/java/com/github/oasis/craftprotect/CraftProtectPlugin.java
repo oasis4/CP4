@@ -124,6 +124,8 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
         loadFeature(ChallengeFeature.class);
         registerCommand("challenge", ChallengeCommand.class);
 
+        registerCommand("clear", ClearItemCommand.class);
+
         registerCommand("sub", GlowCommand.class);
         registerCommand("reset", ResetCommand.class);
         registerCommand("flame", FlameCommand.class);
