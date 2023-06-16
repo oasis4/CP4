@@ -2,10 +2,13 @@ package com.github.oasis.craftprotect.feature;
 
 import com.github.oasis.craftprotect.api.CraftProtect;
 import com.github.oasis.craftprotect.api.Feature;
+import com.github.oasis.craftprotect.config.ChatConfig;
+import com.github.oasis.craftprotect.config.CraftProtectConfig;
 import com.github.oasis.craftprotect.utils.CircleUtils;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import net.kyori.adventure.chat.ChatType;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
@@ -17,6 +20,7 @@ import org.bukkit.util.Vector;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Map;
 
 @Singleton
 public class PlayerGreetingFeature implements Feature {
@@ -29,6 +33,10 @@ public class PlayerGreetingFeature implements Feature {
     public void onJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
         World world = player.getWorld();
+        CraftProtectConfig craftProtectConfig = plugin.getCraftProtectConfig();
+        ChatConfig chat = craftProtectConfig.getChat();
+        player.addAdditionalChatCompletions(chat.getReplacements().keySet());
+        player.addAdditionalChatCompletions(chat.getReplacements().values());
         player.setGlowing(false);
         player.sendTitle("§3Willkommen", "§fbei " + plugin.getName(), 1, 20 * 3, 20 * 2);
 
