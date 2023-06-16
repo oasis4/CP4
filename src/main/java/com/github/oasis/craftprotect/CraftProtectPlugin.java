@@ -111,6 +111,7 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
         loadFeature(GroupFeature.class);
         loadFeature(PlayerWingsFeature.class);
         loadFeature(CrystalFeature.class);
+        loadFeature(CreeperFeature.class);
         loadFeature(SpawnTeleportationFeature.class);
         loadFeature(PlayerDisplayFeature.class);
         loadFeature(SpawnFeature.class);
@@ -157,6 +158,7 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
             }
         }
     }
+
 
     public Injector newInjector() {
         return Guice.createInjector(Stage.PRODUCTION, new CraftProtectInjectModule(this));

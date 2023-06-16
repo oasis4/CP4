@@ -29,7 +29,7 @@ public class PlayerWingsFeature implements Feature {
     private List<Vector> vectors = new ArrayList<>();
 
     public PlayerWingsFeature() throws IOException {
-        InputStream resourceAsStream = getClass().getResourceAsStream("/Batarang.obj");
+        InputStream resourceAsStream = getClass().getResourceAsStream("/hat.obj");
         if (resourceAsStream != null) {
             this.vectors = loadModel(resourceAsStream, 1f);
 //                    0.05f);
