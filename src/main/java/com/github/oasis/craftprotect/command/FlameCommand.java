@@ -46,7 +46,7 @@ public class FlameCommand implements CraftProtectCommand {
         plugin.attachAsyncRepeaterTask(player, taskName, () -> {
             World world = player.getWorld();
             Location location = player.getLocation();
-            world.spawnParticle(Particle.FLAME, location, 1, 0, 0, 0, 0);
+            world.spawnParticle(Particle.CHERRY_LEAVES, location, 1, 0, 0, 0, 0);
         }, 0, 1);
         plugin.sendMessage(player, "command.flame.enabled");
         return true;
