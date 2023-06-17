@@ -5,235 +5,88 @@ import com.github.oasis.craftprotect.api.Feature;
 import com.github.oasis.craftprotect.controller.SpawnController;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.entity.HumanEntity;
+import net.kyori.adventure.text.Component;
+import org.bukkit.*;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityToggleGlideEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCreativeEvent;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.util.io.BukkitObjectInputStream;
-import org.bukkit.util.io.BukkitObjectOutputStream;
+import org.bukkit.event.player.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Singleton
 public class SpawnElytraFeature implements Feature {
-    private static final int radius = (int) Math.pow(40, 2);
+    private static final int radius = 40;
+    private static final int boostMultiplier = 3;
 
-    private final CraftProtectPlugin protect;
-    private final NamespacedKey key;
-
+    private final List<Player> flyingPlayers = new ArrayList<>();
+    private final List<Player> boostedPlayers = new ArrayList<>();
     @Inject
     private SpawnController controller;
 
     @Inject
     public SpawnElytraFeature(CraftProtectPlugin protect) {
-        this.protect = protect;
-        this.key = NamespacedKey.fromString("chestplate-vault", protect);
-    }
-
-    @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        PersistentDataContainer container = player.getPersistentDataContainer();
-        PlayerInventory inventory = player.getInventory();
-
-        // Check has saved chestplate and then restore
-        byte[] bytes = container.get(key, PersistentDataType.BYTE_ARRAY);
-        if (bytes != null) {
-            try (ByteArrayInputStream stream = new ByteArrayInputStream(bytes)) {
-                BukkitObjectInputStream inputStream = new BukkitObjectInputStream(stream);
-                ItemStack savedItem = (ItemStack) inputStream.readObject();
-                container.remove(key);
-                inventory.setChestplate(savedItem);
-            } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-
-        Location spawnLocation = controller.getLocation();
-        if (spawnLocation == null) return;
-
-        // Check spawn radius
-        if (player.getWorld() == spawnLocation.getWorld() && player.getLocation().distanceSquared(spawnLocation) > radius) return;
-
-
-        // Save chestplate
-        ItemStack chestplate = inventory.getChestplate();
-        try (ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
-            BukkitObjectOutputStream outputStream = new BukkitObjectOutputStream(stream);
-            outputStream.writeObject(chestplate);
-            player.getPersistentDataContainer().set(key, PersistentDataType.BYTE_ARRAY, stream.toByteArray());
-            ItemStack itemStack = new ItemStack(Material.ELYTRA);
-            ItemMeta itemMeta = itemStack.getItemMeta();
-            itemMeta.setCustomModelData(1);
-            itemStack.setItemMeta(itemMeta);
-            inventory.setChestplate(itemStack);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    @EventHandler
-    public void onQuit(PlayerQuitEvent event) {
-        Player player = event.getPlayer();
-        PersistentDataContainer container = player.getPersistentDataContainer();
-        PlayerInventory inventory = player.getInventory();
-
-        // Check has saved chestplate and then restore
-        byte[] bytes = container.get(key, PersistentDataType.BYTE_ARRAY);
-        if (bytes != null) {
-            try (ByteArrayInputStream stream = new ByteArrayInputStream(bytes)) {
-                BukkitObjectInputStream inputStream = new BukkitObjectInputStream(stream);
-                ItemStack savedItem = (ItemStack) inputStream.readObject();
-                container.remove(key);
-                inventory.setChestplate(savedItem);
-            } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @EventHandler
-    public void onElytraEnd(EntityToggleGlideEvent event) {
-        if (!(event.getEntity() instanceof Player)) return;
-        Player player = (Player) event.getEntity();
-        PersistentDataContainer container = player.getPersistentDataContainer();
-        if (!container.has(key, PersistentDataType.BYTE_ARRAY)) return;
-
-        Location spawnLocation = controller.getLocation();
-        if (spawnLocation == null) // TODO: Restore if not set
-            return;
-
-        if(player.getWorld() != spawnLocation.getWorld())
-            return;
-
-        if (event.isGliding() || (player.getWorld() == spawnLocation.getWorld() && player.getLocation().distanceSquared(spawnLocation) <= radius)) return;
-
-        PlayerInventory inventory = player.getInventory();
-        // Check has saved chestplate and then restore
-        byte[] bytes = container.get(key, PersistentDataType.BYTE_ARRAY);
-        if (bytes == null) return;
-        try (ByteArrayInputStream stream = new ByteArrayInputStream(bytes)) {
-            BukkitObjectInputStream inputStream = new BukkitObjectInputStream(stream);
-            ItemStack savedItem = (ItemStack) inputStream.readObject();
-            container.remove(key);
-            inventory.setChestplate(savedItem);
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    @EventHandler
-    public void onMove(PlayerMoveEvent event) {
-
-        Location spawnLocation = controller.getLocation();
-        if (spawnLocation == null) // TODO: Restore if not set
-            return;
-
-        if (!event.hasChangedBlock())
-            return;
-        Player player = event.getPlayer();
-        PersistentDataContainer container = player.getPersistentDataContainer();
-
-
-        if (!container.has(key, PersistentDataType.BYTE_ARRAY)) {
-            PlayerInventory inventory = player.getInventory();
-            if (event.getTo().getWorld() != spawnLocation.getWorld() || player.getLocation().distanceSquared(spawnLocation) <= radius) {
-                // Save chestplate
-                ItemStack chestplate = inventory.getChestplate();
-                try (ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
-                    BukkitObjectOutputStream outputStream = new BukkitObjectOutputStream(stream);
-                    outputStream.writeObject(chestplate);
-                    player.getPersistentDataContainer().set(key, PersistentDataType.BYTE_ARRAY, stream.toByteArray());
-                    ItemStack itemStack = new ItemStack(Material.ELYTRA);
-                    ItemMeta itemMeta = itemStack.getItemMeta();
-                    itemMeta.setCustomModelData(1);
-                    itemStack.setItemMeta(itemMeta);
-                    inventory.setChestplate(itemStack);
-                } catch (IOException e) {
-                    e.printStackTrace();
+        Bukkit.getScheduler().runTaskTimer(protect, () -> {
+            Collection<? extends Player> players = (controller.getLocation() != null) ? controller.getLocation().getWorld().getPlayers() : Bukkit.getOnlinePlayers();
+            players.forEach(player -> {
+                if (player.getGameMode() != GameMode.SURVIVAL) return;
+                player.setAllowFlight(isInSpawnRadius(player));
+                if (flyingPlayers.contains(player) && !player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType().isAir()) {
+                    player.setAllowFlight(false);
+                    player.setFlying(false);
+                    player.setGliding(false);
+                    Bukkit.getScheduler().runTaskLater(protect, () -> {
+                        flyingPlayers.remove(player);
+                        boostedPlayers.remove(player);
+                    }, 5);
                 }
-            }
-            return;
-        }
-
-        if (player.isGliding() || (event.getTo().getWorld() == spawnLocation.getWorld() && player.getLocation().distanceSquared(spawnLocation) <= radius))
-            return;
-
-        PlayerInventory inventory = player.getInventory();
-        // Check has saved chestplate and then restore
-        byte[] bytes = container.get(key, PersistentDataType.BYTE_ARRAY);
-        if (bytes == null) return;
-        try (ByteArrayInputStream stream = new ByteArrayInputStream(bytes)) {
-            BukkitObjectInputStream inputStream = new BukkitObjectInputStream(stream);
-            ItemStack savedItem = (ItemStack) inputStream.readObject();
-            container.remove(key);
-            inventory.setChestplate(savedItem);
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onDeath(PlayerDeathEvent event) {
-        Player player = event.getEntity();
-        PersistentDataContainer container = player.getPersistentDataContainer();
-
-        // Check has saved chestplate and then restore
-        byte[] bytes = container.get(key, PersistentDataType.BYTE_ARRAY);
-        if (bytes != null) {
-            try (ByteArrayInputStream stream = new ByteArrayInputStream(bytes)) {
-                BukkitObjectInputStream inputStream = new BukkitObjectInputStream(stream);
-                ItemStack savedItem = (ItemStack) inputStream.readObject();
-                container.remove(key);
-                event.getDrops().removeIf(itemStack -> itemStack.getType() == Material.ELYTRA && itemStack.getItemMeta() != null && itemStack.getItemMeta().getCustomModelData() == 1 || itemStack.getType() == Material.AIR);
-                event.getDrops().add(savedItem);
-            } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
+            });
+        }, 0, 5);
     }
 
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
-        HumanEntity whoClicked = event.getWhoClicked();
-        PersistentDataContainer container = whoClicked.getPersistentDataContainer();
-        if (!container.has(key, PersistentDataType.BYTE_ARRAY)) return;
-
-        if (!whoClicked.getInventory().equals(event.getClickedInventory())) return;
-        if (event.getSlotType() != InventoryType.SlotType.ARMOR) return;
-        if (event.getRawSlot() != 6) // Chestplate slot (https://wiki.vg/File:Inventory-slots.png)
-            return;
+    public void onPlayerToggleFlight(PlayerToggleFlightEvent event) {
+        Player player = event.getPlayer();
+        if (player.getGameMode() != GameMode.SURVIVAL) return;
+        if (!isInSpawnRadius(player)) return;
         event.setCancelled(true);
+        player.setGliding(true);
+        flyingPlayers.add(player);
+        player.sendActionBar(Component.text("Drücke ").append(Component.keybind("key.swapOffhand")).append(Component.text(", um dich zu boosten")));
     }
 
     @EventHandler
-    public void onInventoryCreativeClick(InventoryCreativeEvent event) {
-        onInventoryClick(event);
-        if (event.isCancelled()) {
-            event.setCursor(null);
+    public void onEntityDamage(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+        if (!flyingPlayers.contains(player)) return;
+        if (event.getCause() == EntityDamageEvent.DamageCause.FALL || event.getCause() == EntityDamageEvent.DamageCause.FLY_INTO_WALL)
+            event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onPlayerSwapHandItems(PlayerSwapHandItemsEvent event) {
+        if (flyingPlayers.contains(event.getPlayer()) && event.getPlayer().isGliding() && !boostedPlayers.contains(event.getPlayer())) {
+            event.setCancelled(true);
+            event.getPlayer().setVelocity(event.getPlayer().getLocation().getDirection().multiply(boostMultiplier));
+            boostedPlayers.add(event.getPlayer());
         }
     }
 
+    @EventHandler
+    public void onEntityToggleGlide(EntityToggleGlideEvent event) {
+        if (event.getEntity() instanceof Player player && flyingPlayers.contains(player)) event.setCancelled(true);
+    }
+
+    private boolean isInSpawnRadius(Player player) {
+        if (controller.getLocation() == null) return false;
+        if (player.getLocation().getWorld() != controller.getLocation().getWorld()) return false;
+        return controller.getLocation().distance(player.getLocation()) <= radius;
+    }
 
     @Override
     public void close() throws IOException {
