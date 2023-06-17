@@ -8,10 +8,7 @@ import com.github.oasis.craftprotect.utils.CircleUtils;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import net.kyori.adventure.chat.ChatType;
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -20,7 +17,6 @@ import org.bukkit.util.Vector;
 
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.Map;
 
 @Singleton
 public class PlayerGreetingFeature implements Feature {
@@ -37,9 +33,9 @@ public class PlayerGreetingFeature implements Feature {
         ChatConfig chat = craftProtectConfig.getChat();
         player.addAdditionalChatCompletions(chat.getReplacements().keySet());
         player.addAdditionalChatCompletions(chat.getReplacements().values());
+        if(!player.hasPlayedBefore()) player.teleport(new Location(Bukkit.getWorld("world"), 0.5, 200.0, 0.5));
         player.setGlowing(false);
         player.sendTitle("§3Willkommen", "§fbei " + plugin.getName(), 1, 20 * 3, 20 * 2);
-
         double seconds = 3.0;
 
         new BukkitRunnable() {
