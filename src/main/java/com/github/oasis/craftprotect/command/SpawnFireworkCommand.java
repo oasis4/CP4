@@ -14,6 +14,7 @@ import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton
 public class SpawnFireworkCommand implements CraftProtectCommand {
@@ -22,13 +23,14 @@ public class SpawnFireworkCommand implements CraftProtectCommand {
     private CraftProtect protect;
 
     @Override
+    public @Nullable String getPermission() {
+        return "cp.command.spawnfirework";
+    }
+
+    @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player player)) {
             protect.sendMessage(sender, M.NO_PLAYER);
-            return true;
-        }
-        if (!(sender.hasPermission("cp4.sub"))) {
-            protect.sendMessage(sender, M.NO_SUB);
             return true;
         }
 

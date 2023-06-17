@@ -13,6 +13,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -24,6 +25,11 @@ public class FlameCommand implements CraftProtectCommand {
 
     @Inject
     public CraftProtect plugin;
+
+    @Override
+    public @Nullable String getPermission() {
+        return "cp.command.flame";
+    }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {

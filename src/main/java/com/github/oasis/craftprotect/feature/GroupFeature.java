@@ -29,10 +29,7 @@ public class GroupFeature implements Feature {
         this.updaterTask = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                 playtimeController.getPlaytime(onlinePlayer)
-                        .thenAccept(time -> {
-                            System.out.println(onlinePlayer.getName() + ": " + time);
-                            controller.updateGroup(onlinePlayer, time);
-                        });
+                        .thenAccept(time -> controller.updateGroup(onlinePlayer, time));
             }
         }, 20 * 60, 20 * 60);
     }

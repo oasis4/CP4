@@ -20,7 +20,6 @@ public class PlayerDisplayFeature implements Feature {
     @Inject
     public PlayerDisplayFeature(PlayerDisplayController controller) {
         this.controller = controller;
-        System.out.println("Subscribing tablist update");
         this.controller.subscribe(TabListView::update);
     }
 
@@ -29,7 +28,6 @@ public class PlayerDisplayFeature implements Feature {
         Player player = event.getPlayer();
         PlayerDisplayModel playerDisplay = this.controller.get(player);
         TabListView.update(player, playerDisplay);
-        System.out.println("SET");
     }
 
     @Override
