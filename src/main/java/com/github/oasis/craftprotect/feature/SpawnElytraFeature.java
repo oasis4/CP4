@@ -71,7 +71,7 @@ public class SpawnElytraFeature implements Feature {
         if (spawnLocation == null) return;
 
         // Check spawn radius
-        if (player.getLocation().distanceSquared(spawnLocation) > radius) return;
+        if (player.getWorld() == spawnLocation.getWorld() && player.getLocation().distanceSquared(spawnLocation) > radius) return;
 
 
         // Save chestplate
@@ -122,7 +122,10 @@ public class SpawnElytraFeature implements Feature {
         if (spawnLocation == null) // TODO: Restore if not set
             return;
 
-        if (event.isGliding() || player.getLocation().distanceSquared(spawnLocation) <= radius) return;
+        if(player.getWorld() != spawnLocation.getWorld())
+            return;
+
+        if (event.isGliding() || (player.getWorld() == spawnLocation.getWorld() && player.getLocation().distanceSquared(spawnLocation) <= radius)) return;
 
         PlayerInventory inventory = player.getInventory();
         // Check has saved chestplate and then restore
@@ -141,18 +144,20 @@ public class SpawnElytraFeature implements Feature {
 
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
-        if (!event.hasChangedBlock())
-            return;
-        Player player = event.getPlayer();
-        PersistentDataContainer container = player.getPersistentDataContainer();
 
         Location spawnLocation = controller.getLocation();
         if (spawnLocation == null) // TODO: Restore if not set
             return;
 
+        if (!event.hasChangedBlock())
+            return;
+        Player player = event.getPlayer();
+        PersistentDataContainer container = player.getPersistentDataContainer();
+
+
         if (!container.has(key, PersistentDataType.BYTE_ARRAY)) {
             PlayerInventory inventory = player.getInventory();
-            if (player.getLocation().distanceSquared(spawnLocation) <= radius) {
+            if (event.getTo().getWorld() != spawnLocation.getWorld() || player.getLocation().distanceSquared(spawnLocation) <= radius) {
                 // Save chestplate
                 ItemStack chestplate = inventory.getChestplate();
                 try (ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
@@ -171,7 +176,7 @@ public class SpawnElytraFeature implements Feature {
             return;
         }
 
-        if (player.isGliding() || player.getLocation().distanceSquared(spawnLocation) <= radius)
+        if (player.isGliding() || (event.getTo().getWorld() == spawnLocation.getWorld() && player.getLocation().distanceSquared(spawnLocation) <= radius))
             return;
 
         PlayerInventory inventory = player.getInventory();
