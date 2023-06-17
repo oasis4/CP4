@@ -12,6 +12,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 
 @Singleton
@@ -19,6 +20,11 @@ public class GlowCommand implements CraftProtectCommand {
 
     @Inject
     private CraftProtect plugin;
+
+    @Override
+    public @Nullable String getPermission() {
+        return "cp.command.glow";
+    }
 
     @Override
     public boolean onCommand(CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {

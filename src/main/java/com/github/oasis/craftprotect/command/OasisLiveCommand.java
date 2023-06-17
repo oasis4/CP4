@@ -10,6 +10,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton
 public class OasisLiveCommand implements CraftProtectCommand {
@@ -18,12 +19,12 @@ public class OasisLiveCommand implements CraftProtectCommand {
     private CraftProtect plugin;
 
     @Override
-    public boolean onCommand(CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public @Nullable String getPermission() {
+        return "cp4.admin";
+    }
 
-        if (!sender.hasPermission("cp4.admin")) {
-            plugin.sendMessage(sender, M.NO_PLAYER);
-            return true;
-        }
+    @Override
+    public boolean onCommand(CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             plugin.sendMessage(onlinePlayer, "command.oasislive.broadcast");

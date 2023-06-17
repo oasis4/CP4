@@ -36,8 +36,6 @@ commands:
   tanjo:
     usage: '/<command>'
     description: "Du hast das Easteregg aus Cp4 gefunden. Melde dich gerne bei Oasis"
-  challenge:
-    usage: '/<command>'
   setplaytime:
     usage: '/<command> [<seconds>]'
   setspawn:

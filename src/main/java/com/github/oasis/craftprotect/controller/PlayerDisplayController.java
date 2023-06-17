@@ -49,13 +49,10 @@ public class PlayerDisplayController extends Controller<Player, PlayerDisplayMod
         update(player, display -> {
             if (playtime >= 604800000) {
                 display.setGroupType(GroupType.GOLD);
-                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
             } else if (playtime >= 86400000) {
                 display.setGroupType(GroupType.ACTIVE);
-                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
             } else if (playtime >= 18000000) {
                 display.setGroupType(GroupType.NEWBIE);
-                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.5f);
             } else {
                 display.setGroupType(GroupType.NEW);
             }

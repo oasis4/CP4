@@ -74,9 +74,6 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
         super.onEnable();
         this.audiences = BukkitAudiences.create(this);
 
-        System.setProperty("file.encoding", "UTF-8");
-
-
         getLogger().info("Initializing configuration files...");
         saveDefaultConfig();
         reloadCraftProtectConfig();
@@ -121,9 +118,6 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
 
         loadFeature(AfkFeature.class);
         registerCommand("afk", AfkCommand.class);
-
-        loadFeature(ChallengeFeature.class);
-        registerCommand("challenge", ChallengeCommand.class);
 
         registerCommand("clear", ClearItemCommand.class);
 

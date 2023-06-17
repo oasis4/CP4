@@ -11,6 +11,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 
@@ -23,14 +24,13 @@ public class LiveCommand implements CraftProtectCommand, CommandExecutor {
     @Inject
     private CraftProtectPlugin plugin;
 
+    @Override
+    public @Nullable String getPermission() {
+        return "cp.command.live";
+    }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
-
-        if (!sender.hasPermission("*")) {
-            plugin.sendMessage(sender, M.NO_PERM);
-            return true;
-        }
         if (!(sender instanceof Player)) {
             plugin.sendMessage(sender, M.NO_PLAYER);
             return true;
