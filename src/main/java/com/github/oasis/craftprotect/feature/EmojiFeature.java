@@ -10,9 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.ObjectInputFilter;
 import java.util.Map;
 
 @Singleton

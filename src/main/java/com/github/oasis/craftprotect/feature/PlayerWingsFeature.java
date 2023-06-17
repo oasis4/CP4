@@ -66,7 +66,7 @@ public class PlayerWingsFeature implements Feature {
         }
     }
 
-    @EventHandler
+/*    @EventHandler
     public void onJoin(PlayerJoinEvent event) {
 
         plugin.attachAsyncRepeaterTask(event.getPlayer(), "wings", () -> {
@@ -102,7 +102,7 @@ public class PlayerWingsFeature implements Feature {
 
         }, 5, 5);
 
-    }
+    }*/
 
     @Override
     public void close() throws IOException {

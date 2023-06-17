@@ -34,7 +34,7 @@ import java.io.IOException;
 
 @Singleton
 public class SpawnElytraFeature implements Feature {
-    private static final int radius = (int) Math.pow(25, 2);
+    private static final int radius = (int) Math.pow(40, 2);
 
     private final CraftProtectPlugin protect;
     private final NamespacedKey key;
