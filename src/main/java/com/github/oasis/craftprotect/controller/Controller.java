@@ -35,8 +35,6 @@ public abstract class Controller<K, V> {
     public final void update(K key, V value) {
         try {
             update0(key, value);
-            System.out.println(this);
-            System.out.println(this.subscribers.size());
             this.subscribers.forEach(kvBiConsumer -> kvBiConsumer.accept(key, value));
         } catch (Exception e) {
             e.printStackTrace();
