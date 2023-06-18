@@ -45,8 +45,6 @@ public abstract class Controller<K, V> {
 
     public final void subscribe(BiConsumer<K, V> consumer) {
         this.subscribers.add(consumer);
-        System.out.println("Added: " + this.subscribers.size());
-        System.out.println(this);
     }
 
     @Override
