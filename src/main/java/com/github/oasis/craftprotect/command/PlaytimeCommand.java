@@ -58,7 +58,6 @@ public class PlaytimeCommand implements CraftProtectCommand, Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         event.getPlayer().setMetadata("last-joined", new FixedMetadataValue(plugin, System.currentTimeMillis()));
-        System.out.println("Joining");
     }
 
     @EventHandler

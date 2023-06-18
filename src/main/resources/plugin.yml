@@ -3,6 +3,8 @@ version: '${project.version}'
 main: com.github.oasis.craftprotect.CraftProtectPlugin
 api-version: 1.19
 authors: [ Oasis, LeBaasti, CyntrixAlgorithm ]
+softdepend:
+  - Vault
 commands:
   playtime:
     usage: '/<command>'
@@ -54,3 +56,4 @@ libraries:
   - io.reactivex.rxjava3:rxjava:3.1.6
   - de.javagl:obj:0.4.0
   - com.google.inject:guice:7.0.0
+  - org.mariadb.jdbc:mariadb-java-client:3.1.4

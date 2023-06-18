@@ -56,12 +56,10 @@ public class LinkCommand implements CraftProtectCommand {
                 plugin.getUserStorage()
                         .findUserAsync(player.getUniqueId())
                         .thenApply(craftProtectUser -> {
-                            System.out.println(craftProtectUser);
                             CraftProtectUser user = craftProtectUser.orElseGet(() -> new CraftProtectUser(player.getUniqueId(), null, null));
                             user.setTwitchId(userId);
                             return user;
                         }).thenAccept(craftProtectUser -> {
-                            System.out.println("Storing: " + craftProtectUser);
                             plugin.getUserStorage().persist(craftProtectUser);
                         });
 

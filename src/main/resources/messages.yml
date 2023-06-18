@@ -3,6 +3,7 @@ full-prefix: '<aqua><bold>CraftProtect.DE </bold></aqua><white>❘</white>'
 no-player: '<prefix> <red>Du musst ein Spieler sein.'
 no-sub: '<prefix> <red>Du musst ein Subscriber von Oreocast oder Oasis4_0 sein.'
 no-permission: '<prefix> <red>Dir fehlen Berechtigungen um dies zutun.'
+disabled-end: '<prefix> <red>Das Ende ist bis jetzt noch deaktiviert.'
 spawn:
   missing: '<prefix> <red>Der Spawnpunkt wurde noch nicht gesetzt'
 command:

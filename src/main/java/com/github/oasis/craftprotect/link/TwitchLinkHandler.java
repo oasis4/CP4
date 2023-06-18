@@ -35,13 +35,8 @@ public class TwitchLinkHandler implements HttpHandler {
             if (!"GET".equals(exchange.getRequestMethod()))
                 return;
 
-            System.out.println(exchange.getRequestURI());
-
             String query = exchange.getRequestURI().getQuery();
             Map<String, String> paramMap = UrlUtils.getParamMap(query);
-
-            System.out.println(paramMap.get("code"));
-            System.out.println(paramMap.get("state"));
 
             Execution execution = plugin.getAuthorizationCache().getIfPresent(paramMap.get("state"));
             if (!(execution instanceof TwitchExecution twitchExecution)) {
@@ -56,8 +51,6 @@ public class TwitchLinkHandler implements HttpHandler {
             connection.getOutputStream().write("client_id=%s&client_secret=%s&code=%s&grant_type=authorization_code&redirect_uri=%s".formatted(info.getClientId(), info.getClientSecret(), paramMap.get("code"), info.getCallbackURI()).getBytes());
             connection.connect();
 
-            System.out.println(connection.getResponseCode());
-
             InputStream inputStream = connection.getInputStream();
             Gson gson = new Gson();
             JsonObject jsonObject = gson.fromJson(new InputStreamReader(inputStream), JsonObject.class);
@@ -70,22 +63,16 @@ public class TwitchLinkHandler implements HttpHandler {
 
             JsonObject jsonObject1 = gson.fromJson(new InputStreamReader(connection.getInputStream()), JsonObject.class);
             String userId = jsonObject1.get("user_id").getAsString();
-            System.out.println(userId);
-            System.out.println(jsonObject1.get("login").getAsString());
 
-            System.out.println("Revoking...");
             connection = (HttpURLConnection) new URL("https://id.twitch.tv/oauth2/revoke").openConnection();
             connection.setDoOutput(true);
             connection.getOutputStream().write("client_id=%s&token=%s".formatted(info.getClientId(), accessToken).getBytes());
             connection.connect();
 
-            System.out.println(connection.getResponseCode());
-
             HystrixCommand<StreamList> streams = feature.getTwitchClient().getHelix().getStreams(null, null, null, null, null, null, List.of(userId), null);
             StreamList execute = streams.execute();
 
             boolean live = execute.getStreams().stream().anyMatch(stream -> "live".equals(stream.getType()));
-            System.out.println("Live: " + live);
 
             twitchExecution.execute(userId, live);
 

@@ -25,9 +25,9 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -41,6 +41,8 @@ import org.jetbrains.annotations.NotNull;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.sql.DriverManager;
@@ -63,10 +65,7 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
     private String twitchAuthorizeURL;
     private HttpServer httpServer;
 
-    private final Cache<String, Execution> authorizationCache = CacheBuilder.newBuilder()
-            .expireAfterWrite(Duration.ofSeconds(30))
-            .weakValues()
-            .build();
+    private final Cache<String, Execution> authorizationCache = CacheBuilder.newBuilder().expireAfterWrite(Duration.ofSeconds(30)).weakValues().build();
     private CraftProtectConfig craftProtectConfig;
 
     @Override
@@ -80,15 +79,21 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
 
         SQLDatabaseConfig database = getCraftProtectConfig().getDatabase();
         if (database != null && database.isEnabled()) {
-            this.userStorage = new AsyncUserStorage(() -> {
-                try {
-                    return DriverManager.getConnection(database.getUrl(), database.getUsername(), database.getPassword());
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            });
+            try {
+                Class.forName("org.mariadb.jdbc.Driver");
+                this.userStorage = new AsyncUserStorage(() -> {
+                    try {
+                        return DriverManager.getConnection(database.getUrl(), database.getUsername(), database.getPassword());
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                });
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
         }
+
         try {
             httpServer = HttpServer.create(new InetSocketAddress(3000), 0);
         } catch (IOException e) {
@@ -113,31 +118,36 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
         loadFeature(PlayerDisplayFeature.class);
         loadFeature(SpawnFeature.class);
         loadFeature(MotdFeature.class);
-        if (this.userStorage != null)
-            loadFeature(LiveStreamFeature.class);
+        loadFeature(DisableEndFeature.class);
+
+        if (getServer().getPluginManager().isPluginEnabled("Vault")) {
+            loadFeature(ChatFeature.class);
+        }
+
+        if (this.userStorage != null) loadFeature(LiveStreamFeature.class);
 
         loadFeature(AfkFeature.class);
-        registerCommand("afk", AfkCommand.class);
+        registerCommand(AfkCommand.class, "afk");
 
-        registerCommand("clear", ClearItemCommand.class);
+        registerCommand(ClearItemCommand.class, "clear");
 
-        registerCommand("sub", GlowCommand.class);
-        registerCommand("reset", ResetCommand.class);
-        registerCommand("flame", FlameCommand.class);
-        registerCommand("live", LiveCommand.class);
-        registerCommand("Oasislive", OasisLiveCommand.class);
-        registerCommand("tanjo", TanjoCommand.class);
-        registerCommand("rw", SpawnFireworkCommand.class);
-        registerCommand("link", LinkCommand.class);
-        registerCommand("playtime", PlaytimeCommand.class);
-        registerCommand("setplaytime", SetPlaytimeCommand.class);
-        registerCommand("setspawn", SetSpawnCommand.class);
-        registerCommand("spawn", SpawnCommand.class);
-        if (userStorage != null)
-            registerCommand("user", UserCommand.class);
+        registerCommand(GlowCommand.class, "glow");
+        registerCommand(ResetCommand.class, "reset");
+        registerCommand(FlameCommand.class, "flame");
+        registerCommand(LiveCommand.class, "live");
+        registerCommand(OasisLiveCommand.class, "Oasislive");
+        registerCommand(TanjoCommand.class, "tanjo");
+        registerCommand(SpawnFireworkCommand.class, "firework");
+        registerCommand(LinkCommand.class, "link");
+        registerCommand(PlaytimeCommand.class, "playtime");
+        registerCommand(SetPlaytimeCommand.class, "setplaytime");
+        registerCommand(SetSpawnCommand.class, "setspawn");
+        registerCommand(SpawnCommand.class, "spawn");
+        registerCommand(CPCommand.class, "craftprotect");
 
-        if (httpServer != null)
-            httpServer.start();
+        if (userStorage != null) registerCommand(UserCommand.class, "user");
+
+        if (httpServer != null) httpServer.start();
 
     }
 
@@ -179,21 +189,36 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
     }
 
 
-    public void registerCommand(String name, Class<? extends CraftProtectCommand> executorClass) {
+    public void registerCommand(Class<? extends CraftProtectCommand> executorClass, String name, String... aliases) {
         CraftProtectCommand instance = super.injector.getInstance(executorClass);
-
-        PluginCommand command = getCommand(name);
-        if (command != null) {
-            command.setExecutor(instance);
-            if (instance instanceof TabCompleter) {
-                command.setExecutor(instance);
-            }
-            command.setPermission(instance.getPermission());
-            command.setPermissionMessage(instance.getPermissionMessage());
+        if (instance == null) {
+            getLogger().warning("Failed to register command with name \"" + name + "\"");
+            return;
         }
 
-        if (instance instanceof Listener listener) {
-            Bukkit.getPluginManager().registerEvents(listener, this);
+        CommandMap commandMap = Bukkit.getCommandMap();
+        try {
+            Constructor<PluginCommand> constructor = PluginCommand.class.getDeclaredConstructor(String.class, Plugin.class);
+            if (!constructor.trySetAccessible())
+                throw new IllegalStateException();
+            PluginCommand command = constructor.newInstance(name, this);
+
+            command.setUsage(instance.getUsage());
+            command.setDescription(instance.getDescription());
+            command.setExecutor(instance);
+            command.setTabCompleter(instance);
+            command.setPermission(instance.getPermission());
+            command.setPermissionMessage(instance.getPermissionMessage());
+            command.setAliases(Arrays.asList(aliases));
+
+            commandMap.register(name, getName(), command);
+
+            if (instance instanceof Listener listener) {
+                Bukkit.getPluginManager().registerEvents(listener, this);
+            }
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                 NoSuchMethodException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -231,8 +256,7 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
 
     @NotNull
     @Override
-    public Closeable attachRepeaterTask(@NotNull Player player, @NotNull String id, @NotNull Runnable task,
-                                        int delay, int period) {
+    public Closeable attachRepeaterTask(@NotNull Player player, @NotNull String id, @NotNull Runnable task, int delay, int period) {
         BukkitTask bukkitTask = Bukkit.getScheduler().runTaskTimer(this, task, delay, period);
         Closeable closeable = () -> {
             bukkitTask.cancel();
@@ -256,8 +280,7 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
 
     @NotNull
     @Override
-    public Closeable attachAsyncRepeaterTask(@NotNull Player player, @NotNull String id, @NotNull Runnable task,
-                                             int delay, int period) {
+    public Closeable attachAsyncRepeaterTask(@NotNull Player player, @NotNull String id, @NotNull Runnable task, int delay, int period) {
         BukkitTask bukkitTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, task, delay, period);
         Closeable closeable = () -> {
             bukkitTask.cancel();
@@ -269,8 +292,7 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
 
     @NotNull
     @Override
-    public Closeable attachAsyncDelayedTask(@NotNull Player player, @NotNull String id, @NotNull Runnable task,
-                                            int delay) {
+    public Closeable attachAsyncDelayedTask(@NotNull Player player, @NotNull String id, @NotNull Runnable task, int delay) {
         BukkitTask bukkitTask = Bukkit.getScheduler().runTaskLaterAsynchronously(this, task, delay);
         Closeable closeable = () -> {
             bukkitTask.cancel();
@@ -290,8 +312,6 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
     public void stopTasks(PlayerQuitEvent event) {
         Map<String, Closeable> row = this.schedulerTable.row(event.getPlayer());
         for (Map.Entry<String, Closeable> entry : row.entrySet()) {
-            System.out.println("Closing " + entry.getKey() + "...");
-
             try {
                 entry.getValue().close();
             } catch (IOException e) {

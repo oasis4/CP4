@@ -7,11 +7,6 @@ import com.google.inject.Singleton;
 import de.javagl.obj.Obj;
 import de.javagl.obj.ObjReader;
 import de.javagl.obj.ObjUtils;
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.util.Vector;
 
 import java.io.IOException;
@@ -29,9 +24,9 @@ public class PlayerWingsFeature implements Feature {
     private List<Vector> vectors = new ArrayList<>();
 
     public PlayerWingsFeature() throws IOException {
-        InputStream resourceAsStream = getClass().getResourceAsStream("/hat.obj");
+        InputStream resourceAsStream = getClass().getResourceAsStream("/witchhat.obj");
         if (resourceAsStream != null) {
-            this.vectors = loadModel(resourceAsStream, 1f);
+            this.vectors = loadModel(resourceAsStream, 0.8f);
 //                    0.05f);
         }
     }
@@ -87,11 +82,11 @@ public class PlayerWingsFeature implements Feature {
             //directionVector.setX(-Math.sin(Math.toRadians(rotation)));
             //directionVector.setZ(Math.cos(Math.toRadians(rotation)));
             //directionVector = directionVector.multiply(0.2F);
-            directionVector.setY(-0.8);
+            directionVector.setY(-0.3);
 
             Location clone = event.getPlayer().getEyeLocation().clone().subtract(directionVector);
 
-            Particle.DustOptions options = new Particle.DustOptions(Color.PURPLE, 0.5f);
+            Particle.DustOptions options = new Particle.DustOptions(Color.PURPLE, 0.3f);
 
             for (Vector vector : vectors) {
                 Vector rotatedVector = new Vector(cos * vector.getX() - sin * vector.getZ(), vector.getY(), sin * vector.getX() + cos * vector.getZ());
@@ -100,7 +95,7 @@ public class PlayerWingsFeature implements Feature {
             }
 
 
-        }, 5, 5);
+        }, 2, 2);
 
     }*/
 

@@ -23,7 +23,7 @@ public class MotdController {
         reloadMotd();
     }
 
-    private void reloadMotd() {
+    public void reloadMotd() {
         if (file.isFile()) {
             try (FileReader reader = new FileReader(file)) {
                 StringWriter writer = new StringWriter();
