@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 
 /**
- * Gives the player the rank "live" in the tablist
+ * Gives the player the rank "live" in the tab list
  */
 @Singleton
 public class LiveCommand implements CraftProtectCommand, CommandExecutor {

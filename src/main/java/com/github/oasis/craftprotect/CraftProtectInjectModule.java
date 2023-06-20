@@ -26,8 +26,7 @@ public class CraftProtectInjectModule extends AbstractModule {
         bind(CraftProtect.class).to(CraftProtectPlugin.class);
         bind(CraftProtectPlugin.class).toInstance(plugin);
         bind(UserStorage.class).to(AsyncUserStorage.class);
-        bind(AsyncUserStorage.class)
-                .toProvider(Providers.of(plugin.getUserStorage()));
+        bind(AsyncUserStorage.class).toProvider(Providers.of(plugin.getUserStorage()));
         if (Bukkit.getPluginManager().isPluginEnabled("Vault")) {
             bind(Chat.class)
                     .toProvider(() -> Bukkit.getServicesManager().load(Chat.class));

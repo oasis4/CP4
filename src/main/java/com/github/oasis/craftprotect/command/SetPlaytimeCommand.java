@@ -6,6 +6,7 @@ import com.github.oasis.craftprotect.controller.PlaytimeController;
 import com.github.oasis.craftprotect.utils.M;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -27,30 +28,40 @@ public class SetPlaytimeCommand implements CraftProtectCommand {
     }
 
     @Override
+    public String getUsage() {
+        return "/<command> <player> [time in seconds]";
+    }
+
+    @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player player)) {
             plugin.sendMessage(sender, M.NO_PLAYER);
             return true;
         }
 
-        if (args.length == 0) {
-            controller.updatePlaytime(player, aLong -> 0L);
+        if (args.length < 1)
+            return false;
+
+        Player target = Bukkit.getPlayer(args[0]);
+        if (target == null) {
+            plugin.sendMessage(sender, M.NO_PERM);
             return true;
         }
 
-        if (args.length != 1) {
-            return false;
+        if (args.length == 1) {
+            controller.updatePlaytime(target, aLong -> 0L);
+            return true;
         }
 
         int time;
         try {
-            time = Integer.parseInt(args[0]);
+            time = Integer.parseInt(args[1]);
         } catch (NumberFormatException e) {
             sender.sendMessage("§cInvalid number");
             return true;
         }
 
-        controller.updatePlaytime(player, playtime -> time * 1000L);
+        controller.updatePlaytime(target, playtime -> time * 1000L);
         return true;
     }
 }

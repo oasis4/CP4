@@ -4,6 +4,7 @@ no-player: '<prefix> <red>Du musst ein Spieler sein.'
 no-sub: '<prefix> <red>Du musst ein Subscriber von Oreocast oder Oasis4_0 sein.'
 no-permission: '<prefix> <red>Dir fehlen Berechtigungen um dies zutun.'
 disabled-end: '<prefix> <red>Das Ende ist bis jetzt noch deaktiviert.'
+player-not-found: '<prefix> <red>Der Spieler wurde nicht gefunden.'
 spawn:
   missing: '<prefix> <red>Der Spawnpunkt wurde noch nicht gesetzt'
 command:
@@ -12,6 +13,7 @@ command:
     disabled: '<prefix> <dark_aqua>Du leuchtest nun nicht mehr'
   playtime:
     duration: '<prefix> <dark_aqua>Du hast bis jetzt <gold><0> <dark_aqua>auf dem Server gespielt'
+    other: '<prefix> <dark_aqua>Der Spieler <0> hat bis jetzt <1> auf dem Server gespielt.'
   oasislive:
     broadcast: '<prefix> <dark_aqua>Oasis ist nun Live auf Twitch schaut rein: <dark_purple><click:open_url:https://www.twitch.tv/oasis4_0><hover:show_text:"<dark_aqua>Oasis Twitch!">Twitch</hover></click></dark_purple>'
   reset: '<prefix> <dark_aqua>Alles wurde von dir zurückgesetzt'

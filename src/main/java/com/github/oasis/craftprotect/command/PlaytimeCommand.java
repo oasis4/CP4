@@ -8,6 +8,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -39,18 +40,38 @@ public class PlaytimeCommand implements CraftProtectCommand, Listener {
         }
     }
 
+    @Override
+    public String getUsage() {
+        return "/<command> [<player>]";
+    }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
-        if (!(sender instanceof Player player)) {
-            plugin.sendMessage(sender, M.NO_PLAYER);
-            return true;
+
+        OfflinePlayer target;
+
+        if (args.length == 0) {
+            if (!(sender instanceof Player player)) {
+                plugin.sendMessage(sender, M.NO_PLAYER);
+                return true;
+            }
+            target = player;
+        } else {
+            target = Bukkit.getOfflinePlayer(args[1]);
         }
 
-        controller.getPlaytime(player)
-                .thenApply(playtime -> playtime + (System.currentTimeMillis() - lastJoinedAt(player)))
-                .thenAccept(playtime -> plugin.sendMessage(sender, "command.playtime.duration", DurationFormatUtils.formatDuration(playtime, "HH:mm:ss")));
+        controller.getPlaytime(target)
+                .thenApply(playtime -> playtime + (System.currentTimeMillis() - lastJoinedAt(target)))
+                .thenAccept(playtime -> {
+
+                    String format = DurationFormatUtils.formatDuration(playtime, "HH:mm:ss");
+                    if (sender == target) {
+                        plugin.sendMessage(sender, "command.playtime.duration", format);
+                    } else {
+                        plugin.sendMessage(sender, "command.playtime.other", target.getName(), format);
+                    }
+                });
         return true;
 
     }
@@ -67,7 +88,12 @@ public class PlaytimeCommand implements CraftProtectCommand, Listener {
         player.removeMetadata("last-joined", plugin);
     }
 
-    private long lastJoinedAt(Player player) {
+    private long lastJoinedAt(OfflinePlayer offlinePlayer) {
+        if (!offlinePlayer.isOnline())
+            return 0L;
+
+        Player player = offlinePlayer.getPlayer();
+
         List<MetadataValue> list = player.getMetadata("last-joined");
         long lastJoined = System.currentTimeMillis();
         if (!list.isEmpty()) {

@@ -7,6 +7,7 @@ import com.github.oasis.craftprotect.api.CraftProtectCommand;
 import com.github.oasis.craftprotect.api.FeaturedPlugin;
 import com.github.oasis.craftprotect.command.*;
 import com.github.oasis.craftprotect.config.CraftProtectConfig;
+import com.github.oasis.craftprotect.config.HttpServerConfig;
 import com.github.oasis.craftprotect.config.SQLDatabaseConfig;
 import com.github.oasis.craftprotect.feature.*;
 import com.github.oasis.craftprotect.link.Execution;
@@ -95,7 +96,9 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
         }
 
         try {
-            httpServer = HttpServer.create(new InetSocketAddress(3000), 0);
+            HttpServerConfig httpConfig = craftProtectConfig.getHttpServer();
+            InetSocketAddress inetAddress = new InetSocketAddress(httpConfig.getAddress(), httpConfig.getPort());
+            httpServer = HttpServer.create(inetAddress, 0);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -132,10 +135,10 @@ public final class CraftProtectPlugin extends FeaturedPlugin implements CraftPro
         registerCommand(ClearItemCommand.class, "clear");
 
         registerCommand(GlowCommand.class, "glow");
-        registerCommand(ResetCommand.class, "reset");
-        registerCommand(FlameCommand.class, "flame");
-        registerCommand(LiveCommand.class, "live");
-        registerCommand(OasisLiveCommand.class, "Oasislive");
+        registerCommand(ResetCommand.class, "reset", "r");
+        registerCommand(FlameCommand.class, "flame", "f");
+        registerCommand(LiveCommand.class, "live", "l");
+        registerCommand(OasisLiveCommand.class, "Oasislive", "ol");
         registerCommand(TanjoCommand.class, "tanjo");
         registerCommand(SpawnFireworkCommand.class, "firework");
         registerCommand(LinkCommand.class, "link");

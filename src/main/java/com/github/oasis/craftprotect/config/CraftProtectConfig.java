@@ -9,6 +9,7 @@ public class CraftProtectConfig {
 
     private SQLDatabaseConfig database;
     private ChatConfig chat;
+    private HttpServerConfig httpServer;
     private TwitchClientInfo twitch;
     private MinecraftClientInfo minecraft;
 
