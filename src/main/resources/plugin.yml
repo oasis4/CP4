@@ -34,6 +34,9 @@ commands:
   tanjo:
     usage: '/<command>'
     description: "Du hast das Easteregg aus Cp4 gefunden. Melde dich gerne bei Oasis"
+  gui:
+    usage: '/<command>'
+    description: 'Öffnet das GUI'
 
 libraries:
   - org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.20-RC

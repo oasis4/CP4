@@ -1,5 +1,6 @@
 package com.github.oasis.craftprotect.feature;
 
+import com.github.oasis.craftprotect.api.CraftProtect;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
@@ -15,11 +16,14 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.Arrays;
 
 public class GuiFeature implements Listener {
-    private final Inventory inv;
 
-    public GuiFeature() {
+    public Inventory inv;
+
+
+    public GuiFeature(Player player) {
+
         // Create a new inventory, with no owner (as this isn't a real inventory), a size of nine, called example
-        inv = Bukkit.createInventory(null, 9, "Example");
+        inv = Bukkit.createInventory(player, 9, "Example");
 
         // Put the items into the inventory
         initializeItems();
@@ -56,8 +60,9 @@ public class GuiFeature implements Listener {
 
 
     // Check for clicks on items
+
     @EventHandler
-    public void onInventoryClick(final InventoryClickEvent e) {
+    public void onInventoryClick(InventoryClickEvent e) {
         if (!e.getInventory().equals(inv)) return;
 
         e.setCancelled(true);
@@ -80,6 +85,5 @@ public class GuiFeature implements Listener {
             e.setCancelled(true);
         }
     }
-
 
 }

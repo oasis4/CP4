@@ -24,7 +24,10 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
@@ -84,6 +87,16 @@ public final class CraftProtectPlugin extends JavaPlugin implements CraftProtect
         registerCommand("afk", afkRankFeature);
         getServer().getPluginManager().registerEvents(afkRankFeature, this);
 
+
+        //GuiFeature GuiFeature = new GuiFeature(this);
+        //registerCommand("gui", new GuiCommand(this));
+        //getServer().getPluginManager().registerEvents(GuiFeature, this);
+
+        new Reciploader().registerRecipes();
+
+
+
+
         // TODO: Change this
         spawnLocation = Bukkit.getWorlds().get(0).getSpawnLocation();
 
@@ -96,12 +109,14 @@ public final class CraftProtectPlugin extends JavaPlugin implements CraftProtect
         registerCommand("rw", new SpawnFireworkCommand(this));
 
 
+
         Bukkit.getPluginManager().registerEvents(new EmojiFeature(this), this);
         Bukkit.getPluginManager().registerEvents(new SpawnElytraFeature(this), this);
         Bukkit.getPluginManager().registerEvents(new PlayerGreetingFeature(this), this);
         Bukkit.getPluginManager().registerEvents(new Teleportation(this), this);
         Bukkit.getPluginManager().registerEvents(this, this);
         Bukkit.getPluginManager().registerEvents(new Combat(this), this);
+
 
     }
 
@@ -142,6 +157,7 @@ public final class CraftProtectPlugin extends JavaPlugin implements CraftProtect
         this.getLogger().info("ENDE");
 
     }
+
 
     public File getUserDataFolder() {
         return this.userDataFolder;
